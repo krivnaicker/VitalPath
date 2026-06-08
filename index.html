@@ -2494,13 +2494,14 @@ function patchShopCheckboxes() {
   });
 }
 
-// ── PWA: Register Service Worker ──────────────────────────────────────────────
+// ── PWA: Unregister any existing service workers ─────────────────────────────
+// Service workers interfere with OAuth redirects by intercepting ?code= params.
+// Disabled until auth is stable.
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
-      .catch(err => console.warn('SW registration failed:', err));
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
   });
+  caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
 }
 
 // ── Expose all functions used in inline HTML onclick handlers ─────────────────

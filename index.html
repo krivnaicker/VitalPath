@@ -2393,21 +2393,33 @@ window._signOut = async function() {
   document.getElementById('user-avatar').style.display = 'none';
 };
 
-// ── Debug logger ─────────────────────────────────────────────────────────────
+// ── Debug logger — persists across reloads via localStorage ──────────────────
 function dbg(msg) {
   console.log('[VP]', msg);
+  // Save to localStorage so logs survive OAuth page reloads
+  try {
+    const logs = JSON.parse(localStorage.getItem('vp_debug') || '[]');
+    logs.push(new Date().toLocaleTimeString() + ' ' + msg);
+    if (logs.length > 30) logs.splice(0, logs.length - 30);
+    localStorage.setItem('vp_debug', JSON.stringify(logs));
+  } catch(e) {}
+  renderDebug();
+}
+function renderDebug() {
   const box = document.getElementById('debug-lines');
-  if (box) {
-    const line = document.createElement('div');
-    line.style.cssText = 'border-bottom:1px solid #1a3a2a;padding:2px 0';
-    line.textContent = new Date().toLocaleTimeString() + ' ' + msg;
-    box.appendChild(line);
+  if (!box) return;
+  try {
+    const logs = JSON.parse(localStorage.getItem('vp_debug') || '[]');
+    box.innerHTML = logs.map(l =>
+      '<div style="border-bottom:1px solid #1a3a2a;padding:2px 0">' + l + '</div>'
+    ).join('');
     box.parentElement.scrollTop = box.parentElement.scrollHeight;
-  }
+  } catch(e) {}
 }
 
 // ── Auth state observer ──────────────────────────────────────────────────────
 function initAuth() {
+  renderDebug(); // show any logs from previous page load
   dbg('initAuth start');
   dbg('hash:' + (window.location.hash.slice(0,50) || 'none'));
   dbg('search:' + (window.location.search.slice(0,50) || 'none'));
@@ -2431,28 +2443,35 @@ function initAuth() {
     }
   }
 
-  window._sb.auth.onAuthStateChange(async (event, session) => {
-    dbg('event:' + event + ' session:' + !!session);
-    if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
-      dbg('signing in: ' + session.user.email);
-      history.replaceState(null, '', window.location.pathname);
-      if (!currentUid) await handleSignedIn(session.user);
-    } else if (event === 'SIGNED_OUT') {
-      dbg('signed out');
-      currentUid = null;
-      document.getElementById('auth-overlay').style.display = 'flex';
-      document.getElementById('user-avatar').style.display = 'none';
-    } else {
-      dbg('other event:' + event);
-    }
-  });
-
+  // Use getSession as the single source of truth.
+  // onAuthStateChange with implicit flow can fire SIGNED_OUT immediately after
+  // SIGNED_IN on Android, causing a flash back to the login screen.
+  // Instead: check session once on load, then only act on future SIGNED_OUT events.
   window._sb.auth.getSession().then(async ({ data: { session }, error }) => {
     dbg('getSession session:' + !!session + ' err:' + (error?.message||'none'));
-    if (session?.user && !currentUid) {
-      dbg('restoring: ' + session.user.email);
+    if (session?.user) {
+      dbg('got session: ' + session.user.email);
       history.replaceState(null, '', window.location.pathname);
       await handleSignedIn(session.user);
+    } else {
+      dbg('no session - waiting for sign in');
+      // Only now start listening for auth changes
+      window._sb.auth.onAuthStateChange(async (event, session) => {
+        dbg('event:' + event + ' session:' + !!session);
+        if (event === 'SIGNED_IN' && session?.user) {
+          dbg('SIGNED_IN: ' + session.user.email);
+          history.replaceState(null, '', window.location.pathname);
+          await handleSignedIn(session.user);
+        } else if (event === 'SIGNED_OUT' && currentUid) {
+          // Only act on SIGNED_OUT if we were actually signed in
+          dbg('SIGNED_OUT - showing login');
+          currentUid = null;
+          document.getElementById('auth-overlay').style.display = 'flex';
+          document.getElementById('user-avatar').style.display = 'none';
+        } else {
+          dbg('ignored event:' + event);
+        }
+      });
     }
   });
 }
@@ -2527,7 +2546,14 @@ window.clearSundayChecks   = clearSundayChecks;
 window.clearDailyChecks    = clearDailyChecks;
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
-// Supabase loads synchronously via CDN script tag, so no delay needed
+// Log URL immediately on script parse — before anything else runs
+try {
+  const earlyLogs = JSON.parse(localStorage.getItem('vp_debug') || '[]');
+  earlyLogs.push(new Date().toLocaleTimeString() + ' PAGE_LOAD url=' + window.location.href.slice(0,100));
+  earlyLogs.push(new Date().toLocaleTimeString() + ' search=' + (window.location.search||'none') + ' hash=' + (window.location.hash.slice(0,40)||'none'));
+  localStorage.setItem('vp_debug', JSON.stringify(earlyLogs));
+} catch(e) {}
+
 document.addEventListener('DOMContentLoaded', () => {
   initAuth();
   setTimeout(patchShopCheckboxes, 1000);

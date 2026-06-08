@@ -2162,7 +2162,8 @@ function showCopyConfirm(msg, success) {
 }
 
 
-function clearDailyChecks() { dailyChecked={}; renderShop(); }
+function clearSundayChecks() { sundayChecked={}; renderShop(); scheduleSave(600); }
+function clearDailyChecks() { dailyChecked={}; renderShop(); scheduleSave(600); }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 updateDateChip();

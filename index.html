@@ -58,7 +58,7 @@ const SUPABASE_URL  = 'https://fikeanetwflbybqbmbje.supabase.co';
   --radius-sm:  10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;overflow-x:hidden}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;overflow-x:hidden}
 
 /* ── Layout ── */
 .shell{display:flex;flex-direction:column;min-height:100vh;max-width:520px;margin:0 auto;position:relative}
@@ -89,8 +89,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
   display:flex;
   padding:8px 4px max(8px, env(safe-area-inset-bottom));
 }
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 1px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:9px;font-weight:600;font-family:'DM Sans',sans-serif;letter-spacing:.03em;transition:.15s;border-radius:var(--radius-sm)}
-.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 1px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;letter-spacing:.03em;transition:.15s;border-radius:var(--radius-sm)}
+.nav-btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .nav-btn.active{color:var(--teal)}
 .nav-btn.active svg{stroke:var(--teal)}
 
@@ -102,12 +102,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 /* ── Cards ── */
 .card{background:#FFFFFF;border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal-glow),transparent)}
-.card-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+.card-label{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
 
 /* ── Tip banner ── */
 .tip-banner{background:linear-gradient(135deg,var(--teal-light),rgba(236,254,255,.4));border:1px solid rgba(8,145,178,.15);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
 .tip-icon{font-size:20px;margin-bottom:6px}
-.tip-text{font-size:13px;color:var(--text);line-height:1.65}
+.tip-text{font-size:14px;color:var(--text);line-height:1.7}
 
 /* ── Calorie ring ── */
 .cal-section{display:flex;align-items:center;gap:16px;margin-bottom:16px}
@@ -127,12 +127,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 /* ── Meal log ── */
 .meal-row{padding:14px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .meal-row:last-child{border-bottom:none}
-.meal-time{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:3px;text-transform:uppercase}
-.meal-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
-.meal-detail{font-size:12px;color:var(--text2);line-height:1.5}
+.meal-time{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:3px;text-transform:uppercase}
+.meal-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px}
+.meal-detail{font-size:13px;color:var(--text2);line-height:1.6}
 .meal-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
-.meal-kcal{font-size:13px;font-weight:700;color:var(--teal)}
-.log-pill{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border2);background:#F8FAFB;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;white-space:nowrap;min-height:36px}
+.meal-kcal{font-size:14px;font-weight:700;color:var(--teal)}
+.log-pill{padding:9px 18px;border-radius:20px;border:1.5px solid var(--border2);background:#F8FAFB;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;white-space:nowrap;min-height:40px}
 .log-pill:hover{border-color:var(--teal);color:var(--teal)}
 .log-pill.done{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 6px rgba(8,145,178,.3)}
 
@@ -152,13 +152,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 .wpill.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 6px rgba(8,145,178,.2)}
 
 /* ── Meal plan table ── */
-.plan-meal{padding:14px 0;border-bottom:1px solid var(--border2)}
+.plan-meal{padding:16px 0;border-bottom:1px solid var(--border2)}
 .plan-meal:last-child{border-bottom:none}
-.pm-header{display:flex;justify-content:space-between;margin-bottom:5px}
-.pm-name{font-size:14px;font-weight:600;color:var(--text)}
+.pm-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.pm-name{font-size:15px;font-weight:600;color:var(--text)}
 .pm-cals{font-size:12px;font-weight:700}
-.pm-time{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:2px;text-transform:uppercase}
-.pm-detail{font-size:12px;color:var(--text2);line-height:1.5}
+.pm-time{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
+.pm-detail{font-size:13px;color:var(--text2);line-height:1.6}
+.pm-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;font-size:14px;margin-left:8px}
+.pm-check.checked{background:var(--teal);border-color:var(--teal);color:#fff}
+.plan-meal.done-meal .pm-name{text-decoration:line-through;color:var(--text3)}
+.plan-meal.done-meal .pm-detail{opacity:.5}
+.plan-meal.done-meal .pm-time{opacity:.5}
 .him-cal{color:var(--teal)}
 .her-cal{color:var(--purple)}
 .totals-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border2)}
@@ -296,18 +301,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     Data syncs automatically — no manual backups needed.
   </div>
 
-  <!-- DEBUG BOX — remove after fixing -->
-  <div id="debug-box" style="
-    margin-top:24px;width:100%;max-width:360px;
-    background:#0C1A1F;color:#00FF88;
-    font-family:monospace;font-size:11px;
-    padding:12px;border-radius:8px;text-align:left;
-    max-height:240px;overflow-y:auto;
-    word-break:break-all;
-  ">
-    <div style="color:#888;margin-bottom:4px">── debug log ──</div>
-    <div id="debug-lines"></div>
-  </div>
 </div>
 
 <!-- ── SYNC STATUS BAR ────────────────────────────────────────────────────── -->
@@ -1300,12 +1293,17 @@ function renderMeals() {
   document.getElementById('total-her').textContent = plan.herTotal.toLocaleString()+' kcal';
   const cont = document.getElementById('meal-plan-list');
   cont.innerHTML = '';
-  plan.meals.forEach(m=>{
+  plan.meals.forEach((m, idx)=>{
+    const key = `${mealWeek}_${idx}`;
+    const isChecked = (loggedMeals[profile] || {})[key];
     const div = document.createElement('div');
-    div.className = 'plan-meal';
+    div.className = 'plan-meal' + (isChecked ? ' done-meal' : '');
     div.innerHTML = `<div class="pm-time">${m.time}</div>
       <div class="pm-header">
         <span class="pm-name">${m.name}</span>
+        <button class="pm-check ${isChecked ? 'checked' : ''}" onclick="toggleMealCheck(${idx})" title="Mark as eaten">
+          ${isChecked ? '✓' : ''}
+        </button>
       </div>
       <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} <span class="him-cal">(${m.himCal} kcal)</span></div>
       <div class="pm-detail" style="color:var(--purple);font-weight:500">Her: ${m.her} <span class="her-cal">(${m.herCal} kcal)</span></div>`;
@@ -1320,6 +1318,15 @@ function renderMeals() {
     div.innerHTML = `<div class="step-num">${i+1}</div><div><div class="step-title">${s.title}</div><div class="step-detail">${s.detail}</div></div>`;
     prep.appendChild(div);
   });
+}
+
+function toggleMealCheck(idx) {
+  if (!loggedMeals[profile]) loggedMeals[profile] = {};
+  const key = `${mealWeek}_${idx}`;
+  loggedMeals[profile][key] = !loggedMeals[profile][key];
+  renderMeals();
+  renderToday();
+  scheduleSave(600);
 }
 
 // ── Workout ───────────────────────────────────────────────────────────────────
@@ -2394,33 +2401,12 @@ window._signOut = async function() {
   document.getElementById('user-avatar').style.display = 'none';
 };
 
-// ── Debug logger — persists across reloads via localStorage ──────────────────
-function dbg(msg) {
-  console.log('[VP]', msg);
-  // Save to localStorage so logs survive OAuth page reloads
-  try {
-    const logs = JSON.parse(localStorage.getItem('vp_debug') || '[]');
-    logs.push(new Date().toLocaleTimeString() + ' ' + msg);
-    if (logs.length > 30) logs.splice(0, logs.length - 30);
-    localStorage.setItem('vp_debug', JSON.stringify(logs));
-  } catch(e) {}
-  renderDebug();
-}
-function renderDebug() {
-  const box = document.getElementById('debug-lines');
-  if (!box) return;
-  try {
-    const logs = JSON.parse(localStorage.getItem('vp_debug') || '[]');
-    box.innerHTML = logs.map(l =>
-      '<div style="border-bottom:1px solid #1a3a2a;padding:2px 0">' + l + '</div>'
-    ).join('');
-    box.parentElement.scrollTop = box.parentElement.scrollHeight;
-  } catch(e) {}
-}
+// ── Logger (console only) ────────────────────────────────────────────────────
+function dbg(msg) { console.log('[VP]', msg); }
+function renderDebug() {}
 
 // ── Auth state observer ──────────────────────────────────────────────────────
 function initAuth() {
-  renderDebug(); // show any logs from previous page load
   dbg('initAuth start');
   dbg('hash:' + (window.location.hash.slice(0,50) || 'none'));
   dbg('search:' + (window.location.search.slice(0,50) || 'none'));
@@ -2544,17 +2530,10 @@ window.searchItemOnStore   = searchItemOnStore;
 window.openStoreSearch     = openStoreSearch;
 window.copyListForStore    = copyListForStore;
 window.clearSundayChecks   = clearSundayChecks;
+window.toggleMealCheck     = toggleMealCheck;
 window.clearDailyChecks    = clearDailyChecks;
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
-// Log URL immediately on script parse — before anything else runs
-try {
-  const earlyLogs = JSON.parse(localStorage.getItem('vp_debug') || '[]');
-  earlyLogs.push(new Date().toLocaleTimeString() + ' PAGE_LOAD url=' + window.location.href.slice(0,100));
-  earlyLogs.push(new Date().toLocaleTimeString() + ' search=' + (window.location.search||'none') + ' hash=' + (window.location.hash.slice(0,40)||'none'));
-  localStorage.setItem('vp_debug', JSON.stringify(earlyLogs));
-} catch(e) {}
-
 document.addEventListener('DOMContentLoaded', () => {
   initAuth();
   setTimeout(patchShopCheckboxes, 1000);

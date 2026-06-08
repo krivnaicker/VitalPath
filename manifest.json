@@ -1,0 +1,18 @@
+{
+  "name": "VitalPath — Daily Health Coach",
+  "short_name": "VitalPath",
+  "description": "Personal AI health coach and nutrition tracker for two",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8FAFB",
+  "theme_color": "#0891B2",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%230891B2'/><text y='130' x='30' font-size='120' font-family='serif'>💚</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["health", "fitness", "lifestyle"]
+}

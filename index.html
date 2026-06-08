@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VitalPath — Daily Health Coach</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── SUPABASE CONFIG ────────────────────────────────────────────────────────
+  // REPLACE THESE TWO VALUES after creating your free project at
+  // https://supabase.com → New project → Settings → API
+const SUPABASE_URL  = 'https://fikeanetwflbybqbmbje.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpa2VhbmV0d2ZsYnlicWJtYmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NjU5MjcsImV4cCI6MjA5NjQ0MTkyN30.ZfxAra9f1PbxuVL7b2fLPc01zUv9zhkftPqpySGbK98';
+
+
+  // Make Supabase client available globally
+  if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+    window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+      auth: {
+        flowType: 'pkce',
+        storage: window.localStorage,
+        persistSession: true,
+        detectSessionInUrl: true,
+      }
+    });
+  } else {
+    window._sb = null; // Will fall back to local-only mode until configured
+  }
+</script>
+<style>
+:root {
+  --teal:       #0891B2;
+  --teal-dark:  #0E7490;
+  --teal-light: #ECFEFF;
+  --teal-glow:  rgba(8,145,178,.12);
+  --teal-mid:   rgba(8,145,178,.18);
+  --gold:       #B45309;
+  --gold-bg:    #FEF3C7;
+  --purple:     #7C3AED;
+  --purple-bg:  #EDE9FE;
+  --bg:         #F8FAFB;
+  --bg2:        #FFFFFF;
+  --bg3:        #F1F5F7;
+  --surface:    #FFFFFF;
+  --surface2:   #F1F5F7;
+  --border:     rgba(8,145,178,.2);
+  --border2:    rgba(0,0,0,.08);
+  --text:       #0C1A1F;
+  --text2:      #4B6472;
+  --text3:      #8BA4AE;
+  --radius:     14px;
+  --radius-sm:  10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;overflow-x:hidden}
+
+/* ── Layout ── */
+.shell{display:flex;flex-direction:column;min-height:100vh;max-width:520px;margin:0 auto;position:relative}
+
+/* ── Header ── */
+.app-header{
+  background:#FFFFFF;
+  padding:16px 20px 12px;
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid var(--border2);
+  box-shadow:0 1px 8px rgba(0,0,0,.06);
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.app-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#0C1A1F;letter-spacing:-.5px}
+.app-logo span{color:var(--teal);font-weight:700}
+.date-chip{font-size:11px;color:var(--text2);background:var(--bg3);padding:4px 10px;border-radius:20px;font-weight:600;border:0.5px solid var(--border2)}
+.profile-toggle{display:flex;gap:6px}
+.ptab{flex:1;padding:9px 0;border-radius:20px;border:1.5px solid var(--border2);font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:.2s;letter-spacing:.02em;font-family:'DM Sans',sans-serif}
+.ptab.him.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(8,145,178,.25)}
+.ptab.her.active{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+
+/* ── Nav ── */
+.bottom-nav{
+  position:sticky;bottom:0;z-index:100;
+  background:#FFFFFF;
+  border-top:1px solid var(--border2);
+  box-shadow:0 -1px 8px rgba(0,0,0,.06);
+  display:flex;
+  padding:8px 4px max(8px, env(safe-area-inset-bottom));
+}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 1px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:9px;font-weight:600;font-family:'DM Sans',sans-serif;letter-spacing:.03em;transition:.15s;border-radius:var(--radius-sm)}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn.active{color:var(--teal)}
+.nav-btn.active svg{stroke:var(--teal)}
+
+/* ── Pages ── */
+.page{display:none;padding:16px 16px 8px;flex:1;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Cards ── */
+.card{background:#FFFFFF;border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal-glow),transparent)}
+.card-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+
+/* ── Tip banner ── */
+.tip-banner{background:linear-gradient(135deg,var(--teal-light),rgba(236,254,255,.4));border:1px solid rgba(8,145,178,.15);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+.tip-icon{font-size:20px;margin-bottom:6px}
+.tip-text{font-size:13px;color:var(--text);line-height:1.65}
+
+/* ── Calorie ring ── */
+.cal-section{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.ring-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.ring-label{font-size:10px;color:var(--text3);margin-top:2px}
+.cal-stats{flex:1}
+.cal-stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2)}
+.cal-stat-row:last-child{border-bottom:none}
+.csr-name{font-size:12px;color:var(--text2);font-weight:500}
+.csr-bar-wrap{flex:1;margin:0 10px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.csr-bar{height:100%;border-radius:3px;transition:width .4s ease}
+.csr-val{font-size:12px;font-weight:700;color:var(--text);min-width:42px;text-align:right}
+
+/* ── Meal log ── */
+.meal-row{padding:14px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.meal-row:last-child{border-bottom:none}
+.meal-time{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:3px;text-transform:uppercase}
+.meal-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.meal-detail{font-size:12px;color:var(--text2);line-height:1.5}
+.meal-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.meal-kcal{font-size:13px;font-weight:700;color:var(--teal)}
+.log-pill{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border2);background:#F8FAFB;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;white-space:nowrap;min-height:36px}
+.log-pill:hover{border-color:var(--teal);color:var(--teal)}
+.log-pill.done{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 6px rgba(8,145,178,.3)}
+
+/* ── Water ── */
+.water-row{display:flex;align-items:center;gap:12px;margin-top:4px}
+.water-glasses{display:flex;gap:5px;flex:1;flex-wrap:wrap}
+.glass{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;user-select:none}
+.glass:hover{border-color:rgba(55,138,221,.4);background:rgba(55,138,221,.08)}
+.glass.filled{background:rgba(55,138,221,.15);border-color:rgba(55,138,221,.45)}
+.water-label{font-size:12px;color:var(--text2);white-space:nowrap;font-weight:600}
+
+/* ── Week pill nav ── */
+.week-pills{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.week-pills::-webkit-scrollbar{display:none}
+.wpill{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;background:#fff;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;transition:.15s}
+.wpill:hover{border-color:var(--teal);color:var(--teal)}
+.wpill.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 6px rgba(8,145,178,.2)}
+
+/* ── Meal plan table ── */
+.plan-meal{padding:14px 0;border-bottom:1px solid var(--border2)}
+.plan-meal:last-child{border-bottom:none}
+.pm-header{display:flex;justify-content:space-between;margin-bottom:5px}
+.pm-name{font-size:14px;font-weight:600;color:var(--text)}
+.pm-cals{font-size:12px;font-weight:700}
+.pm-time{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:2px;text-transform:uppercase}
+.pm-detail{font-size:12px;color:var(--text2);line-height:1.5}
+.him-cal{color:var(--teal)}
+.her-cal{color:var(--purple)}
+.totals-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border2)}
+.tb-label{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.05em}
+.tb-vals{display:flex;gap:16px}
+.tb-him{font-size:13px;font-weight:700;color:var(--teal)}
+.tb-her{font-size:13px;font-weight:700;color:var(--purple)}
+.note-bar{font-size:11px;color:var(--gold);background:var(--gold-bg);border:1px solid rgba(180,83,9,.15);border-radius:var(--radius-sm);padding:8px 12px;margin-top:10px;line-height:1.5;font-weight:500}
+
+/* ── Workout ── */
+.day-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px}
+.day-scroll::-webkit-scrollbar{display:none}
+.day-chip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:#fff;cursor:pointer;min-width:52px;flex-shrink:0;transition:.15s}
+.day-chip .dc-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em}
+.day-chip .dc-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border2)}
+.day-chip.active{border-color:var(--teal);background:var(--teal-light)}
+.day-chip.active .dc-label{color:var(--teal)}
+.day-chip.done .dc-dot{background:var(--teal);border-color:var(--teal)}
+.day-chip.rest-day .dc-dot{background:var(--text3)}
+.wo-card{background:var(--bg3);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border2)}
+.wo-day-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.wo-focus{font-size:12px;color:var(--teal);font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
+.wo-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;margin-top:12px;text-transform:uppercase}
+.exercise-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.exercise-row:last-child{border-bottom:none}
+.ex-num{width:24px;height:24px;border-radius:50%;background:var(--teal-light);border:1.5px solid rgba(8,145,178,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--teal);flex-shrink:0}
+.ex-name{flex:1;font-size:13px;color:var(--text);font-weight:500}
+.ex-sets{font-size:12px;color:var(--text2);font-weight:600}
+.treadmill-pill{background:linear-gradient(135deg,rgba(8,145,178,.08),rgba(8,145,178,.03));border:1px solid rgba(8,145,178,.15);border-radius:var(--radius-sm);padding:10px 14px;margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+.tp-label{font-size:12px;color:var(--teal);font-weight:700}
+.tp-val{font-size:13px;color:var(--text);font-weight:600}
+.wo-done-btn{width:100%;margin-top:14px;padding:14px;background:var(--teal);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;letter-spacing:.02em;box-shadow:0 2px 8px rgba(8,145,178,.3)}
+.wo-done-btn:hover{background:var(--teal-dark)}
+.wo-done-btn.done-state{background:var(--bg3);color:var(--text3);box-shadow:none;border:1.5px solid var(--border2)}
+
+/* ── Progress ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-box{background:#fff;border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid var(--border2);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat-big{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.stat-lbl{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.04em;margin-top:3px;text-transform:uppercase}
+.stat-sub{font-size:11px;margin-top:4px;font-weight:600}
+.stat-good{color:var(--teal)}
+.input-group{margin-bottom:10px}
+.input-label{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:6px;display:block}
+.styled-input{width:100%;padding:12px 14px;background:#fff;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:.15s}
+.styled-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-glow)}
+.save-btn{width:100%;padding:14px;background:var(--teal);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:.15s;letter-spacing:.02em;box-shadow:0 2px 8px rgba(8,145,178,.25)}
+.save-btn:hover{background:var(--teal-dark)}
+.checkin-entry{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center}
+.ci-date{font-size:12px;color:var(--text3);font-weight:600}
+.ci-vals{font-size:13px;color:var(--text);font-weight:600}
+.ci-change{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px}
+.change-good{background:rgba(8,145,178,.1);color:var(--teal)}
+.change-bad{background:rgba(220,38,38,.08);color:#DC2626}
+
+/* ── Coach / Chat ── */
+.chat-scroll{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0;margin-bottom:12px;scroll-behavior:smooth}
+.chat-scroll::-webkit-scrollbar{width:3px}
+.chat-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.bubble{max-width:88%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.65}
+.bubble.coach{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start}
+.bubble.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.bubble.thinking{color:var(--text3);font-style:italic}
+.chat-input-row{display:flex;gap:8px}
+.chat-input{flex:1;padding:12px 16px;background:#fff;border:1.5px solid var(--border2);border-radius:24px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:.15s}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-glow)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;box-shadow:0 2px 6px rgba(8,145,178,.3)}
+.send-btn:hover{background:var(--teal-dark)}
+.send-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.quick-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.qchip{padding:7px 13px;border-radius:20px;border:1.5px solid var(--border2);background:#fff;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.qchip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
+.coach-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.06em;margin-bottom:8px}
+.coach-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Prep guide ── */
+.prep-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border2)}
+.prep-step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--teal-light);border:1.5px solid rgba(8,145,178,.2);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--teal);flex-shrink:0}
+.step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.step-detail{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ── Scan mode buttons ── */
+.scan-mode-btn{padding:12px 8px;background:#fff;border:1.5px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text2);text-align:center;transition:.15s;width:100%;font-weight:500}
+.scan-mode-btn:hover{border-color:var(--teal);color:var(--teal)}
+.scan-mode-btn.active{border-color:var(--teal);background:var(--teal-light);color:var(--teal);font-weight:700}
+.scan-mode-btn.active div:nth-child(2){color:var(--teal)}
+
+/* ── Responsive desktop ── */
+@media(min-width:600px){
+  .shell{max-width:520px;margin:0 auto;box-shadow:0 0 80px rgba(0,0,0,.5)}
+  body{background:#080e0b}
+}
+</style>
+</head>
+<body>
+<!-- ── AUTH OVERLAY ─────────────────────────────────────────────────────── -->
+<div id="auth-overlay" style="
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#F0FAFB 0%,#ECFEFF 60%,#F8FAFB 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 24px;text-align:center;
+">
+  <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#0C1A1F;letter-spacing:-.5px;margin-bottom:6px">
+    Vital<span style="color:#0891B2">Path</span>
+  </div>
+  <div style="font-size:13px;color:#4B6472;margin-bottom:48px;font-weight:600">Daily Health Coach · Private & Synced</div>
+  
+  <div style="width:72px;height:72px;border-radius:50%;background:rgba(8,145,178,.12);border:2px solid rgba(8,145,178,.25);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:32px">💚</div>
+  
+  <div style="font-size:18px;font-weight:700;color:#0C1A1F;margin-bottom:8px">Sign in to sync your data</div>
+  <div style="font-size:13px;color:#4B6472;line-height:1.7;max-width:320px;margin-bottom:36px">
+    Your meals, workouts, and progress sync in real time between both phones. Each profile signs in separately with their Google account.
+  </div>
+
+  <button id="google-signin-btn" onclick="window._signInWithGoogle()" style="
+    display:flex;align-items:center;gap:12px;
+    padding:16px 28px;
+    background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;
+    font-size:15px;font-weight:700;color:#1a1a1a;
+    cursor:pointer;font-family:'DM Sans',sans-serif;
+    box-shadow:0 2px 12px rgba(0,0,0,.1);
+    transition:.2s;width:100%;max-width:320px;justify-content:center;
+    margin-bottom:16px;
+  ">
+    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+    Continue with Google
+  </button>
+
+  <div id="auth-error" style="font-size:12px;color:#DC2626;margin-top:8px;display:none"></div>
+  
+  <div style="font-size:11px;color:#8BA4AE;margin-top:32px;line-height:1.7;max-width:300px">
+    🔒 Your data is private. Only you and your partner can access your profiles.<br>
+    Data syncs automatically — no manual backups needed.
+  </div>
+
+  <!-- DEBUG BOX — remove after fixing -->
+  <div id="debug-box" style="
+    margin-top:24px;width:100%;max-width:360px;
+    background:#0C1A1F;color:#00FF88;
+    font-family:monospace;font-size:11px;
+    padding:12px;border-radius:8px;text-align:left;
+    max-height:240px;overflow-y:auto;
+    word-break:break-all;
+  ">
+    <div style="color:#888;margin-bottom:4px">── debug log ──</div>
+    <div id="debug-lines"></div>
+  </div>
+</div>
+
+<!-- ── SYNC STATUS BAR ────────────────────────────────────────────────────── -->
+<div id="sync-bar" style="
+  display:none;
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+  background:rgba(8,145,178,.95);color:#fff;
+  font-size:12px;font-weight:700;padding:8px 20px;
+  border-radius:20px;z-index:500;pointer-events:none;
+  backdrop-filter:blur(8px);
+  transition:opacity .3s;
+">⟳ Syncing...</div>
+
+<div class="shell">
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="header-top">
+    <div class="app-logo">Vital<span>Path</span></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="date-chip" id="date-chip">Mon 8 June 2026</div>
+      <div id="user-avatar" onclick="window._signOut()" title="Sign out" style="
+        width:28px;height:28px;border-radius:50%;
+        background:rgba(8,145,178,.1);border:1.5px solid rgba(8,145,178,.3);
+        display:none;align-items:center;justify-content:center;
+        cursor:pointer;overflow:hidden;font-size:12px;font-weight:700;color:var(--teal);
+      "></div>
+    </div>
+  </div>
+  <div class="profile-toggle">
+    <button class="ptab him active" onclick="setProfile('him')">Him · 1,772 kcal</button>
+    <button class="ptab her" onclick="setProfile('her')">Her · 1,194 kcal</button>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div id="p-today" class="page active">
+  <div class="tip-banner">
+    <div class="tip-icon" id="tip-icon">🏋️</div>
+    <div class="tip-text" id="tip-text">Loading your daily briefing...</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Calories today</div>
+    <div class="cal-section">
+      <div class="ring-wrap">
+        <svg width="90" height="90" viewBox="0 0 90 90">
+          <circle cx="45" cy="45" r="38" fill="none" stroke="#1a2420" stroke-width="8"/>
+          <circle id="cal-ring" cx="45" cy="45" r="38" fill="none" stroke="#0891B2" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="238.76" stroke-dashoffset="238.76" style="transition:stroke-dashoffset .5s ease"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-num" id="ring-eaten">0</div>
+          <div class="ring-label">eaten</div>
+        </div>
+      </div>
+      <div class="cal-stats">
+        <div class="cal-stat-row">
+          <span class="csr-name">Protein</span>
+          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-p" style="width:0%;background:#C8963E"></div></div>
+          <span class="csr-val" id="val-p">0 / <span id="tgt-p">153</span>g</span>
+        </div>
+        <div class="cal-stat-row">
+          <span class="csr-name">Carbs</span>
+          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-c" style="width:0%;background:#0891B2"></div></div>
+          <span class="csr-val" id="val-c">0 / <span id="tgt-c">166</span>g</span>
+        </div>
+        <div class="cal-stat-row">
+          <span class="csr-name">Fat</span>
+          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-f" style="width:0%;background:#7B5EA7"></div></div>
+          <span class="csr-val" id="val-f">0 / <span id="tgt-f">55</span>g</span>
+        </div>
+        <div class="cal-stat-row">
+          <span class="csr-name">Remaining</span>
+          <div class="csr-bar-wrap"></div>
+          <span class="csr-val" id="val-rem" style="color:var(--teal)">1,772</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Today's meals — tap to log</div>
+    <div id="today-meals"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Water · 8 glasses target</div>
+    <div class="water-row">
+      <div class="water-glasses" id="water-glasses"></div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px" id="water-tip">Tap each glass as you drink it. Start with 300ml before gym.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">🥣 Morning oats — step by step</div>
+    <div id="oats-prep-content"></div>
+  </div>
+
+</div>
+
+<div id="p-meals" class="page">
+  <div class="week-pills">
+    <button class="wpill active" onclick="setMealWeek(1,this)">Week 1</button>
+    <button class="wpill" onclick="setMealWeek(2,this)">Week 2</button>
+    <button class="wpill" onclick="setMealWeek(3,this)">Week 3</button>
+    <button class="wpill" onclick="setMealWeek(4,this)">Week 4</button>
+  </div>
+  <div class="card">
+    <div class="card-label" id="meal-week-label">Week 1 · Spicy Thai & Vietnamese</div>
+    <div id="meal-plan-list"></div>
+    <div class="totals-bar">
+      <span class="tb-label">DAILY TOTAL</span>
+      <div class="tb-vals">
+        <span class="tb-him" id="total-him">1,800 kcal</span>
+        <span class="tb-her" id="total-her">1,190 kcal</span>
+      </div>
+    </div>
+    <div class="note-bar">* Daily total = one day's eating (breakfast + 2 snacks + lunch + one dinner). Multiple dinners shown are for different nights — not all eaten the same day.</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Sunday batch prep (2–3 hrs)</div>
+    <div id="prep-steps"></div>
+  </div>
+</div>
+
+<div id="p-workout" class="page">
+
+  <!-- JW Marriott banner -->
+  <div style="background:linear-gradient(135deg,rgba(200,150,62,.15),rgba(200,150,62,.04));border:1px solid rgba(200,150,62,.3);border-radius:var(--radius);padding:13px 14px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="font-size:22px">🏨</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#C8963E">JW Marriott Auckland</div>
+        <div style="font-size:11px;color:var(--text3)">Level 11 Wellness Centre · 22–26 Albert St · Open 24 hrs</div>
+      </div>
+      <a href="https://www.marriott.com/en-us/hotels/akljw-jw-marriott-auckland/experiences/" target="_blank"
+        style="margin-left:auto;padding:6px 12px;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);border-radius:16px;font-size:11px;font-weight:700;color:#C8963E;text-decoration:none;white-space:nowrap">
+        Book →
+      </a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:15px">🏋️</span>
+        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Technogym Gym</div><div style="font-size:10px;color:var(--text3)">Full equipment · city + harbour views</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:15px">🏊</span>
+        <div><div style="font-size:11px;font-weight:700;color:var(--text)">14m Indoor Pool</div><div style="font-size:10px;color:var(--text3)">Heated · Harbour Bridge views</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:15px">🧊</span>
+        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Cold Plunge Pool</div><div style="font-size:10px;color:var(--text3)">Recovery · inflammation reduction</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:15px">🧖</span>
+        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Dry Sauna + Steam</div><div style="font-size:10px;color:var(--text3)">Detox · muscle recovery</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:15px">💆</span>
+        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Vitality / Spa Pool</div><div style="font-size:10px;color:var(--text3)">Hot tub · post-workout soak</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:15px">👤</span>
+        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Personal Training</div><div style="font-size:10px;color:var(--text3)">Available on request · Technogym Visio</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technogym equipment callout -->
+  <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:8px">TECHNOGYM EQUIPMENT HIGHLIGHTS</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Technogym Visio</strong> — virtual personal trainer built into every machine. Hundreds of guided workouts at one tap. One of first NZ hotels to have it.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Technogym Bench</strong> — 200+ exercises with built-in storage: bands, hex dumbbells, weighted knuckles. Great for your accessory work.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Full cardio + strength suite</strong> — treadmills, incline trainers, bikes, cable machines, free weights, functional rig.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Open 24 hours</strong> — gym never closes. Perfect for your 8–9am window or early starts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week schedule -->
+  <div class="day-scroll" id="day-scroll"></div>
+  <div class="wo-card" id="wo-detail"></div>
+
+  <!-- Treadmill progression -->
+  <div class="card" style="margin-top:12px">
+    <div class="card-label">Technogym treadmill — how to set it up</div>
+
+    <!-- Alert banner for common mistake -->
+    <div style="background:rgba(224,112,57,.12);border:1px solid rgba(224,112,57,.35);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start">
+      <span style="font-size:16px;flex-shrink:0">⚠️</span>
+      <div style="font-size:12px;color:#e07839;line-height:1.6"><strong>Default gradient starts at 1% — always raise it first.</strong> At 1% you burn roughly half the calories vs 6% at the same speed. Tap GRADIENT + five times before starting your walk.</div>
+    </div>
+
+    <!-- Interface guide from actual Technogym screen -->
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">TECHNOGYM SCREEN CONTROLS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px">
+      <div style="background:var(--bg3);border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:4px">GRADIENT (left side)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Tap <strong style="color:var(--text)">+</strong> next to GRADIENT at bottom left. Each tap = +1%. Quick-select buttons on left panel: 0, 3, 6, 9. Tap <strong style="color:var(--teal)">6</strong> directly for Week 1 target.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:#C8963E;margin-bottom:4px">SPEED (right side)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Tap <strong style="color:var(--text)">+/−</strong> next to SPEED at bottom right. Quick buttons: 4, 6, 8, 10 km/h. Set to <strong style="color:#C8963E">4.5</strong> using + from 4.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:#7B5EA7;margin-bottom:4px">HR MONITOR</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Shows BPM top right. Grip the metal handles on side rails to read. Him target: <strong style="color:#C8963E">102–111 bpm</strong>. Her: <strong style="color:#7B5EA7">104–113 bpm</strong>.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:#6ab4e8;margin-bottom:4px">LOG IN (top right)</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Create free Technogym account → tap Log In → auto-tracks every session. Syncs reps, sets, cardio across all visits.</div>
+      </div>
+    </div>
+
+    <!-- Set by set targets -->
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">WEEK-BY-WEEK TARGETS</div>
+    <div style="display:grid;gap:7px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--teal)">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--teal)">Weeks 1–2 · Foundation</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 6 on gradient panel · set speed to 4.5</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">6% · 4.5 km/h</div>
+          <div style="font-size:10px;color:var(--text3)">15 min</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #4caf8a">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#4caf8a">Weeks 3–4 · Building</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 on gradient panel · tap − once for 8%</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">8% · 5 km/h</div>
+          <div style="font-size:10px;color:var(--text3)">20 min</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #C8963E">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#C8963E">Month 2 · Intermediate</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 on gradient panel · tap + once for 10%</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">10% · 5.5 km/h</div>
+          <div style="font-size:10px;color:var(--text3)">25 min</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #7B5EA7">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#7B5EA7">Month 3+ · Advanced</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 on panel · tap + three times for 12%</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">12% · 5.5–6 km/h</div>
+          <div style="font-size:10px;color:var(--text3)">30 min</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calorie comparison -->
+    <div style="margin-top:12px;background:rgba(29,158,117,.07);border:1px solid var(--border);border-radius:8px;padding:10px 12px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--teal);margin-bottom:6px">WHY INCLINE MATTERS — CALORIE COMPARISON AT 4.5 KM/H</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center">
+        <div style="background:var(--bg3);border-radius:6px;padding:7px">
+          <div style="font-size:14px;font-weight:700;color:#DC2626">~50</div>
+          <div style="font-size:10px;color:var(--text3)">kcal / 15 min<br>at 1% gradient</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;padding:7px">
+          <div style="font-size:14px;font-weight:700;color:var(--teal)">~110</div>
+          <div style="font-size:10px;color:var(--text3)">kcal / 15 min<br>at 6% gradient</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;padding:7px">
+          <div style="font-size:14px;font-weight:700;color:#C8963E">~150</div>
+          <div style="font-size:10px;color:var(--text3)">kcal / 15 min<br>at 12% gradient</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center">6% burns 2× more than flat walking at the same speed</div>
+    </div>
+  </div>
+
+  <!-- Weight progression table -->
+  <div class="card">
+    <div class="card-label">📈 4-week weight progression guide</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--bg3);border-radius:8px">Add 2.5–5kg to machines, 1.25–2.5kg to dumbbells per week — only if you complete all reps with good form</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="padding:7px 8px;text-align:left;color:var(--text3);font-weight:700;letter-spacing:.04em;border-bottom:1px solid var(--border2)">EXERCISE</th>
+            <th style="padding:7px 8px;text-align:center;color:#C8963E;font-weight:700;border-bottom:1px solid var(--border2)">HIM Wk1</th>
+            <th style="padding:7px 8px;text-align:center;color:#C8963E;font-weight:700;border-bottom:1px solid var(--border2)">HIM Wk4</th>
+            <th style="padding:7px 8px;text-align:center;color:#7B5EA7;font-weight:700;border-bottom:1px solid var(--border2)">HER Wk1</th>
+            <th style="padding:7px 8px;text-align:center;color:#7B5EA7;font-weight:700;border-bottom:1px solid var(--border2)">HER Wk4</th>
+          </tr>
+        </thead>
+        <tbody id="prog-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pool protocol -->
+  <div class="card">
+    <div class="card-label">🏊 Pool protocol — add to any session</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:rgba(55,138,221,.07);border:1px solid rgba(55,138,221,.15);border-radius:8px">14m heated indoor pool · Harbour Bridge views · burns 400–600 kcal/hr</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:9px 10px;background:var(--bg3);border-radius:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Beginner lane swim (Weeks 1–4)</div>
+        <div style="font-size:11px;color:var(--text2)">4 laps easy freestyle → 2 laps backstroke → rest 60s → repeat 3 sets. ~20 min total. Low joint impact — great on leg days.</div>
+      </div>
+      <div style="padding:9px 10px;background:var(--bg3);border-radius:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Interval swim (Month 2+)</div>
+        <div style="font-size:11px;color:var(--text2)">2 laps fast → 1 lap easy recovery → repeat 8 rounds. ~25 min. Excellent cardio without treadmill load on joints.</div>
+      </div>
+      <div style="padding:9px 10px;background:var(--bg3);border-radius:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Active recovery swim (Sat or rest days)</div>
+        <div style="font-size:11px;color:var(--text2)">10–15 min easy float and stretch. Increases blood flow to worked muscles without adding fatigue load.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recovery protocol -->
+  <div class="card">
+    <div class="card-label">🔄 Recovery protocol — post-workout ritual</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.6">Science-backed contrast therapy. Especially powerful on heavy leg days (Tue/Thu) and after Fri full body.</div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">1</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Dry sauna — 10–12 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Raises core temp, flushes lactic acid, boosts growth hormone release. Sit quietly, breathe deeply.</div></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(55,138,221,.12);border:1px solid rgba(55,138,221,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">2</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Cold plunge — 2–3 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Constricts blood vessels, reduces inflammation and DOMS. Breathe slowly. Build to 3 min over Weeks 1–2.</div></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">3</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Repeat 2–3 cycles</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Sauna → cold plunge → sauna → cold plunge. Each cycle drives blood in and out of muscles — the "pump" that accelerates recovery.</div></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(123,94,167,.12);border:1px solid rgba(123,94,167,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">4</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Vitality/spa pool — 8–10 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">End here. Jets target lower back and legs. Parasympathetic nervous system activation — signals full recovery mode.</div></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:10px 0;align-items:flex-start">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(29,158,117,.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">5</div>
+        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Steam room — optional 5 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Moist heat opens airways, clears sinuses, promotes deep skin hydration. Good for immunity support. Drink water before and after.</div></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding:8px 10px;background:rgba(29,158,117,.08);border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text3);line-height:1.6">
+      💧 <strong style="color:var(--text2)">Hydration rule:</strong> Drink 500ml water immediately post-gym before entering sauna. Add pinch of pink Himalayan salt. This is critical — sauna + training = major fluid loss.
+    </div>
+  </div>
+
+  <!-- Garmin + watch integration note -->
+  <div class="card">
+    <div class="card-label">⌚ Smartwatch tips for this gym</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--bg3);border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:#C8963E;margin-bottom:5px">HIM — Garmin 945</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Start "Strength" activity for weights. Switch to "Treadmill" for incline walk. Use PulseOx post-cold-plunge. Pool: use "Pool Swim" mode — set pool length to 14m.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px">
+        <div style="font-size:11px;font-weight:700;color:#7B5EA7;margin-bottom:5px">HER — Oppo Watch</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Use "Gym" or "Free weights" mode for lifting. "Indoor run" for treadmill. HR zone 2–3 target. Note: remove watch before cold plunge — check water rating first.</div>
+      </div>
+    </div>
+    <div style="margin-top:8px;padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text3)">
+      🔗 Technogym Visio syncs with Technogym App — create a free account and it tracks your reps, sets and loads across visits automatically.
+    </div>
+  </div>
+
+</div>
+
+<div id="p-progress" class="page">
+  <div class="stat-grid" id="stat-grid"></div>
+  <div class="card">
+    <div class="card-label">Monday morning check-in</div>
+    <div class="input-group"><label class="input-label">Weight (kg)</label><input class="styled-input" type="number" id="inp-weight" step="0.1" placeholder="e.g. 84.5"></div>
+    <div class="input-group"><label class="input-label">Waist cm (optional)</label><input class="styled-input" type="number" id="inp-waist" step="0.5" placeholder="measure at navel"></div>
+    <div class="input-group"><label class="input-label">Energy score 1–10</label><input class="styled-input" type="number" id="inp-energy" min="1" max="10" placeholder="how do you feel this week?"></div>
+    <button class="save-btn" onclick="saveCheckin()">Save check-in</button>
+  </div>
+  <div class="card">
+    <div class="card-label">Progress log</div>
+    <div id="progress-log"><div style="font-size:13px;color:var(--text3);padding:8px 0">No entries yet. Log your first check-in on Mon 8 June.</div></div>
+  </div>
+</div>
+
+<div id="p-coach" class="page">
+  <div class="coach-badge">LIVE AI COACH</div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6">Ask anything about your meals, workouts, progress, or motivation. Your coach knows both profiles.</div>
+  <div class="chat-scroll" id="chat-msgs"></div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-in" placeholder="Ask your coach..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="send-btn" onclick="sendChat()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="quick-chips">
+    <button class="qchip" onclick="quickAsk('What should I eat if I am feeling hungry right now?')">Feeling hungry</button>
+    <button class="qchip" onclick="quickAsk('Suggest a dinner swap for tonight that fits my calories')">Dinner swap</button>
+    <button class="qchip" onclick="quickAsk('I skipped the gym today — what should I do?')">Missed gym</button>
+    <button class="qchip" onclick="quickAsk('How do I know if I am losing fat and not muscle?')">Fat vs muscle</button>
+    <button class="qchip" onclick="quickAsk('Give me a motivational push — I am struggling today')">Need motivation</button>
+    <button class="qchip" onclick="quickAsk('What are signs my body is adapting well to the plan?')">Body signals</button>
+  </div>
+</div>
+
+<!-- SCAN PAGE -->
+<div id="p-scan" class="page">
+  <div class="coach-badge">AI FOOD SCANNER</div>
+  <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6">Point your camera at any food, ingredient, nutrition label, or fridge shelf. Your coach analyses it against your personal targets and tells you exactly what to do.</div>
+
+  <!-- Scan mode selector -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+    <button class="scan-mode-btn active" onclick="setScanMode('product',this)">
+      <div style="font-size:20px;margin-bottom:4px">🏷️</div>
+      <div style="font-size:12px;font-weight:700">Product / Label</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px">Scan a food package or nutrition panel</div>
+    </button>
+    <button class="scan-mode-btn" onclick="setScanMode('fridge',this)">
+      <div style="font-size:20px;margin-bottom:4px">🧊</div>
+      <div style="font-size:12px;font-weight:700">Fridge / Pantry</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px">What can I make from what I have?</div>
+    </button>
+    <button class="scan-mode-btn" onclick="setScanMode('meal',this)">
+      <div style="font-size:20px;margin-bottom:4px">🍽️</div>
+      <div style="font-size:12px;font-weight:700">Cooked Meal</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px">Estimate calories from a photo of food</div>
+    </button>
+    <button class="scan-mode-btn" onclick="setScanMode('ingredient',this)">
+      <div style="font-size:20px;margin-bottom:4px">🥦</div>
+      <div style="font-size:12px;font-weight:700">Raw Ingredient</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px">Is this on plan? How to use it?</div>
+    </button>
+  </div>
+
+  <!-- Upload / camera area -->
+  <div id="scan-drop-zone" onclick="document.getElementById('scan-file-input').click()"
+    style="border:2px dashed var(--border);border-radius:var(--radius);padding:28px 16px;text-align:center;cursor:pointer;margin-bottom:14px;transition:.2s;background:var(--bg3);position:relative">
+    <input type="file" id="scan-file-input" accept="image/*" capture="environment" style="display:none" onchange="handleScanImage(event)">
+    <div id="scan-placeholder">
+      <div style="font-size:36px;margin-bottom:8px">📷</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Tap to take photo or upload</div>
+      <div style="font-size:11px;color:var(--text3)">On S23: opens camera directly · On PC: browse files</div>
+    </div>
+    <div id="scan-preview-wrap" style="display:none">
+      <img id="scan-preview-img" style="max-width:100%;max-height:220px;border-radius:10px;object-fit:contain">
+      <div style="margin-top:8px;font-size:11px;color:var(--teal);font-weight:600">Image ready — tap Analyse below</div>
+    </div>
+  </div>
+
+  <!-- Analyse button -->
+  <button id="scan-analyse-btn" onclick="analyseImage()" disabled
+    style="width:100%;padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:var(--text3);cursor:not-allowed;font-family:'DM Sans',sans-serif;margin-bottom:14px;transition:.3s;letter-spacing:.03em">
+    ANALYSE WITH AI COACH
+  </button>
+
+  <!-- Result area -->
+  <div id="scan-result" style="display:none">
+    <div class="card" id="scan-result-card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div id="scan-verdict-icon" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"></div>
+        <div>
+          <div id="scan-verdict-label" style="font-size:11px;font-weight:700;letter-spacing:.06em"></div>
+          <div id="scan-food-name" style="font-size:15px;font-weight:700;color:var(--text)"></div>
+        </div>
+      </div>
+      <div id="scan-macros-row" style="display:none;background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3);margin-bottom:8px">ESTIMATED NUTRITION</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center" id="scan-macro-grid"></div>
+      </div>
+      <div id="scan-analysis-text" style="font-size:13px;color:var(--text);line-height:1.75"></div>
+      <div id="scan-log-prompt" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">Log this to today's tracker?</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="logScanResult()" style="flex:1;padding:10px;background:var(--teal);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif">Yes, log it</button>
+          <button onclick="document.getElementById('scan-log-prompt').style.display='none'" style="flex:1;padding:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif">Skip</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retry -->
+    <button onclick="resetScan()" style="width:100%;margin-top:8px;padding:11px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif">
+      Scan another item
+    </button>
+  </div>
+
+  <!-- Tips -->
+  <div id="scan-tips" style="margin-top:4px">
+    <div class="card">
+      <div class="card-label">Scanning tips</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.9">
+        <div>📦 <strong style="color:var(--text)">Product label:</strong> Capture the full nutrition panel clearly, landscape if possible</div>
+        <div>🧊 <strong style="color:var(--text)">Fridge / pantry:</strong> Step back so all items are visible in one shot</div>
+        <div>🍽️ <strong style="color:var(--text)">Cooked meal:</strong> Shoot from directly above, good lighting</div>
+        <div>🥦 <strong style="color:var(--text)">Ingredient:</strong> Place on a neutral background with any packaging visible</div>
+        <div style="margin-top:8px;padding:8px 10px;background:rgba(29,158,117,.08);border-radius:8px;color:var(--text3)">
+          Calorie estimates from photos are approximate (±10–15%). Use as a guide, not an exact count.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOPPING PAGE -->
+<div id="p-shop" class="page">
+  <div class="week-pills">
+    <button class="wpill active" onclick="setShopWeek(1,this)">Week 1</button>
+    <button class="wpill" onclick="setShopWeek(2,this)">Week 2</button>
+    <button class="wpill" onclick="setShopWeek(3,this)">Week 3</button>
+    <button class="wpill" onclick="setShopWeek(4,this)">Week 4</button>
+  </div>
+
+  <!-- Smart search toolbar -->
+  <div style="background:linear-gradient(135deg,rgba(29,158,117,.13),rgba(29,158,117,.04));border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">SEARCH THIS WEEK'S LIST ON</div>
+
+    <!-- Store search buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
+      <button onclick="openStoreSearch('paknsave')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(232,184,75,.3);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
+        <span style="font-size:16px">🟡</span>
+        <span style="font-size:11px;font-weight:700;color:#e8b84b">Pak'nSave</span>
+        <span style="font-size:10px;color:var(--text3)">paknsave.co.nz</span>
+      </button>
+      <button onclick="openStoreSearch('woolworths')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(76,175,138,.3);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
+        <span style="font-size:16px">🟢</span>
+        <span style="font-size:11px;font-weight:700;color:#4caf8a">Woolworths NZ</span>
+        <span style="font-size:10px;color:var(--text3)">woolworths.co.nz</span>
+      </button>
+      <button onclick="openStoreSearch('newworld')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(220,80,80,.3);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
+        <span style="font-size:16px">🔴</span>
+        <span style="font-size:11px;font-weight:700;color:#DC2626">New World</span>
+        <span style="font-size:10px;color:var(--text3)">newworld.co.nz</span>
+      </button>
+      <button onclick="openStoreSearch('grocer')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(29,158,117,.4);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
+        <span style="font-size:16px">🔍</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal)">grocer.nz</span>
+        <span style="font-size:10px;color:var(--text3)">price compare</span>
+      </button>
+    </div>
+
+    <!-- Item search launcher -->
+    <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--text3);margin-bottom:8px">SEARCH A SPECIFIC ITEM</div>
+      <div style="display:flex;gap:6px">
+        <input id="item-search-input" type="text" placeholder="e.g. chicken breast, gochujang..." style="flex:1;padding:9px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none">
+        <button onclick="searchItemOnStore('paknsave')" title="Search Pak'nSave" style="padding:9px 10px;background:rgba(232,184,75,.15);border:1px solid rgba(232,184,75,.3);border-radius:8px;cursor:pointer;font-size:14px">🟡</button>
+        <button onclick="searchItemOnStore('woolworths')" title="Search Woolworths" style="padding:9px 10px;background:rgba(76,175,138,.15);border:1px solid rgba(76,175,138,.3);border-radius:8px;cursor:pointer;font-size:14px">🟢</button>
+        <button onclick="searchItemOnStore('grocer')" title="Search grocer.nz" style="padding:9px 10px;background:rgba(29,158,117,.15);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px">🔍</button>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:6px">Tap a store icon to open search directly in that store's website</div>
+    </div>
+
+    <!-- Copy list buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+      <button onclick="copyListForStore('grocer')" style="padding:10px 8px;background:rgba(29,158,117,.12);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.04em">
+        📋 COPY LIST<br><span style="font-size:10px;font-weight:500;color:var(--text3)">for grocer.nz</span>
+      </button>
+      <button onclick="copyListForStore('plain')" style="padding:10px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em">
+        📤 EXPORT LIST<br><span style="font-size:10px;font-weight:500;color:var(--text3)">plain text / share</span>
+      </button>
+    </div>
+
+    <!-- Copy confirmation -->
+    <div id="copy-confirm" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(29,158,117,.15);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--teal);font-weight:600;text-align:center"></div>
+  </div>
+
+  <!-- Sunday bulk list -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-label" style="margin-bottom:0">🗓 Sunday bulk shop</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:11px;color:var(--text3)" id="sunday-checked-count">0 / 0 checked</span>
+        <button onclick="clearSundayChecks()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border2);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif">Reset</button>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:var(--bg3);border-radius:8px">Non-perishables + proteins that keep 4+ days. Buy Sunday, covers the full week.</div>
+    <div id="sunday-list"></div>
+    <div style="margin-top:12px;padding:10px 12px;background:var(--bg3);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;font-weight:700;color:var(--text2)">EST. WEEKLY COST</span>
+      <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--teal)" id="sunday-est-total">$0.00</span>
+    </div>
+  </div>
+
+  <!-- Daily fresh list -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-label" style="margin-bottom:0">🥬 Daily fresh buys</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:11px;color:var(--text3)" id="daily-checked-count">0 / 0 checked</span>
+        <button onclick="clearDailyChecks()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border2);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif">Reset</button>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:rgba(200,150,62,.08);border:1px solid rgba(200,150,62,.15);border-radius:8px">⚡ Buy these as needed during the week — wilts fast or is best fresh.</div>
+    <div id="daily-list"></div>
+  </div>
+
+  <!-- Store tip -->
+  <div style="padding:10px 0 16px;text-align:center">
+    <div style="font-size:11px;color:var(--text3);line-height:1.7">
+      💡 <strong style="color:var(--text2)">Sunday workflow:</strong> Copy list → paste into grocer.nz → confirm cheapest store for big items → bulk at Pak'nSave, specialty at Woolworths NZ.<br>
+      <span style="color:var(--text3)">Note: Countdown is now fully rebranded as Woolworths NZ (woolworths.co.nz)</span>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('today',this)">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    TODAY
+  </button>
+  <button class="nav-btn" onclick="showPage('meals',this)">
+    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    MEALS
+  </button>
+  <button class="nav-btn" onclick="showPage('scan',this)">
+    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 2v4M17 2v4M7 18v4M17 18v4M2 7h4M18 7h4M2 17h4M18 17h4"/></svg>
+    SCAN
+  </button>
+  <button class="nav-btn" onclick="showPage('shop',this)">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    SHOP
+  </button>
+  <button class="nav-btn" onclick="showPage('workout',this)">
+    <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><line x1="4" y1="6.5" x2="4" y2="17.5"/><line x1="20" y1="6.5" x2="20" y2="17.5"/><line x1="2" y1="10" x2="2" y2="14"/><line x1="22" y1="10" x2="22" y2="14"/></svg>
+    GYM
+  </button>
+  <button class="nav-btn" onclick="showPage('progress',this)">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    TRACK
+  </button>
+  <button class="nav-btn" onclick="showPage('coach',this)">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    COACH
+  </button>
+</nav>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────────
+const PROFILES = {
+  him: { name:'Him', cal:1772, p:153, c:166, f:55, weight:85, target:78, color:'#C8963E', weeks:9 },
+  her: { name:'Her', cal:1194, p:122, c:92,  f:37, weight:68, target:60, color:'#7B5EA7', weeks:11 },
+};
+
+const MEALS = {
+  him:[
+    {time:'Gym window',name:'Pre-gym',detail:'300–400ml water. No solid food.',cal:0,p:0,c:0,f:0},
+    {time:'Breakfast · 10:00 AM',name:'Berry protein oats',detail:'60g rolled oats · 40g protein powder (weighed) · 80g mixed berries · 15g almonds',cal:490,p:42,c:52,f:12},
+    {time:'Snack · ~11:30 AM',name:'Greek yogurt + berries',detail:'150g 0% Greek yogurt · 80g mixed berries',cal:130,p:15,c:16,f:0},
+    {time:'Lunch · 1:30 PM',name:'Vietnamese Goi Ga salad',detail:'200g shredded chicken · 3 cups cabbage slaw · 1 cup brown rice · ginger-lime dressing',cal:520,p:52,c:48,f:8},
+    {time:'Snack · 3:30 PM',name:'Almonds',detail:'20g raw almonds',cal:120,p:4,c:4,f:10},
+    {time:'Dinner · 7:00 PM',name:'See weekly plan',detail:'Rotate by day — tap Meals tab for full week menu',cal:540,p:48,c:52,f:14},
+  ],
+  her:[
+    {time:'Gym window',name:'Pre-gym',detail:'300–400ml water. No solid food.',cal:0,p:0,c:0,f:0},
+    {time:'Breakfast · 10:00 AM',name:'Berry protein oats (lite)',detail:'40g rolled oats · 30g protein powder (weighed) · 80g mixed berries',cal:320,p:30,c:38,f:6},
+    {time:'Snack · ~11:30 AM',name:'Greek yogurt + berries',detail:'150g 0% Greek yogurt · 80g mixed berries',cal:130,p:15,c:16,f:0},
+    {time:'Lunch · 1:30 PM',name:'Vietnamese Goi Ga salad',detail:'150g shredded chicken · 3 cups cabbage slaw · no rice · ginger-lime dressing',cal:310,p:38,c:18,f:7},
+    {time:'Snack · 3:30 PM',name:'Almonds',detail:'15g raw almonds',cal:90,p:3,c:3,f:8},
+    {time:'Dinner · 7:00 PM',name:'See weekly plan',detail:'Rotate by day — tap Meals tab for full week menu',cal:340,p:35,c:25,f:10},
+  ],
+};
+
+const WEEK_PLANS = {
+  1:{
+    title:'Week 1 · Spicy Thai & Vietnamese',
+    himTotal:1800, herTotal:1190,
+    meals:[
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
+      {name:'Vietnamese Goi Ga salad',time:'Lunch 1:30pm',him:'200g chicken · 3 cups cabbage · 1 cup brown rice · ginger-lime dressing',himCal:520,her:'150g chicken · 3 cups cabbage · no rice · ginger-lime dressing',herCal:310},
+      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
+      {name:'Dinner Mon/Tue: Thai green curry',time:'Dinner 7pm',him:'220g chicken · 1 cup jasmine rice · 1.5 cups greens · light coconut milk',himCal:540,her:'150g chicken · 1 cup cauliflower rice · 1.5 cups greens · light coconut milk',herCal:340},
+      {name:'Dinner Wed/Thu: Thai basil chili beef',time:'Dinner 7pm',him:'220g lean beef strips · 1 cup jasmine rice · 1 cup stir-fry greens',himCal:530,her:'150g lean beef strips · ½ cup brown rice · 1.5 cups stir-fry greens',herCal:360},
+      {name:'Dinner Fri: Chili garlic prawns with jasmine rice',time:'Dinner 7pm',him:'250g raw prawns · 1 cup jasmine rice · stir-fry greens',himCal:480,her:'180g raw prawns · 1 cup cauliflower rice · stir-fry greens',herCal:290},
+    ]
+  },
+  2:{
+    title:'Week 2 · Seafood & Thai Chopped',
+    himTotal:1820, herTotal:1200,
+    meals:[
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
+      {name:'Thai chopped chicken salad',time:'Lunch 1:30pm',him:'200g chicken · 3 cups greens · 1 cup brown rice · spicy peanut dressing',himCal:530,her:'150g chicken · 3 cups greens · no rice · spicy peanut dressing',herCal:320},
+      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
+      {name:'Dinner Mon/Tue: Gochujang salmon bowl',time:'Dinner 7pm',him:'2 salmon fillets (~300g) · 1.5 cups jasmine rice · bok choy',himCal:580,her:'1 salmon fillet (~150g) · 1 cup cauliflower rice · bok choy',herCal:360},
+      {name:'Dinner Wed/Thu: Spicy garlic prawn stir-fry',time:'Dinner 7pm',him:'220g prawns · 1 cup jasmine rice · bulk mixed veg',himCal:500,her:'150g prawns · ½ cup brown rice · bulk mixed veg',herCal:320},
+      {name:'Dinner Fri/Sat: Tom Yum seafood',time:'Dinner 7pm',him:'250g white fish + prawns · 1 cup jasmine rice',himCal:510,her:'180g white fish · 100g tofu in soup · no rice',herCal:290},
+    ]
+  },
+  3:{
+    title:'Week 3 · Latin-Asian Fusion',
+    himTotal:1800, herTotal:1185,
+    meals:[
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
+      {name:'Cilantro-lime chicken bowl',time:'Lunch 1:30pm',him:'200g air-fryer chicken · 1 cup brown rice · 1.5 cups green salad',himCal:520,her:'150g air-fryer chicken · ½ cup brown rice · 2 cups green salad',herCal:330},
+      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
+      {name:'Dinner Mon/Tue: Air-fryer steak fajitas',time:'Dinner 7pm',him:'220g flank steak · 1 cup jasmine rice · bell peppers',himCal:550,her:'150g flank steak · 1 cup cauliflower rice · bell peppers',herCal:350},
+      {name:'Dinner Wed/Thu: Chili-lime white fish',time:'Dinner 7pm',him:'220g white fish · 1 cup jasmine rice · steamed beans',himCal:490,her:'150g white fish · 1.5 cups steamed beans · no rice',herCal:280},
+      {name:'Dinner Fri/Sat: Mexican skillet mince',time:'Dinner 7pm',him:'220g lean beef mince · 1 cup jasmine rice · zucchini',himCal:540,her:'150g mince · 100g crumbled tofu · extra veg · no rice',herCal:340},
+    ]
+  },
+  4:{
+    title:'Week 4 · Indo-Asian Spice',
+    himTotal:1790, herTotal:1180,
+    meals:[
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
+      {name:'Tandoori chicken skewers',time:'Lunch 1:30pm',him:'200g tandoori chicken · 1 cup brown rice · 1.5 cups broccoli',himCal:510,her:'150g tandoori chicken · 2 cups broccoli · no rice',herCal:300},
+      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
+      {name:'Dinner Mon/Tue: Beef & cauliflower keema',time:'Dinner 7pm',him:'220g lean mince · 1 cup jasmine rice · peas',himCal:530,her:'150g lean mince · 1.5 cups cauliflower rice · extra veg',herCal:330},
+      {name:'Dinner Wed/Thu: Goan fish curry',time:'Dinner 7pm',him:'220g white fish · 1 cup jasmine rice · spinach',himCal:500,her:'150g white fish · 1.5 cups spinach · light broth · no rice',herCal:290},
+      {name:'Dinner Fri/Sat: Ginger-garlic chicken stir-fry',time:'Dinner 7pm',him:'220g chicken · 1 cup jasmine rice · stir-fry greens',himCal:520,her:'150g chicken · 1.5 cups stir-fry greens · no rice',herCal:300},
+    ]
+  },
+};
+
+const WORKOUTS = [
+  {day:'Mon',label:'Mon 8 Jun',focus:'Upper body — push + pull',rest:false,
+   exercises:[
+     {n:'Chest press machine',    s:'3×12', him:'30–35kg',    her:'15–20kg',    tip:'Set seat so handles at mid-chest. Full extension, don\'t lock elbows.'},
+     {n:'Lat pulldown (wide)',    s:'3×12', him:'35–40kg',    her:'20–25kg',    tip:'Pull to upper chest, lean back slightly. Squeeze shoulder blades at bottom.'},
+     {n:'Shoulder press machine', s:'3×12', him:'20–25kg',    her:'10–12kg',    tip:'Don\'t shrug. Press straight up, controlled 3-sec descent.'},
+     {n:'Cable seated row',       s:'3×12', him:'35–40kg',    her:'18–22kg',    tip:'Sit tall. Pull to lower sternum, hold 1 sec at peak.'},
+     {n:'Tricep pushdown (cable)',s:'3×15', him:'15–20kg',    her:'8–10kg',     tip:'Elbows pinned to sides. Full extension at bottom, slow return.'},
+     {n:'Dumbbell bicep curl',    s:'3×12', him:'2×10kg',     her:'2×5kg',      tip:'No swinging. Supinate wrist at top. Control the negative.'},
+   ],
+   treadmill:'15 min · 6% · 4.5–5 km/h · after weights'},
+  {day:'Tue',label:'Tue 9 Jun',focus:'Lower body — quads + glutes',rest:false,
+   exercises:[
+     {n:'Leg press machine',      s:'3×15', him:'70–80kg',    her:'40–50kg',    tip:'Feet shoulder-width, mid-plate. 90° at bottom. Don\'t lock knees.'},
+     {n:'Lying leg curl',         s:'3×12', him:'25–30kg',    her:'15–18kg',    tip:'Hips flat on pad. Curl past 90°, squeeze top. 3-sec descent.'},
+     {n:'Calf raises (machine)',  s:'3×20', him:'40–50kg',    her:'25–30kg',    tip:'Heels below platform at bottom, full rise at top. Pause.'},
+     {n:'Glute bridge (bench)',   s:'3×15', him:'BW + 10kg plate (Wk2+)', her:'BW + 5kg plate (Wk2+)', tip:'Drive through heels. Squeeze glutes, hold 2 sec at top.'},
+     {n:'Hip abductor machine',   s:'3×15', him:'30–35kg',    her:'20–25kg',    tip:'Sit fully back. Push with outer thighs. Hold briefly at peak.'},
+   ],
+   treadmill:'15 min · 6% · 4.5–5 km/h · after weights'},
+  {day:'Wed',label:'Wed 10 Jun',focus:'Upper body — push variation',rest:false,
+   exercises:[
+     {n:'Incline chest press',    s:'3×12', him:'25–30kg',    her:'12–15kg',    tip:'Harder than flat — start lighter. Elbows at 45° to body.'},
+     {n:'Cable chest fly',        s:'3×12', him:'8–10kg/side', her:'4–6kg/side', tip:'Slight elbow bend throughout. Meet hands at chest height.'},
+     {n:'Seated row machine',     s:'3×12', him:'35–42kg',    her:'18–22kg',    tip:'Use neutral/close grip today vs Mon wide grip.'},
+     {n:'Tricep overhead ext.',   s:'3×12', him:'15–18kg',    her:'7–9kg',      tip:'Upper arms stay vertical. Elbows don\'t flare out.'},
+     {n:'Hammer curl (DBs)',      s:'3×12', him:'2×10kg',     her:'2×5kg',      tip:'Neutral grip (thumbs up). Works brachialis — builds arm width.'},
+     {n:'Face pull (cable)',      s:'3×15', him:'12–15kg',    her:'6–8kg',      tip:'Cable at head height. Pull to forehead, elbows high and wide.'},
+   ],
+   treadmill:'15 min · 6% · 4.5–5 km/h · after weights'},
+  {day:'Thu',label:'Thu 11 Jun',focus:'Lower body — hinge + hamstring',rest:false,
+   exercises:[
+     {n:'Hack squat machine',     s:'3×12', him:'40–50kg',    her:'20–30kg',    tip:'Feet high on platform, heels down. Don\'t let knees cave in.'},
+     {n:'Romanian deadlift (DBs)',s:'3×12', him:'2×16–18kg',  her:'2×8–10kg',   tip:'Hinge at hips, slight knee bend. Track DBs down shins.'},
+     {n:'Leg extension',          s:'3×15', him:'25–30kg',    her:'15–18kg',    tip:'Full extension, squeeze 1 sec at top. 3-sec slow descent.'},
+     {n:'Hip abductor machine',   s:'3×15', him:'30–35kg',    her:'20–25kg',    tip:'Same as Tue — note strength gain week on week.'},
+     {n:'Plank hold',             s:'3×35s / 3×30s',  him:'3×35 sec',  her:'3×30 sec',  tip:'Elbows under shoulders. Squeeze glutes + abs. Hips level.'},
+     {n:'Dead bug',               s:'3×10 each side', him:'Bodyweight', her:'Bodyweight', tip:'Lower back flat. Opposite arm-leg. Breathe out on extend.'},
+   ],
+   treadmill:'15 min · 6% · 4.5–5 km/h · after weights'},
+  {day:'Fri',label:'Fri 12 Jun',focus:'Full body — compound focus',rest:false,
+   exercises:[
+     {n:'Goblet squat (DB)',      s:'3×15', him:'18–20kg',    her:'10–12kg',    tip:'Hold DB at chest. Squat deep, elbows inside knees at bottom.'},
+     {n:'DB chest press (bench)', s:'3×12', him:'2×14–16kg',  her:'2×8–10kg',   tip:'3-sec descent, explosive press. Don\'t bounce off chest.'},
+     {n:'Lat pulldown (wide)',    s:'3×12', him:'38–42kg',    her:'22–26kg',    tip:'Compare to Mon — should feel stronger in lats now.'},
+     {n:'Dumbbell lateral raise', s:'3×15', him:'2×6–8kg',    her:'2×3–4kg',    tip:'Lead with elbows not wrists. Stop at shoulder height.'},
+     {n:'Seated cable row',       s:'3×12', him:'38–42kg',    her:'20–24kg',    tip:'Aim slightly heavier than Mon if form is solid.'},
+     {n:'Plank',                  s:'3×40s / 3×35s',  him:'3×40 sec',  her:'3×35 sec',  tip:'Friday plank is longer. Add a 10-sec hold at end.'},
+   ],
+   treadmill:'20 min · 8% · 5 km/h · longer session today'},
+  {day:'Sat',label:'Sat 13 Jun',focus:'Active recovery + core',rest:false,
+   exercises:[
+     {n:'Hip flexor stretch',     s:'2×45 sec each',  him:'Bodyweight', her:'Bodyweight', tip:'Kneeling lunge. Push hips forward, feel front of hip stretch.'},
+     {n:'Bird dog',               s:'3×10 each side', him:'Bodyweight', her:'Bodyweight', tip:'Opposite arm + leg. Hold 1 sec at extension. Hips level.'},
+     {n:'Dead bug',               s:'3×10 each side', him:'Bodyweight', her:'Bodyweight', tip:'Never let lower back arch off floor. Slow and controlled.'},
+     {n:'Glute bridge hold',      s:'3×20 sec',       him:'BW (add 10kg plate Wk3+)', her:'BW (add 5kg plate Wk3+)', tip:'Squeeze hard at top. Add plate to hips from Week 3.'},
+   ],
+   treadmill:'20 min · 5% · easy pace · light session only'},
+  {day:'Sun',label:'Sun 14 Jun',focus:'Rest + meal prep day',rest:true,
+   exercises:[
+     {n:'Sunday batch cooking',   s:'2–3 hrs',        him:'Kitchen',    her:'Kitchen',    tip:'Follow the Sunday prep guide in Meals tab. Sets up your whole week.'},
+     {n:'Monday weigh-in prep',   s:'Hydrate well',   him:'No food/drink before weighing', her:'No food/drink before weighing', tip:'Step on scale first thing Monday before food, water or exercise.'},
+     {n:'Light leisure walk',     s:'Optional 15 min',him:'Flat pace',  her:'Flat pace',  tip:'Keep it easy. Today is recovery, not training stimulus.'},
+   ],
+   treadmill:'Rest day — no structured training'},
+];
+
+const PREP_STEPS = [
+  {title:'Cook all chicken breast',detail:'Season 2–2.5kg with salt, garlic, white pepper. Oven 200°C for 22–25 min OR air-fryer batches 200°C for 18 min. Check internal temp 75°C.'},
+  {title:'Shred + portion chicken',detail:'Shred all cooked chicken. Him: 200g per lunch container. Her: 150g per lunch container. Label Mon–Fri.'},
+  {title:'Cook brown rice',detail:'Rinse 2 cups, cook in 4 cups water. Bring to boil, low simmer 30–35 min lid on. Do not lift lid in final 10 min.'},
+  {title:'Cook jasmine rice',detail:'Rinse 2 cups. Rice cooker or 1:1.5 water on stove, 12–15 min. Fluff, cool before portioning. Him: 1 cup cooked per dinner.'},
+  {title:'Prep cabbage slaw base',detail:'Open 3 bags pre-shredded cabbage. Transfer to large airtight containers. Do NOT dress — add dressing fresh at mealtime.'},
+  {title:'Mix the week\'s dressings',detail:'Ginger-lime: 3 tbsp fish sauce + 4 tbsp rice vinegar + 3 limes + 2 tsp grated ginger + 2 bird-eye chilis. Shake in glass jar. Keeps 5–6 days refrigerated.'},
+  {title:'Pre-portion almonds',detail:'Him: 20g bags × 5 (Mon–Fri snack) + 15g bags for breakfast. Her: 15g bags × 5. Leave at room temp.'},
+  {title:'Set up breakfast containers',detail:'Him: weigh 60g oats into each container (Mon–Fri). Her: weigh 40g oats. Keep protein powder tub next to scales — weigh fresh each morning: Him 40g, Her 30g. Do NOT rely on scoop — scoop sizes vary 25–35g across brands and will throw your protein count off significantly.'},
+  {title:'Label everything + stock fridge',detail:'Label every container: name + day + weight. Proteins front, grains middle, veg back. Freeze any proteins beyond Fri.'},
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let profile = 'him';
+let loggedMeals = { him:{}, her:{} };
+let waterCount = 0;
+let selectedDay = 0;
+let woDone = {};
+let mealWeek = 1;
+let checkins = { him:[], her:[] };
+let chatHistory = [];
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function setProfile(p) {
+  profile = p;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.ptab.'+p).classList.add('active');
+  renderToday();
+  renderProgress();
+}
+
+// ── Today ─────────────────────────────────────────────────────────────────────
+const TIPS = {
+  him:[
+    '🏋️ Day 1 — Mon 8 June. Gym at 8am, upper body + treadmill. Breakfast at 10am post-workout. Drink 300ml water before leaving for the gym.',
+    '💪 Upper body day! Chest, back, shoulders. Focus on form over weight — Week 1 is about building the movement patterns.',
+    '🦵 Leg day today. Leg press, leg curls, calf raises. Your legs will feel it — that\'s progress.',
+    '🔄 Upper push variation day. Try to add 2.5kg to at least one lift vs Monday.',
+    '🍖 Lower body hinge day. Romanian deadlifts — push hips back and feel the hamstring stretch.',
+    '💥 Full body Friday. Your strongest session of the week. 20 min treadmill at 8% today.',
+    '😴 Active recovery. Light movement only. Cook your Sunday batch prep for the week ahead.',
+  ],
+  her:[
+    '🏋️ Day 1 — Mon 8 June. Gym at 8am. 1,194 kcal target today. Start with 300ml water pre-gym.',
+    '💪 Upper body day! Same session as him, lighter weights. Build the habit first.',
+    '🦵 Leg and glute focus today. Hip abductor machine is your friend — great for toning.',
+    '🔄 Upper push variation. Cable chest fly and hammer curls are great for arms + chest definition.',
+    '🍖 Hamstring and glute focus. Bird dogs and dead bugs at the end for core stability.',
+    '💥 Full body Friday. Feel the compound movements. You\'ve earned the 20 min treadmill.',
+    '😴 Recovery day. Sunday prep sets up the whole week — it\'s worth every minute.',
+  ]
+};
+
+function renderToday() {
+  const prof = PROFILES[profile];
+  const dayIdx = 0; // Would normally be calculated from actual date
+  document.getElementById('tip-icon').textContent = ['🏋️','💪','🦵','🔄','🍖','💥','😴'][dayIdx]||'🏋️';
+  document.getElementById('tip-text').textContent = TIPS[profile][dayIdx]||TIPS[profile][0];
+
+  // Macros
+  document.getElementById('tgt-p').textContent = prof.p;
+  document.getElementById('tgt-c').textContent = prof.c;
+  document.getElementById('tgt-f').textContent = prof.f;
+
+  const logged = loggedMeals[profile];
+  const meals = MEALS[profile];
+  let totCal=0,totP=0,totC=0,totF=0;
+  Object.keys(logged).forEach(i=>{if(logged[i]){totCal+=meals[i].cal;totP+=meals[i].p;totC+=meals[i].c;totF+=meals[i].f;}});
+
+  document.getElementById('ring-eaten').textContent = totCal;
+  const pct = Math.min(1, totCal / prof.cal);
+  const circ = 238.76;
+  document.getElementById('cal-ring').style.strokeDashoffset = circ - (circ * pct);
+  document.getElementById('cal-ring').style.stroke = pct > 1 ? '#DC2626' : '#0891B2';
+
+  document.getElementById('bar-p').style.width = Math.min(100, totP/prof.p*100)+'%';
+  document.getElementById('bar-c').style.width = Math.min(100, totC/prof.c*100)+'%';
+  document.getElementById('bar-f').style.width = Math.min(100, totF/prof.f*100)+'%';
+  document.getElementById('val-p').innerHTML = `${totP} / <span id="tgt-p">${prof.p}</span>g`;
+  document.getElementById('val-c').innerHTML = `${totC} / <span id="tgt-c">${prof.c}</span>g`;
+  document.getElementById('val-f').innerHTML = `${totF} / <span id="tgt-f">${prof.f}</span>g`;
+  const rem = prof.cal - totCal;
+  document.getElementById('val-rem').textContent = rem > 0 ? rem.toLocaleString() : '✓ Done!';
+  document.getElementById('val-rem').style.color = rem < 0 ? '#DC2626' : 'var(--teal)';
+
+  // Meal rows
+  const cont = document.getElementById('today-meals');
+  cont.innerHTML = '';
+  meals.forEach((m,i)=>{
+    if(m.cal===0) return; // skip pre-gym water row in log
+    const done = logged[i];
+    const div = document.createElement('div');
+    div.className = 'meal-row';
+    div.innerHTML = `<div style="flex:1">
+      <div class="meal-time">${m.time}</div>
+      <div class="meal-name">${m.name}</div>
+      <div class="meal-detail">${m.detail}</div>
+    </div>
+    <div class="meal-right">
+      <span class="meal-kcal">${m.cal} kcal</span>
+      <button class="log-pill ${done?'done':''}" onclick="toggleMeal(${i})">${done?'✓ Logged':'Log'}</button>
+    </div>`;
+    cont.appendChild(div);
+  });
+
+  // Water glasses
+  const wg = document.getElementById('water-glasses');
+  wg.innerHTML = '';
+  for(let i=0;i<8;i++){
+    const g = document.createElement('div');
+    g.className = 'glass'+(i<waterCount?' filled':'');
+    g.textContent = i<waterCount?'💧':'○';
+    g.onclick=()=>{waterCount=i<waterCount?i:i+1;renderToday();if(typeof scheduleSave==='function')scheduleSave();};
+    wg.appendChild(g);
+  }
+  document.getElementById('water-tip').textContent = waterCount>=8?'✓ Daily water goal reached! Great work.':'Tap each glass as you drink it. Start with 300ml before gym.';
+
+  renderOatsPrep();
+}
+
+function renderOatsPrep() {
+  const el = document.getElementById('oats-prep-content');
+  if (!el) return;
+  const isHim = profile === 'him';
+
+  const steps = [
+    { icon:'⚖️', title:'Weigh everything — no scoops',
+      detail: isHim ? 'Use kitchen scales for accuracy. Scoop sizes vary 25–35g across brands — always weigh.' : 'Use kitchen scales. Do not rely on scoops — your 30g target can easily become 45g if the scoop is large.' },
+    { icon:'🌾', title: isHim ? 'Rolled oats — 60g' : 'Rolled oats — 40g',
+      detail: 'Add to a microwave-safe bowl or mug. Pre-portioned in your Sunday containers — just tip it in.' },
+    { icon:'💧', title: isHim ? 'Add 120–150ml water or unsweetened almond milk' : 'Add 80–100ml water or unsweetened almond milk',
+      detail: 'Water keeps it lower calorie. Almond milk adds a creamier texture for minimal extra calories. Do NOT use regular milk — adds ~80 kcal.' },
+    { icon:'📡', title:'Microwave 90 seconds',
+      detail: 'Full power. Stir halfway through. Watch it — oats bubble up. If it boils over, reduce to 70% power for 2 min. Let sit 60 sec after.' },
+    { icon:'🥛', title: isHim ? 'Protein powder — weigh 40g' : 'Protein powder — weigh 30g',
+      detail: isHim ? '40g delivers ~23–25g protein regardless of brand. Stir into oats OFF the heat — never microwave protein powder, it degrades and goes rubbery.' : '30g delivers ~18–21g protein regardless of brand. Stir into oats OFF the heat immediately after microwaving.' },
+    { icon:'🍓', title:'Add 80g berries',
+      detail: 'Straight from frozen is fine — they cool the oats to eating temp within 60 sec. Adds natural sweetness so you don\'t need sugar or honey.' },
+    { icon:'🌰', title: isHim ? 'Top with 15g almonds' : 'No almonds on breakfast (save for afternoon snack)',
+      detail: isHim ? 'Roughly 10–12 whole almonds. Adds crunch, healthy fat and extends satiety.' : 'Your 15g almond allowance is for the 3:30pm snack. Adding to breakfast pushes you over fat target.' },
+    { icon:'✅', title:'Total prep time: 4 minutes',
+      detail: isHim ? 'Final: ~490 kcal · 42g protein · 52g carbs · 12g fat. Eat within 30 min of finishing gym.' : 'Final: ~320 kcal · 30g protein · 38g carbs · 6g fat. Eat within 30 min of finishing gym.' },
+  ];
+
+  const tipHtml = `<div style="background:rgba(200,150,62,.08);border:1px solid rgba(200,150,62,.25);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:#C8963E;letter-spacing:.06em;margin-bottom:5px">⚖️ PROTEIN POWDER — WEIGH DON'T SCOOP</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6">Scoop sizes vary <strong style="color:var(--text)">25g to 40g</strong> across brands. Always use kitchen scales.<br>
+    <strong style="color:${isHim?'#C8963E':'#7B5EA7'}">${isHim?'Him: 40g powder → ~25g protein':'Her: 30g powder → ~20g protein'}</strong><br>
+    <span style="color:var(--text3);font-size:11px">Works for ON Gold Standard, Myprotein, Musashi, Rule 1, Bulk Nutrients — any brand.</span></div>
+  </div>`;
+
+  const stepsHtml = steps.map((s,i) => `
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:${i<steps.length-1?'1px solid var(--border2)':'none'}">
+      <div style="width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${s.icon}</div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">${s.title}</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.55">${s.detail}</div>
+      </div>
+    </div>`).join('');
+
+  el.innerHTML = tipHtml + stepsHtml;
+}
+
+function toggleMeal(i) {
+  loggedMeals[profile][i] = !loggedMeals[profile][i];
+  renderToday();
+  if (typeof scheduleSave === 'function') scheduleSave();
+}
+window.toggleMeal = toggleMeal;
+
+// ── Meals page ────────────────────────────────────────────────────────────────
+function setMealWeek(w, btn) {
+  mealWeek = w;
+  document.querySelectorAll('.wpill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMeals();
+  if (typeof scheduleSave === 'function') scheduleSave(500);
+}
+
+function renderMeals() {
+  const plan = WEEK_PLANS[mealWeek];
+  document.getElementById('meal-week-label').textContent = plan.title;
+  document.getElementById('total-him').textContent = plan.himTotal.toLocaleString()+' kcal';
+  document.getElementById('total-her').textContent = plan.herTotal.toLocaleString()+' kcal';
+  const cont = document.getElementById('meal-plan-list');
+  cont.innerHTML = '';
+  plan.meals.forEach(m=>{
+    const div = document.createElement('div');
+    div.className = 'plan-meal';
+    div.innerHTML = `<div class="pm-time">${m.time}</div>
+      <div class="pm-header">
+        <span class="pm-name">${m.name}</span>
+      </div>
+      <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} <span class="him-cal">(${m.himCal} kcal)</span></div>
+      <div class="pm-detail" style="color:var(--purple);font-weight:500">Her: ${m.her} <span class="her-cal">(${m.herCal} kcal)</span></div>`;
+    cont.appendChild(div);
+  });
+
+  const prep = document.getElementById('prep-steps');
+  prep.innerHTML = '';
+  PREP_STEPS.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.className = 'prep-step';
+    div.innerHTML = `<div class="step-num">${i+1}</div><div><div class="step-title">${s.title}</div><div class="step-detail">${s.detail}</div></div>`;
+    prep.appendChild(div);
+  });
+}
+
+// ── Workout ───────────────────────────────────────────────────────────────────
+function renderWorkout() {
+  const scroll = document.getElementById('day-scroll');
+  scroll.innerHTML = '';
+  WORKOUTS.forEach((w,i)=>{
+    const chip = document.createElement('div');
+    const done = woDone[i];
+    chip.className = `day-chip${i===selectedDay?' active':''}${done?' done':''}${w.rest?' rest-day':''}`;
+    chip.innerHTML = `<span class="dc-label">${w.day}</span><div class="dc-dot"></div>`;
+    chip.onclick = ()=>{selectedDay=i;renderWorkout();};
+    scroll.appendChild(chip);
+  });
+
+  const wo = WORKOUTS[selectedDay];
+  const detail = document.getElementById('wo-detail');
+
+  // Build exercise rows with him/her weight chips
+  const exRows = wo.exercises.map((e,i) => {
+    const himChip = e.him ? `<span style="padding:2px 7px;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);border-radius:10px;font-size:10px;font-weight:700;color:#C8963E;white-space:nowrap">HIM ${e.him}</span>` : '';
+    const herChip = e.her ? `<span style="padding:2px 7px;background:rgba(123,94,167,.15);border:1px solid rgba(123,94,167,.3);border-radius:10px;font-size:10px;font-weight:700;color:#7B5EA7;white-space:nowrap">HER ${e.her}</span>` : '';
+    const tipRow  = e.tip  ? `<div style="font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;padding-left:32px">${e.tip}</div>` : '';
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--border2)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <div class="ex-num">${i+1}</div>
+        <div class="ex-name" style="flex:1">${e.n}</div>
+        <span class="ex-sets">${e.s}</span>
+      </div>
+      <div style="display:flex;gap:6px;padding-left:32px;flex-wrap:wrap">
+        ${himChip}${herChip}
+      </div>
+      ${tipRow}
+    </div>`;
+  }).join('');
+
+  detail.innerHTML = `
+    <div class="wo-day-title">${wo.label} — ${wo.focus}</div>
+    <div class="wo-focus">${wo.rest ? 'Rest & recovery day' : 'Weights first · treadmill after'}</div>
+    <div class="wo-section-label" style="margin-top:10px">EXERCISES · SETS & WEIGHTS</div>
+    <div style="background:rgba(200,150,62,.06);border:1px solid rgba(200,150,62,.15);border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:11px;color:var(--text3)">
+      🟡 <strong style="color:#C8963E">HIM</strong> = Week 1 starting weight → aim to add 2.5–5kg/lift each week if form holds &nbsp;|&nbsp; 🟣 <strong style="color:#7B5EA7">HER</strong> = same progression
+    </div>
+    ${exRows}
+    <div class="treadmill-pill" style="margin-top:10px">
+      <span class="tp-label">🚶 TREADMILL</span>
+      <span class="tp-val">${wo.treadmill}</span>
+    </div>
+    <button class="wo-done-btn${woDone[selectedDay]?' done-state':''}" onclick="markWoDone(${selectedDay})">
+      ${woDone[selectedDay]?'✓ Session complete':'Mark session complete'}
+    </button>`;
+}
+
+function markWoDone(i) {
+  woDone[i] = !woDone[i];
+  renderWorkout();
+  if (typeof scheduleSave === 'function') scheduleSave();
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+function renderProgress() {
+  const prof = PROFILES[profile];
+  const entries = checkins[profile];
+  const currentW = entries.length > 0 ? entries[entries.length-1].weight : prof.weight;
+  const lost = (prof.weight - currentW).toFixed(1);
+  const toGo = (currentW - prof.target).toFixed(1);
+  const weeksLeft = Math.max(0, Math.round(toGo / 0.75));
+
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat-box"><div class="stat-big">${currentW}</div><div class="stat-lbl">CURRENT KG</div><div class="stat-sub ${lost>0?'stat-good':''}">−${lost} lost</div></div>
+    <div class="stat-box"><div class="stat-big">${prof.target}</div><div class="stat-lbl">TARGET KG</div><div class="stat-sub" style="color:var(--text3)">${toGo} to go</div></div>
+    <div class="stat-box"><div class="stat-big">${weeksLeft}</div><div class="stat-lbl">WEEKS LEFT</div><div class="stat-sub" style="color:var(--text3)">est.</div></div>`;
+
+  const log = document.getElementById('progress-log');
+  if(entries.length===0){
+    log.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0">No entries yet. First check-in Mon 8 June.</div>';
+    return;
+  }
+  log.innerHTML = entries.map((e,i)=>{
+    const prev = i>0 ? entries[i-1].weight : PROFILES[profile].weight;
+    const chg = (e.weight - prev).toFixed(1);
+    const isGood = parseFloat(chg) <= 0;
+    return `<div class="checkin-entry">
+      <div><div class="ci-date">${e.date}</div><div style="font-size:11px;color:var(--text3)">waist ${e.waist||'—'}cm · energy ${e.energy||'—'}/10</div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="ci-vals">${e.weight}kg</span>
+        <span class="ci-change ${isGood?'change-good':'change-bad'}">${isGood?'':'+'}${chg}</span>
+      </div>
+    </div>`;
+  }).reverse().join('');
+}
+
+function saveCheckin() {
+  const w = document.getElementById('inp-weight').value;
+  if(!w) return;
+  const entry = {
+    date: new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'2-digit'}),
+    weight: parseFloat(w),
+    waist: document.getElementById('inp-waist').value||null,
+    energy: document.getElementById('inp-energy').value||null,
+  };
+  checkins[profile].push(entry);
+  document.getElementById('inp-weight').value='';
+  document.getElementById('inp-waist').value='';
+  document.getElementById('inp-energy').value='';
+  renderProgress();
+  if (typeof scheduleSave === 'function') scheduleSave(200);
+}
+
+// ── Coach ─────────────────────────────────────────────────────────────────────
+const SYSTEM = `You are VitalPath, a personal AI nutritionist and fitness coach for a couple who started their health journey on 8 June 2026.
+
+HIM: 50yr male, 176cm, 85kg → target 78kg. Daily calories: 1,772 kcal. Macros: 153g protein, 166g carbs, 55g fat. Doesn't drink coffee/tea. Doesn't love eggs much. Has Garmin Forerunner 945. Est. 9 weeks to reach target.
+
+HER: 47yr female, 158cm, 68kg → target 60kg. Daily calories: 1,194 kcal. Macros: 122g protein, 92g carbs, 37g fat. Has Oppo Android watch. Est. 11 weeks to reach target.
+
+Both: No allergies. Love Asian food. No alcohol or smoking. Wake 7–8am. Gym 8–9am. Breakfast 10am post-workout. Sunday batch cooking 2–3 hrs.
+
+GYM: JW Marriott Auckland Wellness Centre (Level 11, 22–26 Albert St, open 24hrs). State-of-the-art Technogym equipment including Technogym Visio (virtual PT, guided workouts), Technogym Bench (200+ exercises), full cardio and strength suite. Facilities: 14m heated indoor pool with Harbour Bridge views, cold plunge pool, dry-heat sauna, steam chamber, vitality/spa pool (hot tub). Personal training available on request. 6 days/week training: weights + incline treadmill. Garmin 945 tracks strength, treadmill, and pool swim (set to 14m). Oppo watch tracks gym and indoor run — check water rating before cold plunge.
+
+Recovery protocol: sauna 10–12 min → cold plunge 2–3 min → repeat 2–3 cycles → finish in vitality pool 8–10 min. Drink 500ml water with pinch pink Himalayan salt before sauna. Technogym App available — create account to auto-track reps/sets/loads.
+
+4-week meal rotation: Week 1=Thai/Vietnamese, Week 2=Seafood, Week 3=Latin-Asian, Week 4=Indo-Asian.
+
+Be warm, direct, specific and concise. Under 120 words per reply. Short paragraphs. Address him and her separately only when relevant. Never be preachy.`;
+
+async function sendChat() {
+  const inp = document.getElementById('chat-in');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value='';
+  addBubble(msg,'user');
+  chatHistory.push({role:'user',content:msg});
+
+  const thinking = addBubble('Thinking...','coach thinking');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:SYSTEM,
+        messages:chatHistory.slice(-10)
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Connection issue — try again.';
+    thinking.remove();
+    chatHistory.push({role:'assistant',content:reply});
+    addBubble(reply,'coach');
+  } catch(e) {
+    thinking.textContent='Connection error — try again.';
+    thinking.classList.remove('thinking');
+  }
+}
+
+function quickAsk(q) {
+  document.getElementById('chat-in').value=q;
+  showPage('coach', document.querySelectorAll('.nav-btn')[6]);
+  sendChat();
+}
+
+function addBubble(text, cls) {
+  const div = document.createElement('div');
+  div.className = 'bubble '+cls;
+  div.textContent = text;
+  const container = document.getElementById('chat-msgs');
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+// ── Date chip ─────────────────────────────────────────────────────────────────
+function updateDateChip() {
+  const now = new Date();
+  const opts = {weekday:'short',day:'numeric',month:'short',year:'numeric'};
+  document.getElementById('date-chip').textContent = now.toLocaleDateString('en-NZ',opts);
+}
+
+// ── Shopping Data ─────────────────────────────────────────────────────────────
+// Prices are NZ$ estimates (Pak'nSave / NW mid-2026). Split: sunday=bulk, daily=perishable fresh.
+const SHOP_DATA = {
+  1: {
+    sunday: [
+      {cat:'Proteins',item:'Chicken breast (bone-in or fillet)',qty:'2.5 kg',store:"Pak'nSave",estPrice:20.00,note:'Core protein for all lunches + Mon/Tue dinner'},
+      {cat:'Proteins',item:'Lean beef strips',qty:'800g',store:"Pak'nSave",estPrice:14.00,note:'Wed/Thu Thai basil beef'},
+      {cat:'Proteins',item:'Raw peeled prawns (fresh or frozen)',qty:'800g',store:"Pak'nSave",estPrice:14.00,note:'Fri chili garlic prawns — defrost in fridge overnight Thu'},
+      {cat:'Dairy/Chilled',item:'0% fat Greek yogurt',qty:'2 large tubs (1kg ea)',store:"Pak'nSave",estPrice:13.00,note:'Daily snack + marinade use'},
+      {cat:'Dairy/Chilled',item:'Whey/plant protein powder',qty:'1 tub (check stock)',store:'Nutrition shop / online',estPrice:0,note:'If running low — daily breakfast essential'},
+      {cat:'Grains/Pantry',item:'Rolled oats',qty:'1 kg bag',store:"Pak'nSave",estPrice:3.50,note:'Daily breakfast'},
+      {cat:'Grains/Pantry',item:'Jasmine rice',qty:'2 kg bag',store:"Pak'nSave",estPrice:6.00,note:'Him dinner base'},
+      {cat:'Grains/Pantry',item:'Brown rice',qty:'1 kg bag',store:"Pak'nSave",estPrice:4.50,note:'Him lunch base'},
+      {cat:'Grains/Pantry',item:'Frozen cauliflower rice',qty:'3–4 bags',store:"Pak'nSave",estPrice:9.00,note:'Her dinner base — freezer staple'},
+      {cat:'Grains/Pantry',item:'Raw almonds',qty:'300g bag',store:"Pak'nSave",estPrice:7.50,note:'Daily snack + breakfast topping'},
+      {cat:'Grains/Pantry',item:'Light coconut milk (canned)',qty:'2 cans',store:'New World',estPrice:5.00,note:'Mon/Tue Thai green curry'},
+      {cat:'Grains/Pantry',item:'Green curry paste',qty:'1 jar',store:'New World',estPrice:4.50,note:'Mon/Tue dinner'},
+      {cat:'Pantry/Sauces',item:'Fish sauce',qty:'1 bottle',store:'New World / Asian grocer',estPrice:4.00,note:'Core dressing ingredient'},
+      {cat:'Pantry/Sauces',item:'Rice wine vinegar',qty:'1 bottle',store:'New World',estPrice:4.00,note:'Ginger-lime dressing'},
+      {cat:'Pantry/Sauces',item:'Soy sauce (low sodium)',qty:'1 bottle',store:"Pak'nSave",estPrice:3.50,note:'Multiple dishes'},
+      {cat:'Frozen',item:'Frozen mixed berries',qty:'1 kg bag',store:"Pak'nSave",estPrice:9.00,note:'Daily breakfast topping — cheaper than fresh'},
+      {cat:'Produce (keeps well)',item:'Pre-shredded green cabbage',qty:'3 bags',store:"Pak'nSave",estPrice:7.50,note:'Lunch slaw base Mon–Sat'},
+      {cat:'Produce (keeps well)',item:'Garlic bulbs',qty:'1 bag (6–8 bulbs)',store:"Pak'nSave",estPrice:3.00,note:'All dishes — core aromatic'},
+      {cat:'Produce (keeps well)',item:'Fresh ginger root',qty:'~150g piece',store:'New World',estPrice:2.50,note:'Dressings + all dishes'},
+      {cat:'Produce (keeps well)',item:'Cucumbers',qty:'4–5 large Lebanese cucumbers',store:"Pak'nSave",estPrice:4.00,note:'Her sides throughout week. Keep cool — lasts 5 days.'},
+      {cat:'Produce (keeps well)',item:'Broccoli / snap peas / bok choy mix',qty:'Bulk (3 bags or loose)',store:"Pak'nSave",estPrice:7.00,note:'Stir-fry greens for Fri prawn dish + general dinners'},
+      {cat:'Pantry/Sauces',item:'Sesame oil (small bottle)',qty:'1 bottle',store:'New World',estPrice:5.00,note:'Fri prawn stir-fry + general Asian cooking. Lasts all 4 weeks.'},
+      {cat:'Pantry/Sauces',item:'Olive oil or rice bran oil (cooking)',qty:'1 bottle',store:"Pak'nSave",estPrice:6.00,note:'Cooking fat for all air-fryer, pan and oven cooking — essential'},
+      {cat:'Health/Pantry',item:'Pink Himalayan salt',qty:'1 small bag or grinder',store:'New World / health store',estPrice:4.50,note:'Post-gym electrolyte — pinch in 500ml water after every session'},
+    ],
+    daily: [
+      {item:'Bird\'s eye red chilis',when:'Buy 2–3× per week',note:'Wilts after 3–4 days. Keep in fridge.'},
+      {item:'Fresh coriander',when:'Buy 3 bunches Sunday + top up every 2 days',note:'Used EVERY dish as garnish — buy more than you think. Keep in fridge in damp paper towel.'},
+      {item:'Holy basil',when:'Wed/Thu only',note:'For Thai basil beef — buy day of or day before.'},
+      {item:'Fresh limes',when:'Buy 4–5 mid-week',note:'Used in dressings daily. Keep on counter.'},
+      {item:'Bok choy / broccolini',when:'Buy Tue + Fri',note:'For dinner greens — buy close to use day.'},
+      {item:'Fresh mint',when:'Weekly — Mon pickup',note:'Vietnamese salad garnish. Fridge in damp paper.'},
+      {item:'Lemongrass stalks',when:'Thu or Fri',note:'Fri pork marinade. Fridge up to 5 days.'},
+    ],
+  },
+  2: {
+    sunday: [
+      {cat:'Proteins',item:'Chicken breast',qty:'2.0 kg',store:"Pak'nSave",estPrice:16.00,note:'Bulk lunch prep'},
+      {cat:'Proteins',item:'Fresh salmon fillets',qty:'~900g (4–6 fillets)',store:"Pak'nSave",estPrice:22.00,note:'Mon/Tue gochujang salmon — freeze 2 if needed'},
+      {cat:'Proteins',item:'Raw peeled prawns (frozen)',qty:'800g bag',store:"Pak'nSave",estPrice:16.00,note:'Wed/Thu stir-fry + Fri Tom Yum'},
+      {cat:'Proteins',item:'White fish fillets (snapper/hoki)',qty:'900g',store:"Pak'nSave",estPrice:18.00,note:'Fri/Sat Tom Yum soup'},
+      {cat:'Proteins',item:'Firm tofu',qty:'1 block (~300g)',store:'New World',estPrice:4.50,note:'Her Sat Tom Yum expansion'},
+      {cat:'Dairy/Chilled',item:'0% fat Greek yogurt',qty:'2 large tubs',store:"Pak'nSave",estPrice:13.00,note:'Daily snack'},
+      {cat:'Grains/Pantry',item:'Rolled oats',qty:'Top up if low',store:"Pak'nSave",estPrice:3.50,note:'Daily breakfast'},
+      {cat:'Grains/Pantry',item:'Natural peanut butter',qty:'1 jar',store:"Pak'nSave",estPrice:6.00,note:'Thai peanut dressing — Week 2 lunches'},
+      {cat:'Grains/Pantry',item:'Gochujang paste',qty:'1 tub',store:'New World / Asian grocer',estPrice:5.50,note:'Mon/Tue salmon glaze'},
+      {cat:'Grains/Pantry',item:'Tom Yum paste',qty:'1 jar',store:'New World',estPrice:4.50,note:'Fri/Sat soup base'},
+      {cat:'Grains/Pantry',item:'Sesame oil (small bottle)',qty:'1 bottle',store:'New World',estPrice:5.00,note:'Salmon + stir-fry finishing oil'},
+      {cat:'Grains/Pantry',item:'Jasmine + brown rice',qty:'Top up as needed',store:"Pak'nSave",estPrice:5.00,note:''},
+      {cat:'Frozen',item:'Frozen mixed berries',qty:'1 kg bag',store:"Pak'nSave",estPrice:9.00,note:'Daily breakfast'},
+      {cat:'Frozen',item:'Frozen cauliflower rice',qty:'3 bags',store:"Pak'nSave",estPrice:7.00,note:'Her dinner base'},
+      {cat:'Produce (keeps well)',item:'Pre-shredded cabbage / slaw',qty:'3 bags',store:"Pak'nSave",estPrice:7.50,note:'Lunch base'},
+      {cat:'Produce (keeps well)',item:'Garlic + ginger',qty:'Replenish',store:"Pak'nSave",estPrice:4.00,note:'Core aromatics all dishes'},
+      {cat:'Produce (keeps well)',item:'Raw almonds',qty:'Top up',store:"Pak'nSave",estPrice:7.50,note:'Daily snack'},
+    ],
+    daily: [
+      {item:'Bok choy',when:'Buy Mon + Thu',note:'Mon salmon side + Thu stir-fry. Wilts in 3 days.'},
+      {item:'Snow peas / broccolini',when:'Buy Wed',note:'Wed/Thu prawn stir-fry greens.'},
+      {item:'Fresh lemongrass',when:'Buy Thu (for Sat only)',note:'Week 1 Sat flex dinner option only — no longer needed Friday.'},
+      {item:'Fresh bird\'s eye chilis',when:'2–3× per week',note:'All dishes. Keep in fridge.'},
+      {item:'Fresh limes',when:'Buy mid-week',note:'Dressings + Tom Yum. Keep on counter.'},
+      {item:'Fresh coriander',when:'Every 2 days',note:'All Asian dishes garnish.'},
+      {item:'Fresh kaffir lime leaves',when:'Buy Mon or Tue — source early',note:'Tom Yum — buy from Asian grocer (Tai Ping, Lim Chour or similar in Auckland CBD). Call ahead as stock varies.'},
+    ],
+  },
+  3: {
+    sunday: [
+      {cat:'Proteins',item:'Chicken breast',qty:'2.2 kg',store:"Pak'nSave",estPrice:17.50,note:'Lunch bowls + dinner option'},
+      {cat:'Proteins',item:'Flank steak / beef strips',qty:'800g',store:"Pak'nSave",estPrice:15.00,note:'Mon/Tue air-fryer fajitas'},
+      {cat:'Proteins',item:'White fish fillets',qty:'1.1 kg',store:"Pak'nSave",estPrice:20.00,note:'Wed/Thu chili-lime fish'},
+      {cat:'Proteins',item:'Lean beef mince (< 5% fat)',qty:'800g',store:"Pak'nSave",estPrice:13.00,note:'Fri/Sat Mexican skillet'},
+      {cat:'Proteins',item:'Firm tofu',qty:'1 block',store:'New World',estPrice:4.50,note:'Her skillet volume'},
+      {cat:'Dairy/Chilled',item:'0% fat Greek yogurt',qty:'2 large tubs',store:"Pak'nSave",estPrice:13.00,note:'Daily snack'},
+      {cat:'Grains/Pantry',item:'Jasmine + brown rice + cauli rice',qty:'Top up as needed',store:"Pak'nSave",estPrice:8.00,note:''},
+      {cat:'Grains/Pantry',item:'Tomato passata',qty:'1 bottle',store:"Pak'nSave",estPrice:3.50,note:'Mexican skillet sauce'},
+      {cat:'Grains/Pantry',item:'Cumin, chili powder, garlic powder',qty:'Check + replenish',store:'New World',estPrice:6.00,note:'Latin spice base — all 3 dishes'},
+      {cat:'Grains/Pantry',item:'Raw almonds',qty:'Top up',store:"Pak'nSave",estPrice:7.50,note:'Daily snack'},
+      {cat:'Health/Pantry',item:'Protein powder — check stock',qty:'Top up if needed',store:'Nutrition store / online',estPrice:0,note:'Used daily — critical. Run out and breakfast macro target collapses.'},
+      {cat:'Health/Pantry',item:'Pink Himalayan salt — check stock',qty:'Top up if needed',store:'Any supermarket',estPrice:0,note:'Post-gym electrolyte in water. Buy Week 1 and should last all 4 weeks.'},
+      {cat:'Pantry',item:'Olive oil / rice bran oil — check stock',qty:'Top up if needed',store:"Pak'nSave",estPrice:0,note:'Cooking fat for all dishes. Should last from Week 1 purchase.'},
+      {cat:'Frozen',item:'Frozen mixed berries',qty:'1 kg bag',store:"Pak'nSave",estPrice:9.00,note:'Daily breakfast'},
+      {cat:'Produce (keeps well)',item:'Garlic + ginger',qty:'Replenish',store:"Pak'nSave",estPrice:4.00,note:''},
+      {cat:'Produce (keeps well)',item:'Pre-shredded cabbage',qty:'2 bags',store:"Pak'nSave",estPrice:5.00,note:'Lunch salad base'},
+    ],
+    daily: [
+      {item:'Bell peppers (red + yellow capsicum)',when:'Buy Mon',note:'Mon/Tue fajitas — use within 5 days.'},
+      {item:'Jalapeños',when:'Buy Sun/Mon',note:'Latin dishes. Fridge up to 1 week.'},
+      {item:'Fresh coriander',when:'Every 2 days',note:'All Latin-Asian finishes.'},
+      {item:'Fresh limes',when:'Buy mid-week',note:'Chili-lime fish + dressings.'},
+      {item:'Zucchini',when:'Buy Thu',note:'Fri/Sat skillet veg — best fresh.'},
+      {item:'Fresh spinach / baby spinach',when:'Buy Thu or Fri',note:'Skillet greens. Wilts fast.'},
+      {item:'Green beans',when:'Buy Wed',note:'Wed/Thu fish side. Blanch same day.'},
+      {item:'Bird\'s eye chilis',when:'2× per week',note:'Keep in fridge door.'},
+    ],
+  },
+  4: {
+    sunday: [
+      {cat:'Proteins',item:'Chicken breast',qty:'2.2 kg',store:"Pak'nSave",estPrice:17.50,note:'Tandoori skewers + stir-fry'},
+      {cat:'Proteins',item:'Extra lean beef mince',qty:'800g',store:"Pak'nSave",estPrice:13.00,note:'Mon/Tue beef keema'},
+      {cat:'Proteins',item:'White fish fillets',qty:'1.1 kg',store:"Pak'nSave",estPrice:20.00,note:'Wed/Thu Goan fish curry'},
+      {cat:'Dairy/Chilled',item:'0% fat Greek yogurt',qty:'3 large tubs',store:"Pak'nSave",estPrice:19.50,note:'Heavier use this week — tandoori marinade'},
+      {cat:'Grains/Pantry',item:'Jasmine + brown rice + cauli rice',qty:'Top up as needed',store:"Pak'nSave",estPrice:8.00,note:''},
+      {cat:'Grains/Pantry',item:'Garam masala + turmeric + cumin',qty:'Check + replenish',store:'New World / Spice World',estPrice:7.00,note:'Keema spice profile'},
+      {cat:'Grains/Pantry',item:'Tandoori spice blend',qty:'1 jar',store:'New World / Indian grocer',estPrice:5.00,note:'Lunch skewer marinade'},
+      {cat:'Grains/Pantry',item:'Goan curry paste (light)',qty:'1 jar',store:'New World',estPrice:5.50,note:'Wed/Thu fish curry'},
+      {cat:'Grains/Pantry',item:'Light coconut milk (canned)',qty:'1 can',store:"Pak'nSave",estPrice:3.00,note:'Goan curry base'},
+      {cat:'Grains/Pantry',item:'Raw almonds',qty:'Top up',store:"Pak'nSave",estPrice:7.50,note:'Daily snack'},
+      {cat:'Frozen',item:'Frozen mixed berries',qty:'1 kg bag',store:"Pak'nSave",estPrice:9.00,note:'Daily breakfast'},
+      {cat:'Produce (keeps well)',item:'Garlic + fresh ginger (bulk)',qty:'More than usual',store:"Pak'nSave",estPrice:5.00,note:'Heavy use — core of all 4 dishes'},
+      {cat:'Produce (keeps well)',item:'Brown onions',qty:'1 bag',store:"Pak'nSave",estPrice:4.00,note:'Keema base'},
+      {cat:'Produce (keeps well)',item:'Lemons',qty:'6–8 lemons',store:"Pak'nSave",estPrice:4.00,note:'Heavy use in tandoori marinade — 4 lemons listed before was not enough'},
+      {cat:'Frozen / Pantry',item:'Frozen peas',qty:'500g bag',store:"Pak'nSave",estPrice:3.50,note:'Mon/Tue beef keema — was missing from list entirely'},
+      {cat:'Frozen / Pantry',item:'Baby spinach (bag)',qty:'2 large bags',store:"Pak'nSave",estPrice:7.00,note:'Wed/Thu Goan curry + keema greens — buy Sunday, use by Thu'},
+      {cat:'Produce (keeps well)',item:'Pre-shredded cabbage',qty:'2 bags',store:"Pak'nSave",estPrice:5.00,note:''},
+    ],
+    daily: [
+      {item:'Fresh broccoli heads',when:'Buy Mon + Thu',note:'Tandoori lunch sides. Steam same day.'},
+      {item:'Fresh spinach / baby spinach',when:'Buy Wed',note:'Goan curry + keema greens.'},
+      {item:'Bird\'s eye chilis',when:'2–3× per week',note:'All dishes need heat. Keep refrigerated.'},
+      {item:'Fresh limes + lemons',when:'Buy Mon + Thu',note:'Tandoori marinade + dressings.'},
+      {item:'Fresh coriander',when:'Every 2 days',note:'All Indo-Asian finishes.'},
+      {item:'Stir-fry greens mix',when:'Buy Thu or Fri',note:'Fri/Sat ginger-garlic stir-fry.'},
+    ],
+  },
+};
+
+let shopWeek = 1;
+let sundayChecked = {};
+let dailyChecked = {};
+
+function setShopWeek(w, btn) {
+  shopWeek = w;
+  document.querySelectorAll('#p-shop .wpill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  sundayChecked = {};
+  dailyChecked = {};
+  renderShop();
+  if (typeof scheduleSave === 'function') scheduleSave(500);
+}
+
+function renderShop() {
+  const data = SHOP_DATA[shopWeek];
+
+  // Group sunday items by category
+  const cats = {};
+  data.sunday.forEach((item,i) => {
+    if(!cats[item.cat]) cats[item.cat] = [];
+    cats[item.cat].push({...item, idx:i});
+  });
+
+  const sContainer = document.getElementById('sunday-list');
+  sContainer.innerHTML = '';
+  let totalEstimate = 0;
+  let checkedCount = 0;
+
+  Object.entries(cats).forEach(([cat, items]) => {
+    const catDiv = document.createElement('div');
+    catDiv.style = 'margin-bottom:12px';
+    catDiv.innerHTML = `<div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border2)">${cat.toUpperCase()}</div>`;
+
+    items.forEach(item => {
+      totalEstimate += item.estPrice;
+      const checked = sundayChecked[item.idx];
+      if(checked) checkedCount++;
+      const row = document.createElement('div');
+      row.style = `display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2);cursor:pointer;${checked?'opacity:.5':''}`;
+      row.onclick = () => { sundayChecked[item.idx] = !sundayChecked[item.idx]; renderShop(); };
+      row.innerHTML = `
+        <div style="width:22px;height:22px;border-radius:6px;border:1px solid ${checked?'var(--teal)':'var(--border2)'};background:${checked?'var(--teal)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+          ${checked?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">${item.item}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+            <span style="font-size:11px;color:var(--text3)">${item.qty} · <span style="color:var(--text2)">${item.store}</span></span>
+            ${item.estPrice>0?`<span style="font-size:12px;font-weight:700;color:var(--teal)">~$${item.estPrice.toFixed(2)}</span>`:''}
+          </div>
+          ${item.note?`<div style="font-size:11px;color:var(--text3);margin-top:2px;font-style:italic">${item.note}</div>`:''}
+          <div style="display:flex;gap:5px;margin-top:7px" onclick="event.stopPropagation()">
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','paknsave')" title="Search Pak'nSave" style="padding:4px 8px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'DM Sans',sans-serif">PNS</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','woolworths')" title="Search Woolworths NZ" style="padding:4px 8px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'DM Sans',sans-serif">WW</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','newworld')" title="Search New World" style="padding:4px 8px;background:rgba(220,80,80,.1);border:1px solid rgba(220,80,80,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#DC2626;font-family:'DM Sans',sans-serif">NW</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','grocer')" title="Compare on grocer.nz" style="padding:4px 8px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'DM Sans',sans-serif">🔍</button>
+          </div>
+        </div>`;
+      catDiv.appendChild(row);
+    });
+    sContainer.appendChild(catDiv);
+  });
+
+  document.getElementById('sunday-est-total').textContent = `~$${totalEstimate.toFixed(2)}`;
+  document.getElementById('sunday-checked-count').textContent = `${checkedCount} / ${data.sunday.length} checked`;
+
+  // Daily fresh
+  const dContainer = document.getElementById('daily-list');
+  dContainer.innerHTML = '';
+  data.daily.forEach((item,i) => {
+    const checked = dailyChecked[i];
+    if(checked) {} // just visual
+    const row = document.createElement('div');
+    row.style = `display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);cursor:pointer;${checked?'opacity:.45':''}`;
+    row.onclick = () => { dailyChecked[i] = !dailyChecked[i]; renderShop(); };
+    row.innerHTML = `
+      <div style="width:22px;height:22px;border-radius:6px;border:1px solid ${checked?'var(--gold)':'var(--border2)'};background:${checked?'var(--gold)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+        ${checked?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':''}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">${item.item}</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:1px">${item.when}</div>
+        <div style="font-size:11px;color:var(--text3)">${item.note}</div>
+        <div style="display:flex;gap:5px;margin-top:7px" onclick="event.stopPropagation()">
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','paknsave')" style="padding:4px 8px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'DM Sans',sans-serif">PNS</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','woolworths')" style="padding:4px 8px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'DM Sans',sans-serif">WW</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','newworld')" style="padding:4px 8px;background:rgba(220,80,80,.1);border:1px solid rgba(220,80,80,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#DC2626;font-family:'DM Sans',sans-serif">NW</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','grocer')" style="padding:4px 8px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'DM Sans',sans-serif">🔍</button>
+        </div>
+      </div>`;
+    dContainer.appendChild(row);
+  });
+  const dailyCheckedCount = Object.values(dailyChecked).filter(Boolean).length;
+  document.getElementById('daily-checked-count').textContent = `${dailyCheckedCount} / ${data.daily.length} checked`;
+}
+
+// ── Scan ──────────────────────────────────────────────────────────────────────
+let scanMode = 'product';
+let scanImageBase64 = null;
+let lastScanResult = null;
+
+const SCAN_PROMPTS = {
+  product: `You are analysing a food product label or nutrition panel for two people on a strict weight-loss meal plan.
+HIM: 50yr male, 85kg → 78kg target. Daily: 1,772 kcal | 153g protein | 166g carbs | 55g fat.
+HER: 47yr female, 68kg → 60kg target. Daily: 1,194 kcal | 122g protein | 92g carbs | 37g fat.
+Both eat clean Asian-inspired food (Thai, Vietnamese, Indian, Latin-Asian). No alcohol. Active 6 days/week.
+
+Analyse the product in the image. Return ONLY valid JSON, no markdown, no backticks:
+{
+  "foodName": "product name",
+  "verdict": "green" | "yellow" | "red",
+  "verdictLabel": "On Plan" | "Use with Caution" | "Avoid",
+  "calories": number per 100g or per serve (whichever is on label),
+  "protein": number,
+  "carbs": number,
+  "fat": number,
+  "servingNote": "e.g. per 100g or per 1 cup",
+  "himServing": "recommended serve size for him",
+  "herServing": "recommended serve size for her",
+  "analysis": "2-3 sentence plain English verdict: why it's on-plan or not, specific concern if red/yellow, how to use it if green",
+  "swapSuggestion": "if red or yellow, suggest a better alternative they likely have",
+  "canLog": true | false
+}`,
+
+  fridge: `You are scanning a fridge or pantry for two people on a weight-loss meal plan.
+HIM: 1,772 kcal/day | 153g protein | 166g carbs | 55g fat. 
+HER: 1,194 kcal/day | 122g protein | 92g carbs | 37g fat.
+They love Asian food (Thai, Vietnamese, Indian). Batch cook Sundays. Clean eating, no processed food.
+
+Identify all visible food items. Return ONLY valid JSON:
+{
+  "foodName": "Fridge / Pantry Contents",
+  "verdict": "green",
+  "verdictLabel": "Meal Ideas Ready",
+  "calories": 0,
+  "protein": 0,
+  "carbs": 0,
+  "fat": 0,
+  "servingNote": "",
+  "analysis": "List what you can clearly see (max 8 items). Then suggest 2 specific meals they can make RIGHT NOW from these ingredients that fit both calorie targets. Flag any items they should avoid or limit.",
+  "swapSuggestion": "",
+  "canLog": false
+}`,
+
+  meal: `You are estimating calories and macros from a photo of a cooked meal for two people on a weight-loss plan.
+HIM target: 1,772 kcal/day. HER target: 1,194 kcal/day.
+
+Estimate as accurately as possible. Return ONLY valid JSON:
+{
+  "foodName": "name of the dish",
+  "verdict": "green" | "yellow" | "red",
+  "verdictLabel": "On Plan" | "Use with Caution" | "Avoid",
+  "calories": estimated kcal for the full visible portion,
+  "protein": estimated grams,
+  "carbs": estimated grams,
+  "fat": estimated grams,
+  "servingNote": "full visible portion",
+  "himServing": "is this portion right for him? adjust if needed",
+  "herServing": "is this portion right for her? adjust if needed",
+  "analysis": "What the dish is, calorie estimate confidence level, whether it fits the plan, any concerns about ingredients or portion size",
+  "swapSuggestion": "if red/yellow, what to swap or remove to make it on-plan",
+  "canLog": true
+}`,
+
+  ingredient: `You are assessing a raw ingredient for two people on a clean-eating weight-loss plan.
+HIM: 1,772 kcal | 153g protein | 166g carbs | 55g fat.
+HER: 1,194 kcal | 122g protein | 92g carbs | 37g fat.
+They love Asian food. Batch cook Sundays. No processed food, minimal sugar, high protein priority.
+
+Return ONLY valid JSON:
+{
+  "foodName": "ingredient name",
+  "verdict": "green" | "yellow" | "red",
+  "verdictLabel": "On Plan" | "Use with Caution" | "Avoid",
+  "calories": per 100g,
+  "protein": per 100g,
+  "carbs": per 100g,
+  "fat": per 100g,
+  "servingNote": "per 100g",
+  "himServing": "ideal serving size for him",
+  "herServing": "ideal serving size for her",
+  "analysis": "Is this a good ingredient for their plan? How should they use it? Any concern about quantity or preparation method?",
+  "swapSuggestion": "",
+  "canLog": false
+}`
+};
+
+function setScanMode(mode, btn) {
+  scanMode = mode;
+  document.querySelectorAll('.scan-mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function handleScanImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    scanImageBase64 = dataUrl.split(',')[1];
+    document.getElementById('scan-preview-img').src = dataUrl;
+    document.getElementById('scan-placeholder').style.display = 'none';
+    document.getElementById('scan-preview-wrap').style.display = 'block';
+    document.getElementById('scan-result').style.display = 'none';
+    document.getElementById('scan-tips').style.display = 'none';
+    const btn = document.getElementById('scan-analyse-btn');
+    btn.disabled = false;
+    btn.style.background = 'var(--teal)';
+    btn.style.color = '#fff';
+    btn.style.borderColor = 'var(--teal)';
+    btn.style.cursor = 'pointer';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function analyseImage() {
+  if (!scanImageBase64) return;
+  const btn = document.getElementById('scan-analyse-btn');
+  btn.textContent = 'Analysing…';
+  btn.disabled = true;
+  btn.style.background = 'var(--teal-dark)';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: scanImageBase64 } },
+            { type: 'text', text: SCAN_PROMPTS[scanMode] }
+          ]
+        }]
+      })
+    });
+
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    let result;
+    try {
+      const clean = raw.replace(/```json|```/g, '').trim();
+      result = JSON.parse(clean);
+    } catch(e) {
+      result = {
+        foodName: 'Analysis complete',
+        verdict: 'yellow',
+        verdictLabel: 'See details',
+        calories: 0, protein: 0, carbs: 0, fat: 0,
+        servingNote: '',
+        analysis: raw,
+        swapSuggestion: '',
+        canLog: false
+      };
+    }
+
+    lastScanResult = result;
+    displayScanResult(result);
+  } catch(err) {
+    displayScanResult({
+      foodName: 'Connection error',
+      verdict: 'yellow',
+      verdictLabel: 'Try again',
+      calories: 0, protein: 0, carbs: 0, fat: 0,
+      servingNote: '',
+      analysis: 'Could not reach the AI coach. Check your connection and try again.',
+      swapSuggestion: '',
+      canLog: false
+    });
+  }
+
+  btn.textContent = 'ANALYSE WITH AI COACH';
+  btn.disabled = false;
+  btn.style.background = 'var(--surface2)';
+  btn.style.color = 'var(--text3)';
+}
+
+function displayScanResult(r) {
+  const verdictColors = {
+    green:  { bg:'rgba(29,158,117,.15)',  border:'var(--teal)',  text:'var(--teal)',  icon:'✅' },
+    yellow: { bg:'rgba(200,150,62,.12)',  border:'var(--gold)',  text:'var(--gold)',  icon:'⚠️' },
+    red:    { bg:'rgba(220,80,80,.12)',   border:'#DC2626',      text:'#DC2626',      icon:'🚫' },
+  };
+  const vc = verdictColors[r.verdict] || verdictColors.yellow;
+
+  const card = document.getElementById('scan-result-card');
+  card.style.borderColor = vc.border;
+  card.style.background = vc.bg;
+
+  document.getElementById('scan-verdict-icon').textContent = vc.icon;
+  document.getElementById('scan-verdict-icon').style.background = vc.bg;
+  document.getElementById('scan-verdict-label').textContent = r.verdictLabel;
+  document.getElementById('scan-verdict-label').style.color = vc.text;
+  document.getElementById('scan-food-name').textContent = r.foodName;
+
+  // Macros row
+  const macroRow = document.getElementById('scan-macros-row');
+  if (r.calories > 0) {
+    macroRow.style.display = 'block';
+    document.getElementById('scan-macro-grid').innerHTML = [
+      { label: 'Calories', val: r.calories, unit: 'kcal', color: 'var(--teal)' },
+      { label: 'Protein',  val: r.protein,  unit: 'g',    color: '#C8963E' },
+      { label: 'Carbs',    val: r.carbs,    unit: 'g',    color: '#0891B2' },
+      { label: 'Fat',      val: r.fat,      unit: 'g',    color: '#7B5EA7' },
+    ].map(m => `<div style="background:var(--surface);border-radius:8px;padding:8px 4px">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:${m.color}">${m.val}</div>
+      <div style="font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.05em;margin-top:2px">${m.label}<br>${m.unit}${r.servingNote ? ' · '+r.servingNote : ''}</div>
+    </div>`).join('');
+  } else {
+    macroRow.style.display = 'none';
+  }
+
+  // Main analysis text
+  let analysisHtml = `<div style="margin-bottom:10px">${r.analysis}</div>`;
+  if (r.himServing || r.herServing) {
+    analysisHtml += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">`;
+    if (r.himServing) analysisHtml += `<div style="background:rgba(200,150,62,.1);border:1px solid rgba(200,150,62,.2);border-radius:8px;padding:8px"><div style="font-size:10px;font-weight:700;color:#C8963E;margin-bottom:3px">HIM</div><div style="font-size:12px;color:var(--text)">${r.himServing}</div></div>`;
+    if (r.herServing) analysisHtml += `<div style="background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.2);border-radius:8px;padding:8px"><div style="font-size:10px;font-weight:700;color:#7B5EA7;margin-bottom:3px">HER</div><div style="font-size:12px;color:var(--text)">${r.herServing}</div></div>`;
+    analysisHtml += `</div>`;
+  }
+  if (r.swapSuggestion) {
+    analysisHtml += `<div style="margin-top:10px;padding:8px 10px;background:rgba(29,158,117,.08);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text2)"><strong style="color:var(--teal)">Better swap:</strong> ${r.swapSuggestion}</div>`;
+  }
+  document.getElementById('scan-analysis-text').innerHTML = analysisHtml;
+
+  document.getElementById('scan-log-prompt').style.display = r.canLog ? 'block' : 'none';
+  document.getElementById('scan-result').style.display = 'block';
+  document.getElementById('scan-tips').style.display = 'none';
+
+  // Scroll to result
+  document.getElementById('scan-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function logScanResult() {
+  if (!lastScanResult || !lastScanResult.canLog) return;
+  // Add as a custom logged meal to today
+  if (!loggedMeals[profile]) loggedMeals[profile] = {};
+  // Push a synthetic meal
+  const syntheticIdx = 900 + Object.keys(loggedMeals[profile]).length;
+  MEALS[profile].push({
+    time: 'Scanned item',
+    name: lastScanResult.foodName,
+    detail: `Logged via AI scanner · ${lastScanResult.servingNote}`,
+    cal: lastScanResult.calories,
+    p: lastScanResult.protein,
+    c: lastScanResult.carbs,
+    f: lastScanResult.fat,
+  });
+  loggedMeals[profile][MEALS[profile].length - 1] = true;
+  document.getElementById('scan-log-prompt').style.display = 'none';
+  showCopyConfirm && null; // not used here
+  // Show confirmation
+  const conf = document.createElement('div');
+  conf.style = 'margin-top:8px;padding:10px;background:rgba(29,158,117,.15);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--teal);text-align:center';
+  conf.textContent = `✓ ${lastScanResult.calories} kcal logged to Today's tracker`;
+  document.getElementById('scan-result-card').appendChild(conf);
+  setTimeout(() => conf.remove(), 3000);
+}
+
+function resetScan() {
+  scanImageBase64 = null;
+  lastScanResult = null;
+  document.getElementById('scan-placeholder').style.display = 'block';
+  document.getElementById('scan-preview-wrap').style.display = 'none';
+  document.getElementById('scan-result').style.display = 'none';
+  document.getElementById('scan-tips').style.display = 'block';
+  document.getElementById('scan-file-input').value = '';
+  const btn = document.getElementById('scan-analyse-btn');
+  btn.disabled = true;
+  btn.style.background = 'var(--surface2)';
+  btn.style.color = 'var(--text3)';
+  btn.style.borderColor = 'var(--border2)';
+  btn.style.cursor = 'not-allowed';
+  btn.textContent = 'ANALYSE WITH AI COACH';
+}
+
+
+// ── Weight progression table ──────────────────────────────────────────────────
+const PROG_TABLE = [
+  ['Chest press machine',   '30–35kg',    '35–45kg',    '15–20kg',    '20–28kg'   ],
+  ['Lat pulldown',          '35–40kg',    '45–55kg',    '20–25kg',    '28–35kg'   ],
+  ['Shoulder press',        '20–25kg',    '28–35kg',    '10–12kg',    '14–18kg'   ],
+  ['Cable seated row',      '35–40kg',    '45–55kg',    '18–22kg',    '25–32kg'   ],
+  ['Tricep pushdown',       '15–20kg',    '22–28kg',    '8–10kg',     '12–16kg'   ],
+  ['DB bicep curl',         '2×10kg',     '2×14kg',     '2×5kg',      '2×8kg'     ],
+  ['Leg press',             '70–80kg',    '100–120kg',  '40–50kg',    '60–75kg'   ],
+  ['Lying leg curl',        '25–30kg',    '35–45kg',    '15–18kg',    '20–28kg'   ],
+  ['Calf raises',           '40–50kg',    '60–70kg',    '25–30kg',    '35–45kg'   ],
+  ['Hip abductor',          '30–35kg',    '40–50kg',    '20–25kg',    '28–38kg'   ],
+  ['Incline chest press',   '25–30kg',    '35–42kg',    '12–15kg',    '18–24kg'   ],
+  ['Cable chest fly',       '8–10kg/side','12–15kg',    '4–6kg/side', '7–10kg'    ],
+  ['Face pull',             '12–15kg',    '18–22kg',    '6–8kg',      '10–14kg'   ],
+  ['Hack squat',            '40–50kg',    '65–80kg',    '20–30kg',    '35–48kg'   ],
+  ['Romanian deadlift',     '2×16–18kg',  '2×22–26kg',  '2×8–10kg',   '2×12–16kg' ],
+  ['Leg extension',         '25–30kg',    '35–45kg',    '15–18kg',    '20–28kg'   ],
+  ['Goblet squat',          '18–20kg',    '26–32kg',    '10–12kg',    '16–20kg'   ],
+  ['DB chest press',        '2×14–16kg',  '2×20–22kg',  '2×8–10kg',   '2×12–14kg' ],
+  ['DB lateral raise',      '2×6–8kg',    '2×10–12kg',  '2×3–4kg',    '2×5–7kg'   ],
+];
+
+function renderProgTable() {
+  const tbody = document.getElementById('prog-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = PROG_TABLE.map((row, i) => `
+    <tr style="background:${i%2===0?'var(--bg3)':'transparent'}">
+      <td style="padding:6px 8px;color:var(--text2);font-weight:500;border-bottom:1px solid var(--border2)">${row[0]}</td>
+      <td style="padding:6px 8px;text-align:center;color:#C8963E;font-weight:600;border-bottom:1px solid var(--border2)">${row[1]}</td>
+      <td style="padding:6px 8px;text-align:center;color:#e8b84b;font-weight:600;border-bottom:1px solid var(--border2)">${row[2]}</td>
+      <td style="padding:6px 8px;text-align:center;color:#7B5EA7;font-weight:600;border-bottom:1px solid var(--border2)">${row[3]}</td>
+      <td style="padding:6px 8px;text-align:center;color:#a98fd4;font-weight:600;border-bottom:1px solid var(--border2)">${row[4]}</td>
+    </tr>`).join('');
+}
+
+const STORE_URLS = {
+  paknsave:   { search: 'https://www.paknsave.co.nz/shop/Search?q=', home: 'https://www.paknsave.co.nz/shop' },
+  woolworths: { search: 'https://www.woolworths.co.nz/shop/Search?q=', home: 'https://www.woolworths.co.nz/shop' },
+  newworld:   { search: 'https://www.newworld.co.nz/shop/Search?q=', home: 'https://www.newworld.co.nz/shop' },
+  grocer:     { search: 'https://grocer.nz/search?q=', home: 'https://grocer.nz' },
+};
+
+function openStoreSearch(store) {
+  // Open store homepage or a pre-populated search for the week's key item
+  const data = SHOP_DATA[shopWeek];
+  const firstItem = data.sunday[0];
+  const q = encodeURIComponent(firstItem.item);
+  const url = store === 'grocer'
+    ? STORE_URLS.grocer.home
+    : STORE_URLS[store].search + q;
+  window.open(url, '_blank');
+}
+
+function searchItemOnStore(store) {
+  const input = document.getElementById('item-search-input').value.trim();
+  if (!input) { 
+    showCopyConfirm('Type an item name first', false);
+    return; 
+  }
+  const q = encodeURIComponent(input);
+  const urls = STORE_URLS[store];
+  window.open(urls.search + q, '_blank');
+}
+
+function searchItem(itemName, store) {
+  const q = encodeURIComponent(itemName);
+  window.open(STORE_URLS[store].search + q, '_blank');
+}
+
+function copyListForStore(mode) {
+  const data = SHOP_DATA[shopWeek];
+  let text = '';
+
+  if (mode === 'grocer') {
+    // One item per line — optimised for pasting into grocer.nz search one by one
+    text = `=== WEEK ${shopWeek} SHOPPING LIST FOR GROCER.NZ ===\n`;
+    text += `Go to grocer.nz and search each item below:\n\n`;
+    text += `--- SUNDAY BULK ---\n`;
+    data.sunday.forEach(i => {
+      text += `${i.item}  (${i.qty})\n`;
+    });
+    text += `\n--- DAILY FRESH (buy as needed) ---\n`;
+    data.daily.forEach(i => {
+      text += `${i.item}  — ${i.when}\n`;
+    });
+    text += `\nTip: Search each item on grocer.nz to compare Pak'nSave vs Woolworths NZ vs New World prices.`;
+  } else {
+    // Clean plain text for messaging / notes / sharing
+    const weekTitles = {1:'Thai & Vietnamese',2:'Seafood',3:'Latin-Asian',4:'Indo-Asian'};
+    text = `VitalPath Health Plan — Week ${shopWeek} Shopping List (${weekTitles[shopWeek]})\n`;
+    text += `Generated: ${new Date().toLocaleDateString('en-NZ',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}\n\n`;
+
+    // Group by category
+    const cats = {};
+    data.sunday.forEach(i => {
+      if (!cats[i.cat]) cats[i.cat] = [];
+      cats[i.cat].push(i);
+    });
+    text += `🗓 SUNDAY BULK SHOP (Pak'nSave + Woolworths NZ)\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    Object.entries(cats).forEach(([cat, items]) => {
+      text += `\n[${cat}]\n`;
+      items.forEach(i => {
+        text += `☐  ${i.item}${i.qty ? ' — ' + i.qty : ''}${i.estPrice > 0 ? ' (~$' + i.estPrice.toFixed(2) + ')' : ''}\n`;
+      });
+    });
+
+    const totalEst = data.sunday.reduce((a,i)=>a+i.estPrice,0);
+    text += `\nEstimated weekly total: ~$${totalEst.toFixed(2)} NZD\n`;
+
+    text += `\n🥬 DAILY FRESH BUYS (pick up as needed)\n`;
+    text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    data.daily.forEach(i => {
+      text += `☐  ${i.item} — ${i.when}\n`;
+      if (i.note) text += `    → ${i.note}\n`;
+    });
+
+    text += `\n💡 Price check: grocer.nz | paknsave.co.nz | woolworths.co.nz | newworld.co.nz`;
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = mode === 'grocer'
+      ? '✓ Copied! Open grocer.nz and search each item'
+      : '✓ Full list copied — paste into Notes, Messages or email';
+    showCopyConfirm(msg, true);
+  }).catch(() => {
+    // Fallback for browsers that block clipboard
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showCopyConfirm('✓ List copied to clipboard!', true);
+  });
+}
+
+function showCopyConfirm(msg, success) {
+  const el = document.getElementById('copy-confirm');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.color = success ? 'var(--teal)' : '#DC2626';
+  el.style.background = success ? 'rgba(29,158,117,.15)' : 'rgba(224,112,112,.1)';
+  el.style.borderColor = success ? 'var(--border)' : 'rgba(224,112,112,.3)';
+  setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+
+
+function clearDailyChecks() { dailyChecked={}; renderShop(); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+updateDateChip();
+renderToday();
+renderMeals();
+renderWorkout();
+renderProgress();
+renderShop();
+renderProgTable();
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// VITALPATH PERSISTENCE ENGINE
+// Supabase sync + IndexedDB offline fallback + PWA registration
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── IndexedDB offline cache ──────────────────────────────────────────────────
+const IDB_NAME = 'vitalpath-offline';
+const IDB_VER  = 1;
+let idb = null;
+
+function openIDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(IDB_NAME, IDB_VER);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('state')) db.createObjectStore('state');
+    };
+    req.onsuccess = e => { idb = e.target.result; res(idb); };
+    req.onerror = rej;
+  });
+}
+
+function idbGet(key) {
+  return new Promise((res, rej) => {
+    if (!idb) return res(null);
+    const tx = idb.transaction('state', 'readonly');
+    const req = tx.objectStore('state').get(key);
+    req.onsuccess = () => res(req.result ?? null);
+    req.onerror = rej;
+  });
+}
+
+function idbSet(key, val) {
+  return new Promise((res, rej) => {
+    if (!idb) return res();
+    const tx = idb.transaction('state', 'readwrite');
+    tx.objectStore('state').put(val, key);
+    tx.oncomplete = res;
+    tx.onerror = rej;
+  });
+}
+
+// ── Firestore helpers ────────────────────────────────────────────────────────
+let currentUid = null;
+let syncUnsubscribers = [];
+let syncTimeout = null;
+
+function showSyncBar() {
+  const bar = document.getElementById('sync-bar');
+  if (bar) { bar.style.display = 'block'; bar.style.opacity = '1'; }
+}
+
+function hideSyncBar() {
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(() => {
+    const bar = document.getElementById('sync-bar');
+    if (bar) {
+      bar.style.opacity = '0';
+      setTimeout(() => { if (bar) bar.style.display = 'none'; }, 300);
+    }
+  }, 1200);
+}
+
+// Get today's date key e.g. "2026-06-08"
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+// ── Save state to Supabase + IndexedDB ──────────────────────────────────────
+async function persistState() {
+  const state = {
+    loggedMeals,
+    waterCount,
+    woDone,
+    checkins,
+    shopWeek,
+    sundayChecked,
+    dailyChecked,
+    mealWeek,
+    lastUpdated: new Date().toISOString(),
+    schemaVersion: 2,
+  };
+
+  // Always write to IndexedDB first (offline resilience)
+  await idbSet('state', state);
+
+  // Write to Supabase if authenticated
+  if (currentUid && window._sb) {
+    showSyncBar();
+    try {
+      const { error } = await window._sb
+        .from('user_state')
+        .upsert({ uid: currentUid, state, updated_at: new Date().toISOString() },
+                 { onConflict: 'uid' });
+      if (error) throw error;
+    } catch (e) {
+      console.warn('Supabase write failed, data safe in IndexedDB:', e.message);
+    }
+    hideSyncBar();
+  }
+}
+
+// Debounce saves — batch rapid taps into one write
+let saveTimer = null;
+function scheduleSave(ms = 800) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(persistState, ms);
+}
+
+// ── Load state from Supabase (or IndexedDB fallback) ────────────────────────
+async function loadState(uid) {
+  let state = null;
+
+  // Try Supabase first
+  if (uid && window._sb) {
+    try {
+      const { data, error } = await window._sb
+        .from('user_state')
+        .select('state')
+        .eq('uid', uid)
+        .single();
+      if (!error && data) state = data.state;
+    } catch (e) {
+      console.warn('Supabase read failed, trying IndexedDB:', e.message);
+    }
+  }
+
+  // Fallback to IndexedDB
+  if (!state) state = await idbGet('state');
+
+  if (state) applyState(state);
+}
+
+// ── Apply loaded state to app variables ─────────────────────────────────────
+function applyState(state) {
+  // Schema migration: add new fields with defaults if missing
+  if (state.loggedMeals)   loggedMeals   = state.loggedMeals;
+  if (typeof state.waterCount === 'number') waterCount = state.waterCount;
+  if (state.woDone)        woDone        = state.woDone;
+  if (state.checkins)      checkins      = state.checkins;
+  if (state.shopWeek)      shopWeek      = state.shopWeek;
+  if (state.sundayChecked) sundayChecked = state.sundayChecked;
+  if (state.dailyChecked)  dailyChecked  = state.dailyChecked;
+  if (state.mealWeek)      mealWeek      = state.mealWeek;
+
+  // Re-render all views with loaded data
+  renderToday();
+  renderMeals();
+  renderWorkout();
+  renderProgress();
+  renderShop();
+  renderProgTable();
+}
+
+// ── Real-time listener: updates from partner's phone ────────────────────────
+function subscribeRealtime(uid) {
+  // Unsubscribe any existing listeners
+  syncUnsubscribers.forEach(fn => fn());
+  syncUnsubscribers = [];
+
+  if (!uid || !window._sb) return;
+
+  const channel = window._sb
+    .channel('user_state_changes')
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'user_state', filter: `uid=eq.${uid}` },
+      (payload) => {
+        // Only apply if it was written by another session (different device)
+        if (payload.new && payload.new.state) {
+          applyState(payload.new.state);
+        }
+      }
+    )
+    .subscribe();
+
+  // Store unsubscribe function
+  syncUnsubscribers.push(() => window._sb.removeChannel(channel));
+}
+
+// ── Auth: Google Sign-In via Supabase OAuth ──────────────────────────────────
+window._signInWithGoogle = async function() {
+  if (!window._sb) {
+    document.getElementById('auth-error').textContent =
+      'Supabase not configured yet — see SETUP_README for instructions.';
+    document.getElementById('auth-error').style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('google-signin-btn');
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+  try {
+    const { error } = await window._sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://vitalpathhealth2026.netlify.app/',
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+        skipBrowserRedirect: false,
+      }
+    });
+    if (error) throw error;
+  } catch (e) {
+    document.getElementById('auth-error').textContent = e.message;
+    document.getElementById('auth-error').style.display = 'block';
+    btn.textContent = 'Continue with Google';
+    btn.disabled = false;
+  }
+};
+
+window._signOut = async function() {
+  if (!window._sb) return;
+  if (!confirm('Sign out of VitalPath?')) return;
+  syncUnsubscribers.forEach(fn => fn());
+  syncUnsubscribers = [];
+  currentUid = null;
+  await window._sb.auth.signOut();
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.getElementById('user-avatar').style.display = 'none';
+};
+
+// ── Debug logger ─────────────────────────────────────────────────────────────
+function dbg(msg) {
+  console.log('[VP]', msg);
+  const box = document.getElementById('debug-lines');
+  if (box) {
+    const line = document.createElement('div');
+    line.style.cssText = 'border-bottom:1px solid #1a3a2a;padding:2px 0';
+    line.textContent = new Date().toLocaleTimeString() + ' ' + msg;
+    box.appendChild(line);
+    box.parentElement.scrollTop = box.parentElement.scrollHeight;
+  }
+}
+
+// ── Auth state observer ──────────────────────────────────────────────────────
+function initAuth() {
+  dbg('initAuth start');
+  dbg('hash:' + (window.location.hash.slice(0,50) || 'none'));
+  dbg('search:' + (window.location.search.slice(0,50) || 'none'));
+  dbg('sb_keys:' + Object.keys(localStorage).filter(k=>k.includes('supabase')).length);
+
+  if (!window._sb) {
+    dbg('ERROR: Supabase null');
+    document.getElementById('auth-overlay').style.display = 'none';
+    openIDB().then(() => idbGet('state').then(s => { if (s) applyState(s); }));
+    return;
+  }
+
+  const h = window.location.hash;
+  if (h.includes('access_token')) {
+    dbg('has access_token in hash');
+    // Fix double-hash if present
+    if (h.startsWith('##')) {
+      dbg('double-hash! fixing...');
+      window.location.replace(window.location.pathname + '#' + h.replace(/^#+/, ''));
+      return;
+    }
+  }
+
+  window._sb.auth.onAuthStateChange(async (event, session) => {
+    dbg('event:' + event + ' session:' + !!session);
+    if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
+      dbg('signing in: ' + session.user.email);
+      history.replaceState(null, '', window.location.pathname);
+      if (!currentUid) await handleSignedIn(session.user);
+    } else if (event === 'SIGNED_OUT') {
+      dbg('signed out');
+      currentUid = null;
+      document.getElementById('auth-overlay').style.display = 'flex';
+      document.getElementById('user-avatar').style.display = 'none';
+    } else {
+      dbg('other event:' + event);
+    }
+  });
+
+  window._sb.auth.getSession().then(async ({ data: { session }, error }) => {
+    dbg('getSession session:' + !!session + ' err:' + (error?.message||'none'));
+    if (session?.user && !currentUid) {
+      dbg('restoring: ' + session.user.email);
+      history.replaceState(null, '', window.location.pathname);
+      await handleSignedIn(session.user);
+    }
+  });
+}
+
+async function handleSignedIn(user) {
+  currentUid = user.id;
+
+  // Hide auth overlay
+  document.getElementById('auth-overlay').style.display = 'none';
+
+  // Show user avatar
+  const avatar = document.getElementById('user-avatar');
+  avatar.style.display = 'flex';
+  const photoUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+  const displayName = user.user_metadata?.full_name || user.email || '?';
+  if (photoUrl) {
+    avatar.innerHTML = `<img src="${photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentNode.textContent='${displayName[0].toUpperCase()}'">`;
+  } else {
+    avatar.textContent = displayName[0].toUpperCase();
+  }
+
+  // Open IndexedDB
+  await openIDB();
+
+  // Load state (Supabase first, IDB fallback)
+  await loadState(user.id);
+
+  // Subscribe to real-time updates
+  subscribeRealtime(user.id);
+}
+
+// ── Patch shop checkbox clicks to save ───────────────────────────────────────
+function patchShopCheckboxes() {
+  const sContainer = document.getElementById('sunday-list');
+  const dContainer = document.getElementById('daily-list');
+  if (!sContainer || !dContainer) return;
+  [sContainer, dContainer].forEach(container => {
+    container.addEventListener('click', () => scheduleSave(600), true);
+  });
+}
+
+// ── PWA: Register Service Worker ──────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.warn('SW registration failed:', err));
+  });
+}
+
+// ── Expose all functions used in inline HTML onclick handlers ─────────────────
+// Required because inline onclick runs in global scope but functions are
+// defined inside a <script> block which may not auto-expose to window
+window.showPage       = showPage;
+window.setProfile     = setProfile;
+window.markWoDone     = markWoDone;
+window.saveCheckin    = saveCheckin;
+window.setMealWeek    = setMealWeek;
+window.setShopWeek    = setShopWeek;
+window.sendChat       = sendChat;
+window.quickAsk       = quickAsk;
+window.setScanMode    = setScanMode;
+window.searchItem     = searchItem;
+window.analyseImage   = analyseImage;
+window.logScanResult  = logScanResult;
+window.resetScan      = resetScan;
+window.searchItemOnStore   = searchItemOnStore;
+window.openStoreSearch     = openStoreSearch;
+window.copyListForStore    = copyListForStore;
+window.clearSundayChecks   = clearSundayChecks;
+window.clearDailyChecks    = clearDailyChecks;
+
+// ── Boot sequence ─────────────────────────────────────────────────────────────
+// Supabase loads synchronously via CDN script tag, so no delay needed
+document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
+  setTimeout(patchShopCheckboxes, 1000);
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// END PERSISTENCE ENGINE
+// ══════════════════════════════════════════════════════════════════════════════
+
+addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles loaded — Him at 1,772 kcal and Her at 1,194 kcal. Starting Monday 8 June. Ask me anything about meals, workouts, or how to push through a tough day.", 'coach');
+</script>
+</body>
+</html>

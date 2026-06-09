@@ -1026,7 +1026,7 @@ const MEALS = {
     {time:'Gym window',name:'Pre-gym',detail:'300–400ml water. No solid food.',cal:0,p:0,c:0,f:0},
     {time:'Breakfast · 10:00 AM',name:'Berry protein oats',detail:'60g rolled oats · 40g protein powder (weighed) · 80g mixed berries · 15g almonds',cal:490,p:42,c:52,f:12},
     {time:'Snack · ~11:30 AM',name:'Greek yogurt + berries',detail:'150g 0% Greek yogurt · 80g mixed berries',cal:130,p:15,c:16,f:0},
-    {time:'Lunch · 1:30 PM',name:'Vietnamese Goi Ga salad',detail:'200g shredded chicken · 3 cups cabbage slaw · 1 cup brown rice · ginger-lime dressing',cal:520,p:52,c:48,f:8},
+    {time:'Lunch · 1:30 PM',name:'Vietnamese Goi Ga salad',detail:'200g shredded chicken · 90g cabbage slaw · 185g brown rice · ginger-lime dressing',cal:520,p:52,c:48,f:8},
     {time:'Snack · 3:30 PM',name:'Almonds',detail:'20g raw almonds',cal:120,p:4,c:4,f:10},
     {time:'Dinner · 7:00 PM',name:'See weekly plan',detail:'Rotate by day — tap Meals tab for full week menu',cal:540,p:48,c:52,f:14},
   ],
@@ -1034,7 +1034,7 @@ const MEALS = {
     {time:'Gym window',name:'Pre-gym',detail:'300–400ml water. No solid food.',cal:0,p:0,c:0,f:0},
     {time:'Breakfast · 10:00 AM',name:'Berry protein oats (lite)',detail:'40g rolled oats · 30g protein powder (weighed) · 80g mixed berries',cal:320,p:30,c:38,f:6},
     {time:'Snack · ~11:30 AM',name:'Greek yogurt + berries',detail:'150g 0% Greek yogurt · 80g mixed berries',cal:130,p:15,c:16,f:0},
-    {time:'Lunch · 1:30 PM',name:'Vietnamese Goi Ga salad',detail:'150g shredded chicken · 3 cups cabbage slaw · no rice · ginger-lime dressing',cal:310,p:38,c:18,f:7},
+    {time:'Lunch · 1:30 PM',name:'Vietnamese Goi Ga salad',detail:'150g shredded chicken · 90g cabbage slaw · no rice · ginger-lime dressing',cal:310,p:38,c:18,f:7},
     {time:'Snack · 3:30 PM',name:'Almonds',detail:'15g raw almonds',cal:90,p:3,c:3,f:8},
     {time:'Dinner · 7:00 PM',name:'See weekly plan',detail:'Rotate by day — tap Meals tab for full week menu',cal:340,p:35,c:25,f:10},
   ],
@@ -1047,11 +1047,11 @@ const WEEK_PLANS = {
     meals:[
       {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
       {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
-      {name:'Vietnamese Goi Ga salad',time:'Lunch 1:30pm',him:'200g chicken · 3 cups cabbage · 1 cup brown rice · ginger-lime dressing',himCal:520,her:'150g chicken · 3 cups cabbage · no rice · ginger-lime dressing',herCal:310},
+      {name:'Vietnamese Goi Ga salad',time:'Lunch 1:30pm',him:'200g chicken · 90g cabbage · 185g brown rice · ginger-lime dressing',himCal:520,her:'150g chicken · 90g cabbage · no rice · ginger-lime dressing',herCal:310},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Thai green curry',time:'Dinner 7pm',him:'220g chicken · 1 cup jasmine rice · 1.5 cups greens · light coconut milk',himCal:540,her:'150g chicken · 1 cup cauliflower rice · 1.5 cups greens · light coconut milk',herCal:340},
-      {name:'Dinner Wed/Thu: Thai basil chili beef',time:'Dinner 7pm',him:'220g lean beef strips · 1 cup jasmine rice · 1 cup stir-fry greens',himCal:530,her:'150g lean beef strips · ½ cup brown rice · 1.5 cups stir-fry greens',herCal:360},
-      {name:'Dinner Fri: Chili garlic prawns with jasmine rice',time:'Dinner 7pm',him:'250g raw prawns · 1 cup jasmine rice · stir-fry greens',himCal:480,her:'180g raw prawns · 1 cup cauliflower rice · stir-fry greens',herCal:290},
+      {name:'Dinner Mon/Tue: Thai green curry',time:'Dinner 7pm',him:'220g chicken · 185g jasmine rice · 120g greens · light coconut milk',himCal:540,her:'150g chicken · 100g cauliflower rice · 120g greens · light coconut milk',herCal:340},
+      {name:'Dinner Wed/Thu: Thai basil chili beef',time:'Dinner 7pm',him:'220g lean beef strips · 185g jasmine rice · 80g stir-fry greens',himCal:530,her:'150g lean beef strips · 90g brown rice · 120g stir-fry greens',herCal:360},
+      {name:'Dinner Fri: Chili garlic prawns with jasmine rice',time:'Dinner 7pm',him:'250g raw prawns · 185g jasmine rice · 80g stir-fry greens',himCal:480,her:'180g raw prawns · 100g cauliflower rice · 80g stir-fry greens',herCal:290},
     ]
   },
   2:{
@@ -1060,11 +1060,11 @@ const WEEK_PLANS = {
     meals:[
       {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
       {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
-      {name:'Thai chopped chicken salad',time:'Lunch 1:30pm',him:'200g chicken · 3 cups greens · 1 cup brown rice · spicy peanut dressing',himCal:530,her:'150g chicken · 3 cups greens · no rice · spicy peanut dressing',herCal:320},
+      {name:'Thai chopped chicken salad',time:'Lunch 1:30pm',him:'200g chicken · 90g mixed greens · 185g brown rice · spicy peanut dressing',himCal:530,her:'150g chicken · 90g mixed greens · no rice · spicy peanut dressing',herCal:320},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Gochujang salmon bowl',time:'Dinner 7pm',him:'2 salmon fillets (~300g) · 1.5 cups jasmine rice · bok choy',himCal:580,her:'1 salmon fillet (~150g) · 1 cup cauliflower rice · bok choy',herCal:360},
-      {name:'Dinner Wed/Thu: Spicy garlic prawn stir-fry',time:'Dinner 7pm',him:'220g prawns · 1 cup jasmine rice · bulk mixed veg',himCal:500,her:'150g prawns · ½ cup brown rice · bulk mixed veg',herCal:320},
-      {name:'Dinner Fri/Sat: Tom Yum seafood',time:'Dinner 7pm',him:'250g white fish + prawns · 1 cup jasmine rice',himCal:510,her:'180g white fish · 100g tofu in soup · no rice',herCal:290},
+      {name:'Dinner Mon/Tue: Gochujang salmon bowl',time:'Dinner 7pm',him:'2 salmon fillets (~300g) · 280g jasmine rice · 100g bok choy',himCal:580,her:'1 salmon fillet (~150g) · 100g cauliflower rice · 100g bok choy',herCal:360},
+      {name:'Dinner Wed/Thu: Spicy garlic prawn stir-fry',time:'Dinner 7pm',him:'220g prawns · 185g jasmine rice · 150g mixed veg',himCal:500,her:'150g prawns · 90g brown rice · 150g mixed veg',herCal:320},
+      {name:'Dinner Fri/Sat: Tom Yum seafood',time:'Dinner 7pm',him:'250g white fish + prawns · 185g jasmine rice',himCal:510,her:'180g white fish · 100g tofu in soup · no rice',herCal:290},
     ]
   },
   3:{
@@ -1073,11 +1073,11 @@ const WEEK_PLANS = {
     meals:[
       {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
       {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
-      {name:'Cilantro-lime chicken bowl',time:'Lunch 1:30pm',him:'200g air-fryer chicken · 1 cup brown rice · 1.5 cups green salad',himCal:520,her:'150g air-fryer chicken · ½ cup brown rice · 2 cups green salad',herCal:330},
+      {name:'Cilantro-lime chicken bowl',time:'Lunch 1:30pm',him:'200g air-fryer chicken · 185g brown rice · 45g green salad',himCal:520,her:'150g air-fryer chicken · 90g brown rice · 60g green salad',herCal:330},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Air-fryer steak fajitas',time:'Dinner 7pm',him:'220g flank steak · 1 cup jasmine rice · bell peppers',himCal:550,her:'150g flank steak · 1 cup cauliflower rice · bell peppers',herCal:350},
-      {name:'Dinner Wed/Thu: Chili-lime white fish',time:'Dinner 7pm',him:'220g white fish · 1 cup jasmine rice · steamed beans',himCal:490,her:'150g white fish · 1.5 cups steamed beans · no rice',herCal:280},
-      {name:'Dinner Fri/Sat: Mexican skillet mince',time:'Dinner 7pm',him:'220g lean beef mince · 1 cup jasmine rice · zucchini',himCal:540,her:'150g mince · 100g crumbled tofu · extra veg · no rice',herCal:340},
+      {name:'Dinner Mon/Tue: Air-fryer steak fajitas',time:'Dinner 7pm',him:'220g flank steak · 185g jasmine rice · 150g bell peppers',himCal:550,her:'150g flank steak · 100g cauliflower rice · 150g bell peppers',herCal:350},
+      {name:'Dinner Wed/Thu: Chili-lime white fish',time:'Dinner 7pm',him:'220g white fish · 185g jasmine rice · 150g steamed beans',himCal:490,her:'150g white fish · 150g steamed beans · no rice',herCal:280},
+      {name:'Dinner Fri/Sat: Mexican skillet mince',time:'Dinner 7pm',him:'220g lean beef mince · 185g jasmine rice · 150g zucchini',himCal:540,her:'150g mince · 100g crumbled tofu · extra veg · no rice',herCal:340},
     ]
   },
   4:{
@@ -1086,11 +1086,11 @@ const WEEK_PLANS = {
     meals:[
       {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
       {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
-      {name:'Tandoori chicken skewers',time:'Lunch 1:30pm',him:'200g tandoori chicken · 1 cup brown rice · 1.5 cups broccoli',himCal:510,her:'150g tandoori chicken · 2 cups broccoli · no rice',herCal:300},
+      {name:'Tandoori chicken skewers',time:'Lunch 1:30pm',him:'200g tandoori chicken · 185g brown rice · 150g broccoli',himCal:510,her:'150g tandoori chicken · 200g broccoli · no rice',herCal:300},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Beef & cauliflower keema',time:'Dinner 7pm',him:'220g lean mince · 1 cup jasmine rice · peas',himCal:530,her:'150g lean mince · 1.5 cups cauliflower rice · extra veg',herCal:330},
-      {name:'Dinner Wed/Thu: Goan fish curry',time:'Dinner 7pm',him:'220g white fish · 1 cup jasmine rice · spinach',himCal:500,her:'150g white fish · 1.5 cups spinach · light broth · no rice',herCal:290},
-      {name:'Dinner Fri/Sat: Ginger-garlic chicken stir-fry',time:'Dinner 7pm',him:'220g chicken · 1 cup jasmine rice · stir-fry greens',himCal:520,her:'150g chicken · 1.5 cups stir-fry greens · no rice',herCal:300},
+      {name:'Dinner Mon/Tue: Beef & cauliflower keema',time:'Dinner 7pm',him:'220g lean mince · 185g jasmine rice · 145g peas',himCal:530,her:'150g lean mince · 150g cauliflower rice · 150g extra veg',herCal:330},
+      {name:'Dinner Wed/Thu: Goan fish curry',time:'Dinner 7pm',him:'220g white fish · 185g jasmine rice · 45g spinach',himCal:500,her:'150g white fish · 45g spinach · light broth · no rice',herCal:290},
+      {name:'Dinner Fri/Sat: Ginger-garlic chicken stir-fry',time:'Dinner 7pm',him:'220g chicken · 185g jasmine rice · 80g stir-fry greens',himCal:520,her:'150g chicken · 120g stir-fry greens · no rice',herCal:300},
     ]
   },
 };
@@ -1212,14 +1212,14 @@ const MEAL_PREP_STEPS = {
     time: '5 min (using Sunday prep)',
     him: [
       {icon:'🍗', step:'Pull 200g pre-cooked shredded chicken', detail:'From Sunday container — already portioned and labelled.'},
-      {icon:'🥗', step:'Add 3 cups shredded cabbage slaw', detail:'From Sunday prep containers. Do NOT add dressing yet.'},
-      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'From Sunday rice container. Reheat 60–90 sec in microwave.'},
+      {icon:'🥗', step:'Add 90g shredded cabbage slaw', detail:'From Sunday prep containers. Do NOT add dressing yet.'},
+      {icon:'🍚', step:'Add 185g cooked brown rice', detail:'From Sunday rice container. Reheat 60–90 sec in microwave.'},
       {icon:'🍋', step:'Dress with ginger-lime dressing', detail:'2–3 tbsp from Sunday jar. Toss just before eating — not ahead or cabbage goes soggy.'},
       {icon:'✅', step:'520 kcal · 45g protein · 52g carbs · 8g fat', detail:'Eat within 2 hrs of dressing.'},
     ],
     her: [
       {icon:'🍗', step:'Pull 150g pre-cooked shredded chicken', detail:'From Sunday container — already portioned.'},
-      {icon:'🥗', step:'Add 3 cups shredded cabbage slaw', detail:'From Sunday prep. No dressing yet.'},
+      {icon:'🥗', step:'Add 90g shredded cabbage slaw', detail:'From Sunday prep. No dressing yet.'},
       {icon:'🚫', step:'No rice today', detail:'Saves ~180 kcal. Bulk comes from the extra cabbage volume.'},
       {icon:'🍋', step:'Dress with ginger-lime dressing', detail:'2 tbsp from Sunday jar. Toss just before eating.'},
       {icon:'✅', step:'310 kcal · 34g protein · 20g carbs · 6g fat', detail:'Eat within 2 hrs of dressing.'},
@@ -1229,14 +1229,14 @@ const MEAL_PREP_STEPS = {
     time: '5 min (using Sunday prep)',
     him: [
       {icon:'🍗', step:'Pull 200g pre-cooked shredded chicken', detail:'From Sunday container.'},
-      {icon:'🥗', step:'Add 3 cups mixed greens', detail:'Chopped romaine, cucumber, capsicum, red onion, coriander.'},
-      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'Reheat 60–90 sec.'},
+      {icon:'🥗', step:'Add 90g mixed greens', detail:'Chopped romaine, cucumber, capsicum, red onion, coriander.'},
+      {icon:'🍚', step:'Add 185g cooked brown rice', detail:'Reheat 60–90 sec.'},
       {icon:'🥜', step:'Spicy peanut dressing — 2 tbsp', detail:'2 tbsp peanut butter + 1 tbsp fish sauce + 1 tbsp lime + 1 tsp sriracha + warm water to thin. Shake well.'},
       {icon:'✅', step:'530 kcal · 46g protein · 54g carbs · 10g fat', detail:'Best eaten fresh — dressing thickens in fridge.'},
     ],
     her: [
       {icon:'🍗', step:'Pull 150g pre-cooked shredded chicken', detail:'From Sunday container.'},
-      {icon:'🥗', step:'Add 3 cups mixed greens', detail:'Same chopped salad mix as him.'},
+      {icon:'🥗', step:'Add 90g mixed greens', detail:'Same chopped salad mix as him.'},
       {icon:'🚫', step:'No rice', detail:'Saves ~180 kcal.'},
       {icon:'🥜', step:'Spicy peanut dressing — 1.5 tbsp', detail:'Slightly less than him. Same recipe.'},
       {icon:'✅', step:'320 kcal · 34g protein · 18g carbs · 9g fat', detail:'Best eaten fresh.'},
@@ -1246,15 +1246,15 @@ const MEAL_PREP_STEPS = {
     time: '5 min (using Sunday prep)',
     him: [
       {icon:'🍗', step:'Pull 200g pre-cooked air-fryer chicken', detail:'From Sunday container. Reheat in microwave 60 sec or eat cold.'},
-      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'Reheat 60–90 sec.'},
-      {icon:'🥗', step:'Add 1.5 cups green salad', detail:'Spinach or mixed leaves, sliced cucumber, halved cherry tomatoes.'},
+      {icon:'🍚', step:'Add 185g cooked brown rice', detail:'Reheat 60–90 sec.'},
+      {icon:'🥗', step:'Add 45g green salad leaves', detail:'Spinach or mixed leaves, sliced cucumber, halved cherry tomatoes.'},
       {icon:'🍋', step:'Dress with lime juice + coriander', detail:'Squeeze ½ lime, handful fresh coriander, pinch salt.'},
       {icon:'✅', step:'520 kcal · 45g protein · 50g carbs · 8g fat', detail:''},
     ],
     her: [
       {icon:'🍗', step:'Pull 150g pre-cooked air-fryer chicken', detail:'From Sunday container.'},
-      {icon:'🍚', step:'Add ½ cup cooked brown rice', detail:'Reheat 45 sec.'},
-      {icon:'🥗', step:'Add 2 cups green salad', detail:'Extra greens offset the smaller rice portion.'},
+      {icon:'🍚', step:'Add 90g cooked brown rice', detail:'Reheat 45 sec.'},
+      {icon:'🥗', step:'Add 60g green salad leaves', detail:'Extra greens offset the smaller rice portion.'},
       {icon:'🍋', step:'Dress with lime juice + coriander', detail:'Squeeze ½ lime, handful fresh coriander, pinch salt.'},
       {icon:'✅', step:'330 kcal · 34g protein · 28g carbs · 7g fat', detail:''},
     ]
@@ -1263,13 +1263,13 @@ const MEAL_PREP_STEPS = {
     time: '5 min (using Sunday prep)',
     him: [
       {icon:'🍗', step:'Pull 200g pre-cooked tandoori chicken', detail:'From Sunday container. Best reheated 90 sec covered with damp paper towel.'},
-      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'Reheat 60–90 sec.'},
-      {icon:'🥦', step:'Add 1.5 cups steamed broccoli', detail:'Steam 3–4 min or microwave in water 2 min.'},
+      {icon:'🍚', step:'Add 185g cooked brown rice', detail:'Reheat 60–90 sec.'},
+      {icon:'🥦', step:'Add 150g steamed broccoli', detail:'Steam 3–4 min or microwave in water 2 min.'},
       {icon:'✅', step:'510 kcal · 46g protein · 50g carbs · 8g fat', detail:''},
     ],
     her: [
       {icon:'🍗', step:'Pull 150g pre-cooked tandoori chicken', detail:'From Sunday container.'},
-      {icon:'🥦', step:'Add 2 cups steamed broccoli', detail:'No rice — broccoli adds bulk and fibre.'},
+      {icon:'🥦', step:'Add 200g steamed broccoli', detail:'No rice — broccoli adds bulk and fibre.'},
       {icon:'✅', step:'300 kcal · 34g protein · 18g carbs · 6g fat', detail:''},
     ]
   },
@@ -1280,8 +1280,8 @@ function getDinnerPrepSteps(mealName, isHim) {
   return [{
     icon:'🍳', step:'Follow the weekly plan recipe for: ' + name,
     detail: isHim
-      ? 'Him portions: 220g protein · 1 cup jasmine rice · vegetables as listed. Cook fresh or use prepped proteins from Sunday.'
-      : 'Her portions: 150g protein · cauliflower rice or ½ cup brown rice as listed · extra vegetables.'
+      ? 'Him portions: 220g protein · 185g jasmine rice · vegetables as listed. Cook fresh or use prepped proteins from Sunday.'
+      : 'Her portions: 150g protein · cauliflower rice or 90g brown rice as listed · extra vegetables.'
   }, {
     icon:'⏱️', step:'Cook time: 15–20 min', detail:'Most dinners are stir-fry, oven or air-fryer. All under 25 min with Sunday prep done.'
   }, {
@@ -1294,8 +1294,8 @@ function getDinnerPrepSteps(mealName, isHim) {
 const PREP_STEPS = [
   {title:'Cook all chicken breast',detail:'Season 2–2.5kg with salt, garlic, white pepper. Oven 200°C for 22–25 min OR air-fryer batches 200°C for 18 min. Check internal temp 75°C.'},
   {title:'Shred + portion chicken',detail:'Shred all cooked chicken. Him: 200g per lunch container. Her: 150g per lunch container. Label Mon–Fri.'},
-  {title:'Cook brown rice',detail:'Rinse 2 cups, cook in 4 cups water. Bring to boil, low simmer 30–35 min lid on. Do not lift lid in final 10 min.'},
-  {title:'Cook jasmine rice',detail:'Rinse 2 cups. Rice cooker or 1:1.5 water on stove, 12–15 min. Fluff, cool before portioning. Him: 1 cup cooked per dinner.'},
+  {title:'Cook brown rice',detail:'Rinse 400g dry rice, cook in 750ml water. Bring to boil, low simmer 30–35 min lid on. Do not lift lid in final 10 min.'},
+  {title:'Cook jasmine rice',detail:'Rinse 400g dry rice. Rice cooker or 600ml water on stove, 12–15 min. Fluff, cool before portioning. Him: 185g cooked per dinner.'},
   {title:'Prep cabbage slaw base',detail:'Open 3 bags pre-shredded cabbage. Transfer to large airtight containers. Do NOT dress — add dressing fresh at mealtime.'},
   {title:'Mix the week\'s dressings',detail:'Ginger-lime: 3 tbsp fish sauce + 4 tbsp rice vinegar + 3 limes + 2 tsp grated ginger + 2 bird-eye chilis. Shake in glass jar. Keeps 5–6 days refrigerated.'},
   {title:'Pre-portion almonds',detail:'Him: 20g bags × 5 (Mon–Fri snack) + 15g bags for breakfast. Her: 15g bags × 5. Leave at room temp.'},
@@ -1319,6 +1319,12 @@ function showPage(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('p-'+id).classList.add('active');
   btn.classList.add('active');
+  // Re-render the active meal tab whenever meals page is opened
+  if (id === 'meals') {
+    if (activeMealTab === 'today') renderDailyMeals();
+    else if (activeMealTab === 'calendar') renderCalendar();
+    else renderMeals();
+  }
 }
 
 function setProfile(p) {
@@ -1510,7 +1516,6 @@ function switchMealTab(tab) {
   if (tab==='today') renderDailyMeals();
   if (tab==='calendar') renderCalendar();
   if (tab==='plan') renderMeals();
-renderDailyMeals();
 }
 
 function renderDailyMeals() {

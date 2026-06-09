@@ -2,7 +2,7 @@
   "name": "VitalPath — Daily Health Coach",
   "short_name": "VitalPath",
   "description": "Personal AI health coach and nutrition tracker for two",
-  "start_url": "https://krivnaicker.github.io/VitalPath/",
+  "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F8FAFB",

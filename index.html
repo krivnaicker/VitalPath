@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>VitalPath — Daily Health Coach</title>
-<link rel="manifest" href="/VitalPath/manifest.json">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -164,6 +164,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 .plan-meal.done-meal .pm-name{text-decoration:line-through;color:var(--text3)}
 .plan-meal.done-meal .pm-detail{opacity:.5}
 .plan-meal.done-meal .pm-time{opacity:.5}
+/* ── Meal tabs ── */
+.meal-tab{flex:1;padding:10px 0;border-radius:20px;border:1.5px solid var(--border2);font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:var(--text3);transition:.2s;font-family:'DM Sans',sans-serif}
+.meal-tab.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(8,145,178,.25)}
+/* ── Calendar ── */
+.cal-cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);background:var(--bg3);border:1.5px solid transparent;transition:.15s;position:relative}
+.cal-cell:hover{border-color:var(--teal)}
+.cal-cell.today{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
+.cal-cell.has-data{background:#fff;border-color:var(--border2)}
+.cal-cell.selected{background:var(--teal);color:#fff;border-color:var(--teal)}
+.cal-cell.empty{background:transparent;cursor:default}
+.cal-cell.other-month{opacity:.3}
+.cal-dot-row{display:flex;gap:2px;margin-top:2px}
+.cal-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);opacity:.7}
+.cal-dot.full{background:#22c55e;opacity:1}
+.cal-hdr{font-size:11px;font-weight:700;color:var(--text3);text-align:center;padding:4px 0;letter-spacing:.04em}
 .him-cal{color:var(--teal)}
 .her-cal{color:var(--purple)}
 .totals-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border2)}
@@ -403,28 +418,80 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 </div>
 
 <div id="p-meals" class="page">
-  <div class="week-pills">
-    <button class="wpill active" onclick="setMealWeek(1,this)">Week 1</button>
-    <button class="wpill" onclick="setMealWeek(2,this)">Week 2</button>
-    <button class="wpill" onclick="setMealWeek(3,this)">Week 3</button>
-    <button class="wpill" onclick="setMealWeek(4,this)">Week 4</button>
+
+  <!-- Tab switcher: Today / Calendar / Plan -->
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <button class="meal-tab active" id="mtab-today" onclick="switchMealTab('today')">Today</button>
+    <button class="meal-tab" id="mtab-calendar" onclick="switchMealTab('calendar')">History</button>
+    <button class="meal-tab" id="mtab-plan" onclick="switchMealTab('plan')">Weekly Plan</button>
   </div>
-  <div class="card">
-    <div class="card-label" id="meal-week-label">Week 1 · Spicy Thai & Vietnamese</div>
-    <div id="meal-plan-list"></div>
-    <div class="totals-bar">
-      <span class="tb-label">DAILY TOTAL</span>
-      <div class="tb-vals">
-        <span class="tb-him" id="total-him">1,800 kcal</span>
-        <span class="tb-her" id="total-her">1,190 kcal</span>
+
+  <!-- TODAY TAB -->
+  <div id="meal-view-today">
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="card-label" style="margin-bottom:0" id="meals-today-label">Today's meals</div>
+        <div style="font-size:13px;font-weight:700;color:var(--teal)" id="meals-today-progress">0 / 5</div>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px" id="meals-today-week"></div>
+      <div id="meal-daily-list"></div>
+      <div class="totals-bar" style="margin-top:8px">
+        <span class="tb-label">TODAY'S TOTAL</span>
+        <div class="tb-vals">
+          <span class="tb-him" id="daily-total-him">0 kcal</span>
+          <span class="tb-her" id="daily-total-her">0 kcal</span>
+        </div>
       </div>
     </div>
-    <div class="note-bar">* Daily total = one day's eating (breakfast + 2 snacks + lunch + one dinner). Multiple dinners shown are for different nights — not all eaten the same day.</div>
   </div>
-  <div class="card">
-    <div class="card-label">Sunday batch prep (2–3 hrs)</div>
-    <div id="prep-steps"></div>
+
+  <!-- CALENDAR / HISTORY TAB -->
+  <div id="meal-view-calendar" style="display:none">
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <button onclick="shiftCalMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:18px;cursor:pointer;color:var(--text2)">‹</button>
+        <div id="cal-month-label" style="font-size:16px;font-weight:700;color:var(--text)"></div>
+        <button onclick="shiftCalMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:18px;cursor:pointer;color:var(--text2)">›</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px" id="cal-day-headers"></div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px" id="cal-grid"></div>
+    </div>
+    <!-- Selected day detail -->
+    <div class="card" id="cal-day-detail" style="display:none">
+      <div class="card-label" id="cal-detail-label"></div>
+      <div id="cal-detail-meals"></div>
+    </div>
+    <div id="cal-empty-msg" style="text-align:center;padding:24px 16px;color:var(--text3);font-size:15px">
+      No meal history yet.<br>Start checking off meals today!
+    </div>
   </div>
+
+  <!-- WEEKLY PLAN TAB -->
+  <div id="meal-view-plan" style="display:none">
+    <div class="week-pills" style="margin-bottom:12px">
+      <button class="wpill active" onclick="setMealWeek(1,this)">Week 1</button>
+      <button class="wpill" onclick="setMealWeek(2,this)">Week 2</button>
+      <button class="wpill" onclick="setMealWeek(3,this)">Week 3</button>
+      <button class="wpill" onclick="setMealWeek(4,this)">Week 4</button>
+    </div>
+    <div class="card">
+      <div class="card-label" id="meal-week-label">Week 1 · Spicy Thai & Vietnamese</div>
+      <div id="meal-plan-list"></div>
+      <div class="totals-bar">
+        <span class="tb-label">DAILY TOTAL</span>
+        <div class="tb-vals">
+          <span class="tb-him" id="total-him">1,800 kcal</span>
+          <span class="tb-her" id="total-her">1,190 kcal</span>
+        </div>
+      </div>
+      <div class="note-bar">* Daily total = one day's eating (breakfast + 2 snacks + lunch + one dinner). Multiple dinners shown are for different nights — not all eaten the same day.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Sunday batch prep (2–3 hrs)</div>
+      <div id="prep-steps"></div>
+    </div>
+  </div>
+
 </div>
 
 <div id="p-workout" class="page">
@@ -1278,12 +1345,175 @@ function toggleMeal(i) {
 window.toggleMeal = toggleMeal;
 
 // ── Meals page ────────────────────────────────────────────────────────────────
+// ── Meal daily tracking helpers ──────────────────────────────────────────────
+let dailyMealLog = {};
+let calViewMonth = null;
+let activeMealTab = 'today';
+let calSelectedDate = null;
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function weekForDate(dateStr) {
+  const anchor = new Date('2026-06-08');
+  const d = new Date(dateStr + 'T12:00:00');
+  const diffDays = Math.floor((d - anchor) / 86400000);
+  const weekNum = Math.floor(diffDays / 7);
+  return ((weekNum % 4) + 4) % 4 + 1;
+}
+
+function dowForDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return (d.getDay() + 6) % 7;
+}
+
+function getMealsForDate(dateStr) {
+  const week = weekForDate(dateStr);
+  const dow = dowForDate(dateStr);
+  const plan = WEEK_PLANS[week];
+  const dinnerIdx = (dow <= 1) ? 4 : (dow <= 3) ? 5 : (dow <= 5) ? 6 : 4;
+  return { week, plan, meals: [plan.meals[0], plan.meals[1], plan.meals[2], plan.meals[3], plan.meals[dinnerIdx]] };
+}
+
+function switchMealTab(tab) {
+  activeMealTab = tab;
+  ['today','calendar','plan'].forEach(t => {
+    document.getElementById('mtab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('meal-view-'+t).style.display = t===tab ? '' : 'none';
+  });
+  if (tab==='today') renderDailyMeals();
+  if (tab==='calendar') renderCalendar();
+  if (tab==='plan') renderMeals();
+renderDailyMeals();
+}
+
+function renderDailyMeals() {
+  const key = todayKey();
+  const { week, plan, meals } = getMealsForDate(key);
+  const log = (dailyMealLog[key] || {})[profile] || {};
+  const checked = meals.filter((_,i) => log[i]).length;
+  const d = new Date();
+  const dayName = d.toLocaleDateString('en-NZ',{weekday:'long'});
+  const dateStr = d.toLocaleDateString('en-NZ',{day:'numeric',month:'long'});
+  document.getElementById('meals-today-label').textContent = dayName+', '+dateStr;
+  document.getElementById('meals-today-week').textContent = 'Week '+week+' · '+(plan.title.split('·')[1]||'').trim();
+  document.getElementById('meals-today-progress').textContent = checked+' / '+meals.length+' eaten';
+  let himCal=0, herCal=0;
+  const cont = document.getElementById('meal-daily-list');
+  cont.innerHTML = '';
+  meals.forEach((m,idx) => {
+    const done = !!log[idx];
+    if (done) { himCal+=m.himCal; herCal+=m.herCal; }
+    const div = document.createElement('div');
+    div.className = 'plan-meal'+(done?' done-meal':'');
+    div.innerHTML = `<div class="pm-time">${m.time}</div>
+      <div class="pm-header">
+        <span class="pm-name">${m.name}</span>
+        <button class="pm-check ${done?'checked':''}" onclick="toggleDailyMeal('${key}',${idx})">${done?'✓':''}</button>
+      </div>
+      <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} (${m.himCal} kcal)</div>
+      <div class="pm-detail" style="color:var(--purple);font-weight:500">Her: ${m.her} (${m.herCal} kcal)</div>`;
+    cont.appendChild(div);
+  });
+  document.getElementById('daily-total-him').textContent = himCal.toLocaleString()+' kcal';
+  document.getElementById('daily-total-her').textContent = herCal.toLocaleString()+' kcal';
+}
+
+function toggleDailyMeal(dateKey, idx) {
+  if (!dailyMealLog[dateKey]) dailyMealLog[dateKey]={};
+  if (!dailyMealLog[dateKey][profile]) dailyMealLog[dateKey][profile]={};
+  dailyMealLog[dateKey][profile][idx] = !dailyMealLog[dateKey][profile][idx];
+  renderDailyMeals();
+  renderToday();
+  scheduleSave(600);
+}
+
+function renderCalendar() {
+  if (!calViewMonth) calViewMonth = new Date();
+  const year = calViewMonth.getFullYear();
+  const month = calViewMonth.getMonth();
+  document.getElementById('cal-month-label').textContent =
+    calViewMonth.toLocaleDateString('en-NZ',{month:'long',year:'numeric'});
+  document.getElementById('cal-day-headers').innerHTML =
+    ['M','T','W','T','F','S','S'].map(d=>`<div class="cal-hdr">${d}</div>`).join('');
+  const firstDay = new Date(year, month, 1);
+  const startDow = (firstDay.getDay()+6)%7;
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayStr = todayKey();
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  for (let i=0;i<startDow;i++) {
+    const el=document.createElement('div'); el.className='cal-cell empty'; grid.appendChild(el);
+  }
+  for (let day=1;day<=daysInMonth;day++) {
+    const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const log=dailyMealLog[dateStr];
+    const hasData=log&&(log.him||log.her);
+    const {meals}=getMealsForDate(dateStr);
+    let maxDone=0;
+    if(log?.him) maxDone=Math.max(maxDone,Object.values(log.him).filter(Boolean).length);
+    if(log?.her) maxDone=Math.max(maxDone,Object.values(log.her).filter(Boolean).length);
+    const el=document.createElement('div');
+    el.className=`cal-cell${dateStr===todayStr?' today':''}${hasData?' has-data':''}${dateStr===calSelectedDate?' selected':''}`;
+    const dots=hasData?`<div class="cal-dot-row">${Array.from({length:Math.min(maxDone,5)},()=>'<div class="cal-dot full"></div>').join('')}</div>`:'';
+    el.innerHTML=`<span>${day}</span>${dots}`;
+    el.onclick=()=>selectCalDay(dateStr);
+    grid.appendChild(el);
+  }
+  const hasAnyLog=Object.keys(dailyMealLog).length>0;
+  document.getElementById('cal-empty-msg').style.display=hasAnyLog?'none':'';
+  if(calSelectedDate) renderCalDayDetail(calSelectedDate);
+}
+
+function selectCalDay(dateStr) {
+  calSelectedDate=dateStr;
+  renderCalendar();
+  renderCalDayDetail(dateStr);
+}
+
+function renderCalDayDetail(dateStr) {
+  const detail=document.getElementById('cal-day-detail');
+  const log=dailyMealLog[dateStr];
+  const {meals,week}=getMealsForDate(dateStr);
+  const d=new Date(dateStr+'T12:00:00');
+  const label=d.toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('cal-detail-label').textContent=label+' · Week '+week;
+  const himLog=log?.him||{};
+  const herLog=log?.her||{};
+  const himDone=meals.filter((_,i)=>himLog[i]).length;
+  const herDone=meals.filter((_,i)=>herLog[i]).length;
+  if (!log||(himDone===0&&herDone===0)) {
+    document.getElementById('cal-detail-meals').innerHTML=
+      '<div style="color:var(--text3);font-size:15px;padding:8px 0">No meals logged this day.</div>';
+  } else {
+    document.getElementById('cal-detail-meals').innerHTML=meals.map((m,i)=>{
+      const hc=himLog[i],hrc=herLog[i];
+      if(!hc&&!hrc) return '';
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--border2)">
+        <div style="font-size:13px;color:var(--text3);font-weight:700;margin-bottom:2px;text-transform:uppercase">${m.time}</div>
+        <div style="font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px">${m.name}</div>
+        <div style="display:flex;gap:8px">
+          ${hc?'<span style="padding:3px 10px;background:rgba(200,150,62,.15);border-radius:10px;font-size:13px;font-weight:700;color:#C8963E">✓ HIM</span>':''}
+          ${hrc?'<span style="padding:3px 10px;background:rgba(124,58,237,.12);border-radius:10px;font-size:13px;font-weight:700;color:#7C3AED">✓ HER</span>':''}
+        </div></div>`;
+    }).join('');
+  }
+  detail.style.display='';
+}
+
+function shiftCalMonth(dir) {
+  if (!calViewMonth) calViewMonth=new Date();
+  calViewMonth=new Date(calViewMonth.getFullYear(),calViewMonth.getMonth()+dir,1);
+  renderCalendar();
+}
+
 function setMealWeek(w, btn) {
   mealWeek = w;
   document.querySelectorAll('.wpill').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderMeals();
-  if (typeof scheduleSave === 'function') scheduleSave(500);
 }
 
 function renderMeals() {
@@ -1293,41 +1523,26 @@ function renderMeals() {
   document.getElementById('total-her').textContent = plan.herTotal.toLocaleString()+' kcal';
   const cont = document.getElementById('meal-plan-list');
   cont.innerHTML = '';
-  plan.meals.forEach((m, idx)=>{
-    const key = `${mealWeek}_${idx}`;
-    const isChecked = (loggedMeals[profile] || {})[key];
-    const div = document.createElement('div');
-    div.className = 'plan-meal' + (isChecked ? ' done-meal' : '');
-    div.innerHTML = `<div class="pm-time">${m.time}</div>
-      <div class="pm-header">
-        <span class="pm-name">${m.name}</span>
-        <button class="pm-check ${isChecked ? 'checked' : ''}" onclick="toggleMealCheck(${idx})" title="Mark as eaten">
-          ${isChecked ? '✓' : ''}
-        </button>
-      </div>
-      <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} <span class="him-cal">(${m.himCal} kcal)</span></div>
-      <div class="pm-detail" style="color:var(--purple);font-weight:500">Her: ${m.her} <span class="her-cal">(${m.herCal} kcal)</span></div>`;
+  plan.meals.forEach((m,idx)=>{
+    const div=document.createElement('div');
+    div.className='plan-meal';
+    div.innerHTML=`<div class="pm-time">${m.time}</div>
+      <div class="pm-header"><span class="pm-name">${m.name}</span></div>
+      <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} (${m.himCal} kcal)</div>
+      <div class="pm-detail" style="color:var(--purple);font-weight:500">Her: ${m.her} (${m.herCal} kcal)</div>`;
     cont.appendChild(div);
   });
-
-  const prep = document.getElementById('prep-steps');
-  prep.innerHTML = '';
+  const prep=document.getElementById('prep-steps');
+  prep.innerHTML='';
   PREP_STEPS.forEach((s,i)=>{
-    const div = document.createElement('div');
-    div.className = 'prep-step';
-    div.innerHTML = `<div class="step-num">${i+1}</div><div><div class="step-title">${s.title}</div><div class="step-detail">${s.detail}</div></div>`;
+    const div=document.createElement('div');
+    div.className='prep-step';
+    div.innerHTML=`<div class="step-num">${i+1}</div><div><div class="step-title">${s.title}</div><div class="step-detail">${s.detail}</div></div>`;
     prep.appendChild(div);
   });
 }
 
-function toggleMealCheck(idx) {
-  if (!loggedMeals[profile]) loggedMeals[profile] = {};
-  const key = `${mealWeek}_${idx}`;
-  loggedMeals[profile][key] = !loggedMeals[profile][key];
-  renderMeals();
-  renderToday();
-  scheduleSave(600);
-}
+
 
 // ── Workout ───────────────────────────────────────────────────────────────────
 function renderWorkout() {
@@ -2261,6 +2476,7 @@ async function persistState() {
     sundayChecked,
     dailyChecked,
     mealWeek,
+    dailyMealLog,
     lastUpdated: new Date().toISOString(),
     schemaVersion: 2,
   };
@@ -2326,6 +2542,7 @@ function applyState(state) {
   if (state.sundayChecked) sundayChecked = state.sundayChecked;
   if (state.dailyChecked)  dailyChecked  = state.dailyChecked;
   if (state.mealWeek)      mealWeek      = state.mealWeek;
+  if (state.dailyMealLog)  dailyMealLog  = state.dailyMealLog;
 
   // Re-render all views with loaded data
   renderToday();
@@ -2530,7 +2747,10 @@ window.searchItemOnStore   = searchItemOnStore;
 window.openStoreSearch     = openStoreSearch;
 window.copyListForStore    = copyListForStore;
 window.clearSundayChecks   = clearSundayChecks;
-window.toggleMealCheck     = toggleMealCheck;
+window.toggleDailyMeal     = toggleDailyMeal;
+window.switchMealTab       = switchMealTab;
+window.shiftCalMonth       = shiftCalMonth;
+window.selectCalDay        = selectCalDay;
 window.clearDailyChecks    = clearDailyChecks;
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────

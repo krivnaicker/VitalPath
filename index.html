@@ -410,11 +410,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     <div style="font-size:11px;color:var(--text3);margin-top:8px" id="water-tip">Tap each glass as you drink it. Start with 300ml before gym.</div>
   </div>
 
-  <div class="card">
-    <div class="card-label">🥣 Morning oats — step by step</div>
-    <div id="oats-prep-content"></div>
-  </div>
-
 </div>
 
 <div id="p-meals" class="page">
@@ -1167,6 +1162,135 @@ const WORKOUTS = [
    treadmill:'Rest day — no structured training'},
 ];
 
+// ── Per-meal prep steps (keyed by meal name) ─────────────────────────────────
+const MEAL_PREP_STEPS = {
+  'Berry protein oats': {
+    time: '4 min',
+    him: [
+      {icon:'⚖️', step:'Weigh 60g rolled oats', detail:'Use kitchen scales — pre-portioned Sunday containers make this instant.'},
+      {icon:'💧', step:'Add 120–150ml water or unsweetened almond milk', detail:'Water keeps it lower cal. Almond milk adds creaminess for minimal extra cals. No regular milk — adds ~80 kcal.'},
+      {icon:'📡', step:'Microwave 90 seconds', detail:'Full power. Stir halfway. Watch it — oats bubble up. Let sit 60 sec after.'},
+      {icon:'⚖️', step:'Weigh 40g protein powder', detail:'Stir in OFF the heat immediately. Never microwave protein powder — it goes rubbery.'},
+      {icon:'🍓', step:'Add 80g berries', detail:'Straight from frozen is fine — cools oats to eating temp in 60 sec.'},
+      {icon:'🌰', step:'Top with 15g almonds', detail:'~10–12 whole almonds. Adds crunch and extends satiety.'},
+      {icon:'✅', step:'490 kcal · 42g protein · 52g carbs · 12g fat', detail:'Eat within 30 min of finishing gym.'},
+    ],
+    her: [
+      {icon:'⚖️', step:'Weigh 40g rolled oats', detail:'Use kitchen scales — pre-portioned Sunday containers make this instant.'},
+      {icon:'💧', step:'Add 80–100ml water or unsweetened almond milk', detail:'Water keeps it lower cal. No regular milk — adds ~80 kcal.'},
+      {icon:'📡', step:'Microwave 75 seconds', detail:'Full power. Stir halfway. Let sit 60 sec after.'},
+      {icon:'⚖️', step:'Weigh 30g protein powder', detail:'Stir in OFF the heat immediately. Never microwave protein powder.'},
+      {icon:'🍓', step:'Add 80g berries', detail:'Straight from frozen is fine — cools oats to eating temp in 60 sec.'},
+      {icon:'✅', step:'320 kcal · 30g protein · 38g carbs · 6g fat', detail:'No almonds on breakfast — save your 15g for the 3:30pm snack.'},
+    ]
+  },
+  'Greek yogurt + berries': {
+    time: '2 min',
+    him: [
+      {icon:'⚖️', step:'Weigh 150g 0% Greek yogurt', detail:'Use scales. 0% only — full fat doubles the calories for minimal benefit here.'},
+      {icon:'🍓', step:'Add 80g berries', detail:'Fresh or frozen both fine. Frozen thaw quickly at room temp.'},
+      {icon:'✅', step:'130 kcal · 16g protein · 14g carbs · 0g fat', detail:'Quick snack — eat within 15 min of prepping.'},
+    ],
+    her: [
+      {icon:'⚖️', step:'Weigh 150g 0% Greek yogurt', detail:'Use scales. 0% only — same as him, this one is identical.'},
+      {icon:'🍓', step:'Add 80g berries', detail:'Fresh or frozen both fine.'},
+      {icon:'✅', step:'130 kcal · 16g protein · 14g carbs · 0g fat', detail:'Quick snack — eat within 15 min of prepping.'},
+    ]
+  },
+  'Almonds': {
+    time: '30 sec',
+    him: [
+      {icon:'⚖️', step:'Weigh 20g raw almonds', detail:'Pre-portioned Sunday bags make this instant. ~13–14 whole almonds.'},
+      {icon:'✅', step:'120 kcal · 4g protein · 4g carbs · 10g fat', detail:'Eat with a large glass of water to slow digestion.'},
+    ],
+    her: [
+      {icon:'⚖️', step:'Weigh 15g raw almonds', detail:'Pre-portioned Sunday bags make this instant. ~10–11 whole almonds.'},
+      {icon:'✅', step:'90 kcal · 3g protein · 3g carbs · 8g fat', detail:'Eat with a large glass of water to slow digestion.'},
+    ]
+  },
+  'Vietnamese Goi Ga salad': {
+    time: '5 min (using Sunday prep)',
+    him: [
+      {icon:'🍗', step:'Pull 200g pre-cooked shredded chicken', detail:'From Sunday container — already portioned and labelled.'},
+      {icon:'🥗', step:'Add 3 cups shredded cabbage slaw', detail:'From Sunday prep containers. Do NOT add dressing yet.'},
+      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'From Sunday rice container. Reheat 60–90 sec in microwave.'},
+      {icon:'🍋', step:'Dress with ginger-lime dressing', detail:'2–3 tbsp from Sunday jar. Toss just before eating — not ahead or cabbage goes soggy.'},
+      {icon:'✅', step:'520 kcal · 45g protein · 52g carbs · 8g fat', detail:'Eat within 2 hrs of dressing.'},
+    ],
+    her: [
+      {icon:'🍗', step:'Pull 150g pre-cooked shredded chicken', detail:'From Sunday container — already portioned.'},
+      {icon:'🥗', step:'Add 3 cups shredded cabbage slaw', detail:'From Sunday prep. No dressing yet.'},
+      {icon:'🚫', step:'No rice today', detail:'Saves ~180 kcal. Bulk comes from the extra cabbage volume.'},
+      {icon:'🍋', step:'Dress with ginger-lime dressing', detail:'2 tbsp from Sunday jar. Toss just before eating.'},
+      {icon:'✅', step:'310 kcal · 34g protein · 20g carbs · 6g fat', detail:'Eat within 2 hrs of dressing.'},
+    ]
+  },
+  'Thai chopped chicken salad': {
+    time: '5 min (using Sunday prep)',
+    him: [
+      {icon:'🍗', step:'Pull 200g pre-cooked shredded chicken', detail:'From Sunday container.'},
+      {icon:'🥗', step:'Add 3 cups mixed greens', detail:'Chopped romaine, cucumber, capsicum, red onion, coriander.'},
+      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'Reheat 60–90 sec.'},
+      {icon:'🥜', step:'Spicy peanut dressing — 2 tbsp', detail:'2 tbsp peanut butter + 1 tbsp fish sauce + 1 tbsp lime + 1 tsp sriracha + warm water to thin. Shake well.'},
+      {icon:'✅', step:'530 kcal · 46g protein · 54g carbs · 10g fat', detail:'Best eaten fresh — dressing thickens in fridge.'},
+    ],
+    her: [
+      {icon:'🍗', step:'Pull 150g pre-cooked shredded chicken', detail:'From Sunday container.'},
+      {icon:'🥗', step:'Add 3 cups mixed greens', detail:'Same chopped salad mix as him.'},
+      {icon:'🚫', step:'No rice', detail:'Saves ~180 kcal.'},
+      {icon:'🥜', step:'Spicy peanut dressing — 1.5 tbsp', detail:'Slightly less than him. Same recipe.'},
+      {icon:'✅', step:'320 kcal · 34g protein · 18g carbs · 9g fat', detail:'Best eaten fresh.'},
+    ]
+  },
+  'Cilantro-lime chicken bowl': {
+    time: '5 min (using Sunday prep)',
+    him: [
+      {icon:'🍗', step:'Pull 200g pre-cooked air-fryer chicken', detail:'From Sunday container. Reheat in microwave 60 sec or eat cold.'},
+      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'Reheat 60–90 sec.'},
+      {icon:'🥗', step:'Add 1.5 cups green salad', detail:'Spinach or mixed leaves, sliced cucumber, halved cherry tomatoes.'},
+      {icon:'🍋', step:'Dress with lime juice + coriander', detail:'Squeeze ½ lime, handful fresh coriander, pinch salt.'},
+      {icon:'✅', step:'520 kcal · 45g protein · 50g carbs · 8g fat', detail:''},
+    ],
+    her: [
+      {icon:'🍗', step:'Pull 150g pre-cooked air-fryer chicken', detail:'From Sunday container.'},
+      {icon:'🍚', step:'Add ½ cup cooked brown rice', detail:'Reheat 45 sec.'},
+      {icon:'🥗', step:'Add 2 cups green salad', detail:'Extra greens offset the smaller rice portion.'},
+      {icon:'🍋', step:'Dress with lime juice + coriander', detail:'Squeeze ½ lime, handful fresh coriander, pinch salt.'},
+      {icon:'✅', step:'330 kcal · 34g protein · 28g carbs · 7g fat', detail:''},
+    ]
+  },
+  'Tandoori chicken skewers': {
+    time: '5 min (using Sunday prep)',
+    him: [
+      {icon:'🍗', step:'Pull 200g pre-cooked tandoori chicken', detail:'From Sunday container. Best reheated 90 sec covered with damp paper towel.'},
+      {icon:'🍚', step:'Add 1 cup cooked brown rice', detail:'Reheat 60–90 sec.'},
+      {icon:'🥦', step:'Add 1.5 cups steamed broccoli', detail:'Steam 3–4 min or microwave in water 2 min.'},
+      {icon:'✅', step:'510 kcal · 46g protein · 50g carbs · 8g fat', detail:''},
+    ],
+    her: [
+      {icon:'🍗', step:'Pull 150g pre-cooked tandoori chicken', detail:'From Sunday container.'},
+      {icon:'🥦', step:'Add 2 cups steamed broccoli', detail:'No rice — broccoli adds bulk and fibre.'},
+      {icon:'✅', step:'300 kcal · 34g protein · 18g carbs · 6g fat', detail:''},
+    ]
+  },
+};
+// Dinner steps are generated dynamically from the plan name
+function getDinnerPrepSteps(mealName, isHim) {
+  const name = mealName.replace(/^Dinner [^:]+:\s*/i, '').trim();
+  return [{
+    icon:'🍳', step:'Follow the weekly plan recipe for: ' + name,
+    detail: isHim
+      ? 'Him portions: 220g protein · 1 cup jasmine rice · vegetables as listed. Cook fresh or use prepped proteins from Sunday.'
+      : 'Her portions: 150g protein · cauliflower rice or ½ cup brown rice as listed · extra vegetables.'
+  }, {
+    icon:'⏱️', step:'Cook time: 15–20 min', detail:'Most dinners are stir-fry, oven or air-fryer. All under 25 min with Sunday prep done.'
+  }, {
+    icon:'✅', step:'Check your calorie target', detail: isHim
+      ? 'Him dinner target: ~500–580 kcal. Stay close — this is your biggest meal.'
+      : 'Her dinner target: ~290–360 kcal. Weigh proteins to stay accurate.'
+  }];
+}
+
 const PREP_STEPS = [
   {title:'Cook all chicken breast',detail:'Season 2–2.5kg with salt, garlic, white pepper. Oven 200°C for 22–25 min OR air-fryer batches 200°C for 18 min. Check internal temp 75°C.'},
   {title:'Shred + portion chicken',detail:'Shred all cooked chicken. Him: 200g per lunch container. Her: 150g per lunch container. Label Mon–Fri.'},
@@ -1414,7 +1538,10 @@ function renderDailyMeals() {
         <button class="pm-check ${done?'checked':''}" onclick="toggleDailyMeal('${key}',${idx})">${done?'✓':''}</button>
       </div>
       <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} (${m.himCal} kcal)</div>
-      <div class="pm-detail" style="color:var(--purple);font-weight:500">Her: ${m.her} (${m.herCal} kcal)</div>`;
+      <div class="pm-detail" style="color:var(--purple);font-weight:500;margin-bottom:10px">Her: ${m.her} (${m.herCal} kcal)</div>
+      <button onclick="openPrepModal('${m.name.replace(/'/g,"\\'")}','${m.time}')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1.5px solid var(--teal);background:transparent;color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
+        👨‍🍳 How to make
+      </button>`;
     cont.appendChild(div);
   });
   document.getElementById('daily-total-him').textContent = himCal.toLocaleString()+' kcal';
@@ -2747,8 +2874,38 @@ window.searchItemOnStore   = searchItemOnStore;
 window.openStoreSearch     = openStoreSearch;
 window.copyListForStore    = copyListForStore;
 window.clearSundayChecks   = clearSundayChecks;
+function openPrepModal(mealName, mealTime) {
+  const isHim = profile === 'him';
+  const key = mealName.replace(/^Dinner [^:]+:\s*/i, '').trim();
+  let steps;
+  if (MEAL_PREP_STEPS[mealName]) {
+    steps = isHim ? MEAL_PREP_STEPS[mealName].him : MEAL_PREP_STEPS[mealName].her;
+  } else {
+    steps = getDinnerPrepSteps(mealName, isHim);
+  }
+  const prepTime = MEAL_PREP_STEPS[mealName]?.time || '15–20 min';
+  document.getElementById('prep-modal-title').textContent = mealName.replace(/^Dinner [^:]+:\s*/i,'');
+  document.getElementById('prep-modal-time').textContent = mealTime + '  ·  ⏱ ' + prepTime;
+  document.getElementById('prep-modal-steps').innerHTML = steps.map((s,i) => `
+    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:${i<steps.length-1?'1px solid var(--border2)':'none'}">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${s.icon}</div>
+      <div style="padding-top:2px">
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px">${s.step}</div>
+        ${s.detail ? `<div style="font-size:13px;color:var(--text2);line-height:1.6">${s.detail}</div>` : ''}
+      </div>
+    </div>`).join('');
+  document.getElementById('prep-modal').style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+function closePrepModal() {
+  document.getElementById('prep-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 window.toggleDailyMeal     = toggleDailyMeal;
 window.switchMealTab       = switchMealTab;
+window.openPrepModal       = openPrepModal;
+window.closePrepModal      = closePrepModal;
 window.shiftCalMonth       = shiftCalMonth;
 window.selectCalDay        = selectCalDay;
 window.clearDailyChecks    = clearDailyChecks;
@@ -2765,5 +2922,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles loaded — Him at 1,772 kcal and Her at 1,194 kcal. Starting Monday 8 June. Ask me anything about meals, workouts, or how to push through a tough day.", 'coach');
 </script>
+<!-- Meal prep modal -->
+<div id="prep-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);padding:16px;overflow-y:auto" onclick="if(event.target===this)closePrepModal()">
+  <div style="background:var(--bg);border-radius:16px;max-width:480px;margin:0 auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px" id="prep-modal-time"></div>
+        <div style="font-size:18px;font-weight:700;color:var(--text)" id="prep-modal-title"></div>
+      </div>
+      <button onclick="closePrepModal()" style="width:36px;height:36px;border-radius:50%;border:none;background:var(--bg3);font-size:20px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center">×</button>
+    </div>
+    <div style="padding:4px 18px 20px" id="prep-modal-steps"></div>
+  </div>
+</div>
+
 </body>
 </html>

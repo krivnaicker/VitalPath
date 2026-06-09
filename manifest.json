@@ -2,7 +2,7 @@
   "name": "VitalPath — Daily Health Coach",
   "short_name": "VitalPath",
   "description": "Personal AI health coach and nutrition tracker for two",
-  "start_url": ".",
+  "start_url": "/VitalPath/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F8FAFB",

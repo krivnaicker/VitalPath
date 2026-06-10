@@ -3182,30 +3182,45 @@ function subscribeRealtime(uid) {
 
 // ── Auth: Google Sign-In via Supabase OAuth ──────────────────────────────────
 window._signInWithGoogle = async function() {
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+
   if (!window._sb) {
-    document.getElementById('auth-error').textContent =
-      'Supabase not configured yet — see SETUP_README for instructions.';
-    document.getElementById('auth-error').style.display = 'block';
+    errEl.textContent = 'Supabase not initialised — check your connection and reload.';
+    errEl.style.display = 'block';
     return;
   }
+
   const btn = document.getElementById('google-signin-btn');
-  btn.textContent = 'Signing in…';
+  btn.textContent = 'Opening Google…';
   btn.disabled = true;
+
+  // Always redirect back to wherever the app is currently hosted
+  const redirectTo = window.location.origin + window.location.pathname;
+
   try {
-    const { error } = await window._sb.auth.signInWithOAuth({
+    const { data, error } = await window._sb.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://krivnaicker.github.io/VitalPath/',
+        redirectTo,
         queryParams: { access_type: 'offline', prompt: 'consent' },
         skipBrowserRedirect: false,
       }
     });
     if (error) throw error;
+    // signInWithOAuth triggers a page redirect — if we get here something blocked it
+    setTimeout(() => {
+      btn.textContent = 'Continue with Google';
+      btn.disabled = false;
+      errEl.textContent = 'Popup may have been blocked — please allow popups for this site and try again, or check that this URL is whitelisted in your Supabase project under Authentication → URL Configuration → Redirect URLs.';
+      errEl.style.display = 'block';
+    }, 3000);
   } catch (e) {
-    document.getElementById('auth-error').textContent = e.message;
-    document.getElementById('auth-error').style.display = 'block';
+    errEl.textContent = e.message || 'Sign-in failed — check console for details.';
+    errEl.style.display = 'block';
     btn.textContent = 'Continue with Google';
     btn.disabled = false;
+    console.error('[VitalPath auth error]', e);
   }
 };
 

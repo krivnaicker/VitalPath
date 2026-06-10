@@ -468,6 +468,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div id="today-meals"></div>
   </div>
 
+  <div class="card" id="today-exercise-card">
+    <div class="card-label">Today's exercise</div>
+    <div id="today-exercise"></div>
+  </div>
+
   <div class="card">
     <div class="card-label">Water · 8 glasses target</div>
     <div class="water-row">
@@ -856,55 +861,55 @@ const MEALS = {
 
 const WEEK_PLANS = {
   1:{
-    title:'Week 1 · Spicy Thai & Vietnamese',
+    title:'Week 1 · Thai & Vietnamese',
     himTotal:1800, herTotal:1190,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
       {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
-      {name:'Vietnamese Goi Ga salad',time:'Lunch 1:30pm',him:'200g chicken · 90g cabbage · 185g brown rice · ginger-lime dressing',himCal:520,her:'150g chicken · 90g cabbage · no rice · ginger-lime dressing',herCal:310},
+      {name:'Chicken cucumber salad (Nam Tuk style)',time:'Lunch 1:30pm',him:'200g poached chicken · 120g cucumber · 40g vermicelli · chili-lime-fish sauce dressing · fresh mint + coriander',himCal:510,her:'150g poached chicken · 120g cucumber · 20g vermicelli · dressing · fresh herbs',herCal:310},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Thai green curry',time:'Dinner 7pm',him:'220g chicken · 185g jasmine rice · 120g greens · light coconut milk',himCal:540,her:'150g chicken · 100g cauliflower rice · 120g greens · light coconut milk',herCal:340},
-      {name:'Dinner Wed/Thu: Thai basil chili beef',time:'Dinner 7pm',him:'220g lean beef strips · 185g jasmine rice · 80g stir-fry greens',himCal:530,her:'150g lean beef strips · 90g brown rice · 120g stir-fry greens',herCal:360},
-      {name:'Dinner Fri: Chili garlic prawns with jasmine rice',time:'Dinner 7pm',him:'250g raw prawns · 185g jasmine rice · 80g stir-fry greens',himCal:480,her:'180g raw prawns · 100g cauliflower rice · 80g stir-fry greens',herCal:290},
+      {name:'Pad Ka Prao (Thai basil chili beef/chicken) — Mon/Tue',time:'Dinner 7pm',him:'220g lean beef or chicken · 185g jasmine rice · 80g green beans · oyster sauce · fish sauce · bird-eye chili · Thai basil',himCal:540,her:'150g lean beef or chicken · 90g jasmine rice · 100g green beans · same sauce',herCal:340},
+      {name:'Pho (Vietnamese beef noodle soup) — Wed/Thu',time:'Dinner 7pm',him:'200g beef slices · 80g flat rice noodles · rich star-anise broth · bean sprouts · Thai basil · lime · hoisin',himCal:520,her:'150g beef slices · 50g flat rice noodles · broth · sprouts · herbs',herCal:330},
+      {name:'Tom Yum Goong — Fri/Sat',time:'Dinner 7pm',him:'250g prawns · 185g jasmine rice · tom yum broth (nam prik pao paste · lemongrass · kaffir lime · galangal · chili)',himCal:510,her:'200g prawns · 90g jasmine rice · full broth · mushrooms',herCal:330},
     ]
   },
   2:{
-    title:'Week 2 · Seafood & Thai Chopped',
-    himTotal:1820, herTotal:1200,
+    title:'Week 2 · Asian-Fusion Bowls',
+    himTotal:1810, herTotal:1190,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
-      {name:'Thai chopped chicken salad',time:'Lunch 1:30pm',him:'200g chicken · 90g mixed greens · 185g brown rice · spicy peanut dressing',himCal:530,her:'150g chicken · 90g mixed greens · no rice · spicy peanut dressing',herCal:320},
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
+      {name:'Spicy chicken donburi bowl',time:'Lunch 1:30pm',him:'200g chicken thigh (teriyaki-chili glaze) · 185g Japanese short-grain rice · pickled ginger · cucumber · sesame · nori',himCal:530,her:'150g chicken thigh · 90g rice · same toppings',herCal:330},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Gochujang salmon bowl',time:'Dinner 7pm',him:'2 salmon fillets (~300g) · 280g jasmine rice · 100g bok choy',himCal:580,her:'1 salmon fillet (~150g) · 100g cauliflower rice · 100g bok choy',herCal:360},
-      {name:'Dinner Wed/Thu: Spicy garlic prawn stir-fry',time:'Dinner 7pm',him:'220g prawns · 185g jasmine rice · 150g mixed veg',himCal:500,her:'150g prawns · 90g brown rice · 150g mixed veg',herCal:320},
-      {name:'Dinner Fri/Sat: Tom Yum seafood',time:'Dinner 7pm',him:'250g white fish + prawns · 185g jasmine rice',himCal:510,her:'180g white fish · 100g tofu in soup · no rice',herCal:290},
+      {name:'Korean beef bulgogi — Mon/Tue',time:'Dinner 7pm',him:'220g beef sirloin (soy · pear · sesame · gochugaru marinade) · 185g steamed rice · 100g bok choy · kimchi side',himCal:550,her:'150g beef · 90g rice · bok choy · kimchi',herCal:350},
+      {name:'Japanese curry (Jap curry) — Wed/Thu',time:'Dinner 7pm',him:'200g chicken or pork · 185g Japanese rice · carrots · potato · onion · S&B curry roux · fukujinzuke pickles',himCal:540,her:'150g protein · 100g rice · plenty of veg',herCal:340},
+      {name:'Nam Tok beef salad — Fri/Sat',time:'Dinner 7pm',him:'220g grilled beef (thin-sliced) · 185g jasmine rice · toasted rice powder · fish sauce · lime · chili · shallots · mint',himCal:520,her:'170g grilled beef · 90g jasmine rice · full salad dressing',herCal:330},
     ]
   },
   3:{
-    title:'Week 3 · Latin-Asian Fusion',
-    himTotal:1800, herTotal:1185,
+    title:'Week 3 · Comfort Noodles & Braises',
+    himTotal:1800, herTotal:1180,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
-      {name:'Cilantro-lime chicken bowl',time:'Lunch 1:30pm',him:'200g air-fryer chicken · 185g brown rice · 45g green salad',himCal:520,her:'150g air-fryer chicken · 90g brown rice · 60g green salad',herCal:330},
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
+      {name:'Ramen (pork chashu belly) bowl',time:'Lunch 1:30pm',him:'150g chashu pork belly · 80g ramen noodles · rich soy-miso broth · soft egg · nori · bamboo · spring onion',himCal:520,her:'100g chashu pork · 60g ramen noodles · broth · egg · greens',herCal:330},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Air-fryer steak fajitas',time:'Dinner 7pm',him:'220g flank steak · 185g jasmine rice · 150g bell peppers',himCal:550,her:'150g flank steak · 100g cauliflower rice · 150g bell peppers',herCal:350},
-      {name:'Dinner Wed/Thu: Chili-lime white fish',time:'Dinner 7pm',him:'220g white fish · 185g jasmine rice · 150g steamed beans',himCal:490,her:'150g white fish · 150g steamed beans · no rice',herCal:280},
-      {name:'Dinner Fri/Sat: Mexican skillet mince',time:'Dinner 7pm',him:'220g lean beef mince · 185g jasmine rice · 150g zucchini',himCal:540,her:'150g mince · 100g crumbled tofu · extra veg · no rice',herCal:340},
+      {name:'Pickled mustard greens with pork & noodles — Mon/Tue',time:'Dinner 7pm',him:'220g pork (shoulder or mince) · suan cai · 80g glass noodles · chili oil · ginger · garlic · soy',himCal:530,her:'150g pork · suan cai · 50g glass noodles · same aromatics',herCal:330},
+      {name:'Wat Dan Hor (rice noodle egg gravy) — Wed/Thu',time:'Dinner 7pm',him:'220g prawn/chicken · 200g flat rice noodles · wok-fried egg gravy · dark soy · oyster sauce · bok choy',himCal:540,her:'150g protein · 150g noodles · egg gravy · bok choy',herCal:340},
+      {name:'Abalone, broccoli & mushroom egg noodles — Fri/Sat',time:'Dinner 7pm',him:'150g abalone or scallop · 200g broccoli · 100g shiitake · 80g egg noodles · oyster-ginger sauce',himCal:500,her:'100g abalone · 200g broccoli · shiitake · 60g noodles · sauce',herCal:310},
     ]
   },
   4:{
-    title:'Week 4 · Indo-Asian Spice',
-    himTotal:1790, herTotal:1180,
+    title:'Week 4 · South Asian Spice & Fusion',
+    himTotal:1790, herTotal:1185,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed, not scooped) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed, not scooped) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'Same',herCal:130},
-      {name:'Tandoori chicken skewers',time:'Lunch 1:30pm',him:'200g tandoori chicken · 185g brown rice · 150g broccoli',himCal:510,her:'150g tandoori chicken · 200g broccoli · no rice',herCal:300},
+      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
+      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
+      {name:'Durban chicken curry + roti canai',time:'Lunch 1:30pm',him:'200g chicken (bone-in OK) · Durban masala spice · 1.5 roti canai · tomato-onion gravy',himCal:520,her:'150g chicken · 1 roti canai · tomato-onion gravy · 60g cucumber raita',herCal:330},
       {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Dinner Mon/Tue: Beef & cauliflower keema',time:'Dinner 7pm',him:'220g lean mince · 185g jasmine rice · 145g peas',himCal:530,her:'150g lean mince · 150g cauliflower rice · 150g extra veg',herCal:330},
-      {name:'Dinner Wed/Thu: Goan fish curry',time:'Dinner 7pm',him:'220g white fish · 185g jasmine rice · 45g spinach',himCal:500,her:'150g white fish · 45g spinach · light broth · no rice',herCal:290},
-      {name:'Dinner Fri/Sat: Ginger-garlic chicken stir-fry',time:'Dinner 7pm',him:'220g chicken · 185g jasmine rice · 80g stir-fry greens',himCal:520,her:'150g chicken · 120g stir-fry greens · no rice',herCal:300},
+      {name:'Spicy lamb chops — Mon/Tue',time:'Dinner 7pm',him:'3 lamb loin chops (~250g) · harissa-cumin marinade · 185g jasmine rice · 100g cucumber yogurt',himCal:550,her:'2 lamb loin chops (~160g) · marinade · 90g jasmine rice · raita',herCal:350},
+      {name:'Chili con carne nachos — Wed/Thu',time:'Dinner 7pm',him:'220g lean beef mince · kidney beans · chipotle · cumin · 50g baked corn chips · 30g reduced-fat cheese · jalapeños · fresh salsa',himCal:530,her:'150g lean beef mince · beans · chipotle · 30g baked chips · 20g cheese · salsa',herCal:330},
+      {name:'Larb (Thai minced meat salad) — Fri/Sat',time:'Dinner 7pm',him:'220g chicken or pork mince · 185g jasmine rice · toasted rice powder · fish sauce · lime · dried chili · shallots · mint · coriander',himCal:520,her:'170g mince · 90g jasmine rice · full dressing · herbs',herCal:330},
     ]
   },
 };
@@ -1126,6 +1131,7 @@ let woDone = {};
 let mealWeek = 1;
 let checkins = { him:[], her:[] };
 let chatHistory = [];
+let mealSwaps = {}; // mealSwaps[dateKey][slotIdx] = {name,him,her,himCal,herCal,time}
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 function showPage(id, btn) {
@@ -1152,28 +1158,34 @@ function setProfile(p) {
 // ── Today ─────────────────────────────────────────────────────────────────────
 const TIPS = {
   him:[
-    '🏋️ Day 1 — Mon 8 June. Gym at 8am, upper body + treadmill. Breakfast at 10am post-workout. Drink 300ml water before leaving for the gym.',
-    '💪 Upper body day! Chest, back, shoulders. Focus on form over weight — Week 1 is about building the movement patterns.',
-    '🦵 Leg day today. Leg press, leg curls, calf raises. Your legs will feel it — that\'s progress.',
-    '🔄 Upper push variation day. Try to add 2.5kg to at least one lift vs Monday.',
-    '🍖 Lower body hinge day. Romanian deadlifts — push hips back and feel the hamstring stretch.',
-    '💥 Full body Friday. Your strongest session of the week. 20 min treadmill at 8% today.',
-    '😴 Active recovery. Light movement only. Cook your Sunday batch prep for the week ahead.',
+    '🏋️ Monday — Upper body day. Gym at 8am, chest + back + shoulders. Focus on form, not weight. Drink 300ml water before leaving.',
+    '💪 Tuesday — Leg day. Leg press, curls, calf raises, hip abductor. Legs will burn — that\'s progress.',
+    '🔄 Wednesday — Upper body push variation. Incline press, cable fly, hammer curls. Try to match or beat Monday\'s weights.',
+    '🍖 Thursday — Lower body hinge. Romanian deadlifts and hack squat. Push hips back and feel the hamstring stretch.',
+    '💥 Friday — Full body compound day. Your strongest session of the week. 20 min treadmill at 8% today.',
+    '🌿 Saturday — Active recovery + core. Bird dogs, dead bugs, glute bridges. Light and deliberate.',
+    '😴 Sunday — Rest and meal prep day. Cook your batch prep. Sets up the whole week ahead.',
   ],
   her:[
-    '🏋️ Day 1 — Mon 8 June. Gym at 8am. 1,194 kcal target today. Start with 300ml water pre-gym.',
-    '💪 Upper body day! Same session as him, lighter weights. Build the habit first.',
-    '🦵 Leg and glute focus today. Hip abductor machine is your friend — great for toning.',
-    '🔄 Upper push variation. Cable chest fly and hammer curls are great for arms + chest definition.',
-    '🍖 Hamstring and glute focus. Bird dogs and dead bugs at the end for core stability.',
-    '💥 Full body Friday. Feel the compound movements. You\'ve earned the 20 min treadmill.',
-    '😴 Recovery day. Sunday prep sets up the whole week — it\'s worth every minute.',
+    '🏋️ Monday — Upper body day. Gym at 8am, 1,194 kcal target. Start with 300ml water pre-gym.',
+    '💪 Tuesday — Leg and glute focus. Hip abductor machine is your best friend today.',
+    '🔄 Wednesday — Upper push variation. Cable chest fly and hammer curls for arms + chest definition.',
+    '🍖 Thursday — Hamstring and glute focus. Bird dogs and dead bugs at the end for core stability.',
+    '💥 Friday — Full body day. Compound movements all the way. You\'ve earned the 20 min treadmill.',
+    '🌿 Saturday — Active recovery + core. Light and controlled. Feel the stretch, not the burn.',
+    '😴 Sunday — Recovery day. Meal prep sets up the whole week — it\'s worth every minute.',
   ]
 };
 
 function renderToday() {
   const prof = PROFILES[profile];
-  const dayIdx = 0; // Would normally be calculated from actual date
+  // Real day index: anchor Mon 8 Jun 2026 = index 0, cycles 0–6
+  const anchor = new Date('2026-06-08T00:00:00');
+  const now = new Date();
+  const diffDays = Math.floor((now - anchor) / 86400000);
+  const dayIdx = ((diffDays % 7) + 7) % 7;
+  const todayLabel = now.toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('tip-eyebrow').textContent = "Today's Briefing — " + todayLabel;
   document.getElementById('tip-icon').textContent = ['🏋️','💪','🦵','🔄','🍖','💥','😴'][dayIdx]||'🏋️';
   document.getElementById('tip-text').textContent = TIPS[profile][dayIdx]||TIPS[profile][0];
 
@@ -1235,7 +1247,44 @@ function renderToday() {
   }
   document.getElementById('water-tip').textContent = waterCount>=8?'✓ Daily water goal reached! Great work.':'Tap each glass as you drink it. Start with 300ml before gym.';
 
-  renderOatsPrep();
+  renderTodayExercise();
+}
+
+function renderTodayExercise() {
+  const el = document.getElementById('today-exercise');
+  if (!el) return;
+  const anchor = new Date('2026-06-08T00:00:00');
+  const now = new Date();
+  const diffDays = Math.floor((now - anchor) / 86400000);
+  const dayIdx = ((diffDays % 7) + 7) % 7;
+  const wo = WORKOUTS[dayIdx];
+  if (!wo) { el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:6px 0">No workout data for today.</div>'; return; }
+  if (wo.rest) {
+    el.innerHTML = `<div style="text-align:center;padding:16px 0">
+      <div style="font-size:32px;margin-bottom:8px">😴</div>
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px">Rest &amp; Meal Prep Day</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">Batch cook, recover, and set up a great week.</div>
+    </div>`;
+    return;
+  }
+  const isHim = profile === 'him';
+  const exHtml = wo.exercises.map(e => `
+    <div style="padding:9px 0;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">${e.n} <span style="font-weight:500;color:var(--text3)">${e.s}</span></div>
+        <div style="font-size:12px;color:${isHim?'var(--gold)':'var(--purple)'};font-weight:600;margin-top:2px">${isHim?e.him:e.her}</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.5;margin-top:2px">${e.tip}</div>
+      </div>
+    </div>`).join('');
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <div style="background:var(--coral-soft);border-radius:10px;padding:6px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:var(--coral)">${wo.focus}</div>
+    </div>
+    ${exHtml}
+    <div style="margin-top:10px;padding:10px;background:var(--teal-light);border-radius:10px;border:1px solid rgba(8,145,178,.15)">
+      <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.06em;margin-bottom:3px">🏃 TREADMILL</div>
+      <div style="font-size:12px;color:var(--text2)">${wo.treadmill}</div>
+    </div>`;
 }
 
 function renderOatsPrep() {
@@ -1332,9 +1381,12 @@ function switchMealTab(tab) {
   if (tab==='plan') renderMeals();
 }
 
+
 function renderDailyMeals() {
   const key = todayKey();
-  const { week, plan, meals } = getMealsForDate(key);
+  const { week, plan, meals: baseMeals } = getMealsForDate(key);
+  const swapsToday = mealSwaps[key] || {};
+  const meals = baseMeals.map((m,i) => swapsToday[i] ? {...swapsToday[i], time:m.time} : m);
   const log = (dailyMealLog[key] || {})[profile] || {};
   const checked = meals.filter((_,i) => log[i]).length;
   const d = new Date();
@@ -1348,19 +1400,22 @@ function renderDailyMeals() {
   cont.innerHTML = '';
   meals.forEach((m,idx) => {
     const done = !!log[idx];
+    const isSwapped = !!swapsToday[idx];
     if (done) { himCal+=m.himCal; herCal+=m.herCal; }
     const div = document.createElement('div');
     div.className = 'plan-meal'+(done?' done-meal':'');
-    div.innerHTML = `<div class="pm-time">${m.time}</div>
+    div.innerHTML = `<div class="pm-time">${m.time}${isSwapped?'<span style="margin-left:6px;font-size:10px;background:var(--coral-soft);color:var(--coral);padding:2px 6px;border-radius:8px;font-weight:700">SWAPPED</span>':''}</div>
       <div class="pm-header">
         <span class="pm-name">${m.name}</span>
         <button class="pm-check ${done?'checked':''}" onclick="toggleDailyMeal('${key}',${idx})">${done?'✓':''}</button>
       </div>
       <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} (${m.himCal} kcal)</div>
       <div class="pm-detail" style="color:var(--purple);font-weight:500;margin-bottom:10px">Her: ${m.her} (${m.herCal} kcal)</div>
-      <button onclick="openPrepModal('${m.name.replace(/'/g,"\\'")}','${m.time}')" class="how-to-btn">
-        👨‍🍳 How to make
-      </button>`;
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button onclick="openPrepModal('${m.name.replace(/'/g,"\'")}','${m.time}')" class="how-to-btn">👨\u200d🍳 How to make</button>
+        <button onclick="openSwapModal('${key}',${idx},${idx>=4})" class="how-to-btn" style="background:var(--teal-light);color:var(--teal);border-color:rgba(8,145,178,.2)">🔄 Swap meal</button>
+        ${isSwapped?`<button onclick="resetSwap('${key}',${idx})" class="how-to-btn" style="color:var(--text3)">↩ Reset</button>`:''}
+      </div>`;
     cont.appendChild(div);
   });
   document.getElementById('daily-total-him').textContent = himCal.toLocaleString()+' kcal';
@@ -2729,6 +2784,104 @@ window.shiftCalMonth       = shiftCalMonth;
 window.selectCalDay        = selectCalDay;
 window.clearDailyChecks    = clearDailyChecks;
 
+// ── Meal swap modal ──────────────────────────────────────────────────────────
+// All preferred meals from the user list, with Him/Her calorie estimates
+const SWAP_MEALS = [
+  {name:'Nam Tok beef salad',him:'220g grilled beef · toasted rice powder · fish sauce · lime · chili · shallots · mint · 185g jasmine rice',her:'170g grilled beef · dressing · herbs · 90g jasmine rice',himCal:520,herCal:330},
+  {name:'Durban chicken curry',him:'220g chicken · Durban masala · tomato-onion gravy · 185g jasmine rice',her:'150g chicken · gravy · 90g jasmine rice or roti',himCal:540,herCal:340},
+  {name:'Chili con carne spicy nachos',him:'220g lean beef mince · kidney beans · chipotle · 50g baked chips · 30g cheese · jalapeños · salsa',her:'150g mince · beans · 30g baked chips · 20g cheese · salsa',himCal:530,herCal:330},
+  {name:'Healthy burger (bunless)',him:'220g beef patty · lettuce · tomato · onion · pickles · mustard · 185g sweet potato wedges',her:'150g beef patty · salad · pickles · 100g wedges',himCal:540,herCal:340},
+  {name:'Pad Ka Prao (Thai basil chili)',him:'220g chicken or beef · bird-eye chili · Thai basil · oyster sauce · fish sauce · 185g jasmine rice',her:'150g protein · same sauce · 90g jasmine rice',himCal:530,herCal:330},
+  {name:'Roti canai + curry',him:'2 roti canai · Durban chicken curry dhal · cucumber raita',her:'1 roti canai · curry dhal · raita',himCal:520,herCal:330},
+  {name:'Spicy chicken donburi bowl',him:'200g chicken thigh (teriyaki-chili) · 185g Japanese rice · pickled ginger · cucumber · sesame · nori',her:'150g chicken · 90g rice · toppings',himCal:530,herCal:330},
+  {name:'Minestrone soup + bread',him:'large bowl minestrone · beans · veg · pasta · 1 slice sourdough',her:'large bowl minestrone · extra veg · no bread',himCal:450,herCal:280},
+  {name:'Pan-fried fish + veg',him:'220g blue cod or snapper · pan-fried in olive oil · 185g jasmine rice · 100g steamed greens',her:'180g fish · 90g rice · 100g greens',himCal:500,herCal:310},
+  {name:'Congee (rice porridge)',him:'240g cooked congee · 150g poached chicken · ginger · spring onion · sesame oil · white pepper',her:'200g congee · 100g chicken · ginger · toppings',himCal:430,herCal:280},
+  {name:'Bolognaise pasta bake (panko)',him:'180g penne · 200g beef bolognaise · panko + parmesan crust · oven-baked',her:'120g penne · 150g bolognaise · light panko topping',himCal:560,herCal:360},
+  {name:'Carbonara pasta',him:'180g spaghetti · 80g pancetta · 2 egg yolks · pecorino · black pepper · no cream',her:'120g spaghetti · 50g pancetta · 1 egg yolk · pecorino',himCal:570,herCal:360},
+  {name:'Orzo beef pasta bake',him:'200g orzo · 180g beef mince · tomato · herbs · 30g parmesan topping',her:'130g orzo · 130g beef mince · tomato sauce',himCal:540,herCal:340},
+  {name:'Mac and cheese (white sauce)',him:'180g pasta · béchamel · 40g cheddar · panko crust',her:'120g pasta · béchamel · 25g cheddar',himCal:550,herCal:350},
+  {name:'Venison + wedges',him:'220g venison steak · red wine jus · 200g oven wedges · 80g greens',her:'170g venison · jus · 120g wedges · 80g greens',himCal:540,herCal:340},
+  {name:'Cottage pie',him:'200g lean beef mince filling · peas · carrots · 180g mashed potato topping',her:'150g mince filling · veg · 120g mash',himCal:520,herCal:330},
+  {name:'Smoked salmon orzo salad',him:'150g smoked salmon · 180g orzo · cucumber · capers · lemon · dill · crème fraîche',her:'100g smoked salmon · 120g orzo · salad',himCal:520,herCal:330},
+  {name:'Pho (Vietnamese beef noodle)',him:'200g beef slices · 80g flat rice noodles · star anise broth · sprouts · Thai basil · lime',her:'150g beef · 50g noodles · broth · herbs',himCal:510,herCal:320},
+  {name:'Ramen (pork chashu)',him:'150g chashu pork belly · 80g ramen noodles · soy-miso broth · soft egg · nori · bamboo',her:'100g chashu · 60g noodles · broth · egg',himCal:520,herCal:330},
+  {name:'Korean beef bulgogi',him:'220g beef sirloin (soy·pear·sesame·gochugaru) · 185g rice · bok choy · kimchi',her:'150g beef · 90g rice · bok choy · kimchi',himCal:550,herCal:350},
+  {name:'Japanese curry (Jap curry)',him:'200g chicken or pork · 185g Japanese rice · carrots · potato · S&B roux · pickles',her:'150g protein · 100g rice · veg',himCal:540,herCal:340},
+  {name:'Spicy lamb chops',him:'3 loin chops ~250g · harissa-cumin marinade · 185g jasmine rice · raita',her:'2 loin chops ~160g · marinade · 90g rice · raita',himCal:550,herCal:350},
+  {name:'Tom Yum Goong soup',him:'250g prawns · tom yum broth (nam prik pao · lemongrass · kaffir lime · galangal) · 185g jasmine rice',her:'180g prawns · broth · 90g jasmine rice',himCal:510,herCal:330},
+  {name:'Larb (Thai minced salad)',him:'220g chicken or pork mince · toasted rice powder · fish sauce · lime · dried chili · mint · 185g jasmine rice',her:'170g mince · dressing · herbs · 90g jasmine rice',himCal:520,herCal:330},
+  {name:'Abalone, broccoli & mushroom noodles',him:'150g abalone or scallop · 200g broccoli · 100g shiitake · 80g egg noodles · oyster-ginger sauce',her:'100g abalone · 200g broccoli · shiitake · 60g noodles',himCal:500,herCal:310},
+  {name:'Taco bowl',him:'200g seasoned chicken or beef mince · 50g black beans · salsa · guac · jalapeños · 185g jasmine rice',her:'150g protein · beans · salsa · guac · 90g rice',himCal:530,herCal:330},
+  {name:'Seafood chowder',him:'200g mixed seafood · potato · corn · light cream broth · 1 slice sourdough',her:'180g seafood · potato · corn · broth · no bread',himCal:480,herCal:300},
+  {name:'Borscht with beef',him:'200g beef chunk · beetroot · cabbage · carrot · sour cream · 1 slice dark rye bread',her:'150g beef · full soup · sour cream · no bread',himCal:470,herCal:300},
+  {name:'Braised tofu + protein',him:'200g firm tofu + 100g beef · soy-ginger braise · 185g jasmine rice · bok choy',her:'200g tofu + 80g beef · braise · 90g jasmine rice · greens',himCal:490,herCal:310},
+  {name:'Wat Dan Hor (rice noodle egg gravy)',him:'220g prawn or chicken · 200g flat rice noodles · egg gravy · dark soy · oyster sauce · bok choy',her:'150g protein · 150g noodles · egg gravy · bok choy',himCal:540,herCal:340},
+  {name:'Pickled mustard greens with pork & noodles',him:'220g pork shoulder or mince · suan cai · 80g glass noodles · chili oil · ginger · garlic · soy',her:'150g pork · suan cai · 50g noodles · aromatics',himCal:530,herCal:330},
+  {name:'Vietnamese fresh spring rolls',him:'6 spring rolls · 120g prawns · rice paper · verm. · herbs · hoisin-peanut dip',her:'5 spring rolls · 90g prawns · rice paper · herbs · dip',himCal:390,herCal:250},
+  {name:'Japanese tofu pockets, mushroom & sashimi',him:'4 inari pockets · 150g sashimi · 100g marinated mushrooms · 80g Japanese seaweed salad',her:'3 inari pockets · 120g sashimi · mushrooms · seaweed',himCal:440,herCal:280},
+  {name:'Peking duck wraps',him:'4 wraps · 150g duck · hoisin · cucumber · spring onion · 180g jasmine rice side',her:'3 wraps · 100g duck · hoisin · cucumber · 90g rice side',himCal:540,herCal:340},
+  {name:'Black pepper beef',him:'220g beef strips · black pepper sauce · oyster sauce · 185g jasmine rice · 100g broccoli',her:'160g beef · sauce · 90g jasmine rice · broccoli',himCal:530,herCal:330},
+  {name:'Spring onion pancake + soup',him:'2 spring onion pancakes · chicken mushroom soup with dried scallop · Parma ham',her:'1.5 pancakes · soup · scallop broth',himCal:440,herCal:280},
+  {name:'BBQ pork with rice',him:'220g char siu pork · 185g jasmine rice · 100g steamed bok choy',her:'150g char siu · 90g jasmine rice · bok choy',himCal:540,herCal:340},
+  {name:'Tomato cream sauce pasta',him:'180g pasta · tomato cream sauce · 150g chicken or prawn · basil · parmesan',her:'120g pasta · sauce · 100g protein',himCal:540,herCal:340},
+  {name:'Sour mustard greens soup with fish',him:'200g white fish · suan cai · ginger · glass noodles · chili',her:'180g fish · suan cai · ginger · light noodles',himCal:390,herCal:250},
+  {name:'Cheeseburger bowl (bunless)',him:'200g beef patty (crumbled) · 30g cheddar · lettuce · tomato · pickles · mustard · sweet potato wedges 150g',her:'150g patty · 20g cheddar · salad · 80g wedges',himCal:530,herCal:330},
+];
+
+let swapCtx = null; // {dateKey, slotIdx, isDinner}
+
+function openSwapModal(dateKey, slotIdx, isDinner) {
+  swapCtx = { dateKey, slotIdx, isDinner };
+  const modal = document.getElementById('swap-modal');
+  const list = document.getElementById('swap-meal-list');
+  const heading = document.getElementById('swap-modal-heading');
+  heading.textContent = isDinner ? 'Choose a dinner swap' : 'Choose a meal swap';
+  // Filter relevant meals based on slot (non-dinner slots show lighter options too)
+  const showMeals = SWAP_MEALS;
+  list.innerHTML = '';
+  showMeals.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding:12px 0;border-bottom:1px solid var(--border2);cursor:pointer';
+    div.innerHTML = `<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px">${m.name}</div>
+      <div style="font-size:12px;color:var(--gold);font-weight:500;margin-bottom:2px">Him: ${m.himCal} kcal</div>
+      <div style="font-size:12px;color:var(--purple);font-weight:500">Her: ${m.herCal} kcal</div>`;
+    div.onclick = () => applySwap(i);
+    list.appendChild(div);
+  });
+  modal.style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function applySwap(mealIdx) {
+  if (!swapCtx) return;
+  const {dateKey, slotIdx} = swapCtx;
+  const m = SWAP_MEALS[mealIdx];
+  if (!mealSwaps[dateKey]) mealSwaps[dateKey] = {};
+  mealSwaps[dateKey][slotIdx] = {name:m.name, him:m.him, her:m.her, himCal:m.himCal, herCal:m.herCal};
+  closeSwapModal();
+  renderDailyMeals();
+  renderToday();
+  if (typeof scheduleSave === 'function') scheduleSave(600);
+}
+
+function resetSwap(dateKey, slotIdx) {
+  if (mealSwaps[dateKey]) delete mealSwaps[dateKey][slotIdx];
+  renderDailyMeals();
+  renderToday();
+  if (typeof scheduleSave === 'function') scheduleSave(600);
+}
+
+function closeSwapModal() {
+  document.getElementById('swap-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  swapCtx = null;
+}
+
+window.openSwapModal = openSwapModal;
+window.closeSwapModal = closeSwapModal;
+window.resetSwap = resetSwap;
+
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   initAuth();
@@ -2757,8 +2910,20 @@ addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles
   </div>
 </div>
 
-</body>
 
+<!-- SWAP MEAL MODAL -->
+<div id="swap-modal" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);padding:16px;overflow-y:auto" onclick="if(event.target===this)closeSwapModal()">
+  <div style="background:#fff;border-radius:20px;max-width:480px;margin:0 auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px">🔄 MEAL SWAP</div>
+        <div style="font-size:17px;font-weight:700;color:var(--text)" id="swap-modal-heading">Choose a swap</div>
+      </div>
+      <button onclick="closeSwapModal()" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div style="padding:4px 18px 20px;max-height:70vh;overflow-y:auto" id="swap-meal-list"></div>
+  </div>
+</div>
 
 </body>
 </html>

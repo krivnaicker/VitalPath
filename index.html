@@ -8,325 +8,388 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>VitalPath — Daily Health Coach</title>
 <link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ── SUPABASE CONFIG ────────────────────────────────────────────────────────
-  // REPLACE THESE TWO VALUES after creating your free project at
-  // https://supabase.com → New project → Settings → API
-const SUPABASE_URL  = 'https://fikeanetwflbybqbmbje.supabase.co';
+  const SUPABASE_URL  = 'https://fikeanetwflbybqbmbje.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpa2VhbmV0d2ZsYnlicWJtYmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NjU5MjcsImV4cCI6MjA5NjQ0MTkyN30.ZfxAra9f1PbxuVL7b2fLPc01zUv9zhkftPqpySGbK98';
-
-
-  // Make Supabase client available globally
   if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
     window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
-      auth: {
-        flowType: 'pkce',
-        storage: window.localStorage,
-        persistSession: true,
-        detectSessionInUrl: true,
-      }
+      auth: { flowType:'pkce', storage:window.localStorage, persistSession:true, detectSessionInUrl:true }
     });
-  } else {
-    window._sb = null; // Will fall back to local-only mode until configured
-  }
+  } else { window._sb = null; }
 </script>
 <style>
+/* ═══════════════════════════════════════════════════════════════════════
+   VITALPATH v3 — WARM MOTIVATIONAL REDESIGN
+   Primary: Coral #E8622A  |  Him: Teal #0891B2  |  Her: Purple #7C3AED
+   Type: Plus Jakarta Sans (headings) · Inter (body/data)
+   Base: Warm off-white #FAFAF8
+═══════════════════════════════════════════════════════════════════════ */
 :root {
-  --teal:       #0891B2;
-  --teal-dark:  #0E7490;
-  --teal-light: #ECFEFF;
-  --teal-glow:  rgba(8,145,178,.12);
-  --teal-mid:   rgba(8,145,178,.18);
-  --gold:       #B45309;
-  --gold-bg:    #FEF3C7;
-  --purple:     #7C3AED;
-  --purple-bg:  #EDE9FE;
-  --bg:         #F8FAFB;
-  --bg2:        #FFFFFF;
-  --bg3:        #F1F5F7;
-  --surface:    #FFFFFF;
-  --surface2:   #F1F5F7;
-  --border:     rgba(8,145,178,.2);
-  --border2:    rgba(0,0,0,.08);
-  --text:       #0C1A1F;
-  --text2:      #4B6472;
-  --text3:      #8BA4AE;
-  --radius:     14px;
-  --radius-sm:  10px;
+  /* ── Core brand ── */
+  --coral:       #E8622A;
+  --coral-dark:  #C9521F;
+  --coral-soft:  #FFF0EA;
+  --coral-mid:   rgba(232,98,42,.15);
+  --coral-glow:  rgba(232,98,42,.07);
+
+  /* ── Profile colours (preserved) ── */
+  --teal:        #0891B2;
+  --teal-dark:   #0E7490;
+  --teal-light:  #ECFEFF;
+  --teal-glow:   rgba(8,145,178,.12);
+  --purple:      #7C3AED;
+  --purple-bg:   #EDE9FE;
+  --gold:        #B45309;
+  --gold-bg:     #FEF3C7;
+
+  /* ── Status ── */
+  --success:     #16A34A;
+  --success-soft:rgba(22,163,74,.1);
+  --warn:        #D97706;
+  --warn-soft:   rgba(217,119,6,.1);
+  --danger:      #DC2626;
+  --danger-soft: rgba(220,38,38,.08);
+
+  /* ── Surfaces ── */
+  --bg:          #FAFAF8;   /* warm off-white — not clinical */
+  --bg2:         #FFFFFF;
+  --bg3:         #F3F1ED;   /* warm grey */
+  --surface:     #FFFFFF;
+  --surface2:    #F3F1ED;
+  --border:      rgba(0,0,0,.08);
+  --border2:     rgba(0,0,0,.06);
+
+  /* ── Text ── */
+  --text:        #1A1512;
+  --text2:       #5C5248;
+  --text3:       #9C9289;
+
+  /* ── Shape ── */
+  --radius:      16px;
+  --radius-sm:   12px;
+  --radius-xs:   8px;
+  --shadow:      0 1px 4px rgba(0,0,0,.05), 0 4px 20px rgba(0,0,0,.04);
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.05);
 }
+
+/* ── Reset ── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;overflow-x:hidden}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;overflow-x:hidden}
 
 /* ── Layout ── */
 .shell{display:flex;flex-direction:column;min-height:100vh;max-width:520px;margin:0 auto;position:relative}
 
 /* ── Header ── */
 .app-header{
-  background:#FFFFFF;
-  padding:16px 20px 12px;
+  background:#FFFFFF;padding:14px 18px 12px;
   position:sticky;top:0;z-index:100;
   border-bottom:1px solid var(--border2);
-  box-shadow:0 1px 8px rgba(0,0,0,.06);
+  box-shadow:0 2px 14px rgba(0,0,0,.05);
 }
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.app-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#0C1A1F;letter-spacing:-.5px}
-.app-logo span{color:var(--teal);font-weight:700}
-.date-chip{font-size:11px;color:var(--text2);background:var(--bg3);padding:4px 10px;border-radius:20px;font-weight:600;border:0.5px solid var(--border2)}
-.profile-toggle{display:flex;gap:6px}
-.ptab{flex:1;padding:9px 0;border-radius:20px;border:1.5px solid var(--border2);font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);transition:.2s;letter-spacing:.02em;font-family:'DM Sans',sans-serif}
-.ptab.him.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(8,145,178,.25)}
-.ptab.her.active{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.app-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.5px}
+.app-logo span{color:var(--coral)}
+.date-chip{font-size:11px;color:var(--text2);background:var(--bg3);padding:4px 10px;border-radius:20px;font-weight:600;border:1px solid var(--border2)}
 
-/* ── Nav ── */
+/* ── Profile toggle — pill container ── */
+.profile-toggle{display:flex;gap:4px;background:var(--bg3);padding:3px;border-radius:24px}
+.ptab{
+  flex:1;padding:8px 0;border-radius:20px;border:none;
+  font-size:13px;font-weight:700;cursor:pointer;
+  background:transparent;color:var(--text3);
+  transition:.2s;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.ptab.him.active{background:#FFF;color:var(--teal);box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.ptab.her.active{background:#FFF;color:var(--purple);box-shadow:0 1px 6px rgba(0,0,0,.1)}
+
+/* ── Bottom Nav ── */
 .bottom-nav{
   position:sticky;bottom:0;z-index:100;
-  background:#FFFFFF;
-  border-top:1px solid var(--border2);
-  box-shadow:0 -1px 8px rgba(0,0,0,.06);
-  display:flex;
-  padding:8px 4px max(8px, env(safe-area-inset-bottom));
+  background:#FFFFFF;border-top:1px solid var(--border2);
+  box-shadow:0 -2px 14px rgba(0,0,0,.06);
+  display:flex;padding:6px 2px max(8px,env(safe-area-inset-bottom));
 }
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 1px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;letter-spacing:.03em;transition:.15s;border-radius:var(--radius-sm)}
-.nav-btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.nav-btn.active{color:var(--teal)}
-.nav-btn.active svg{stroke:var(--teal)}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 1px;border:none;background:none;cursor:pointer;
+  color:var(--text3);font-size:10px;font-weight:700;
+  font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;
+  transition:.15s;border-radius:var(--radius-sm);
+}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn.active{color:var(--coral)}
+.nav-btn.active svg{stroke:var(--coral)}
 
 /* ── Pages ── */
-.page{display:none;padding:16px 16px 8px;flex:1;animation:fadeIn .2s ease}
+.page{display:none;padding:14px 14px 8px;flex:1;animation:fadeIn .18s ease}
 .page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── Cards ── */
-.card{background:#FFFFFF;border:1px solid var(--border2);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal-glow),transparent)}
-.card-label{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+.card{
+  background:#FFFFFF;border-radius:var(--radius);padding:16px;
+  margin-bottom:12px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.card-label{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:.07em;
+  color:var(--text3);text-transform:uppercase;margin-bottom:12px;
+}
 
-/* ── Tip banner ── */
-.tip-banner{background:linear-gradient(135deg,var(--teal-light),rgba(236,254,255,.4));border:1px solid rgba(8,145,178,.15);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
-.tip-icon{font-size:20px;margin-bottom:6px}
-.tip-text{font-size:14px;color:var(--text);line-height:1.7}
+/* ── Greeting / tip banner ── */
+.tip-banner{
+  background:linear-gradient(135deg,#1A1512 0%,#2E231A 100%);
+  border-radius:var(--radius);padding:18px 18px 16px;
+  margin-bottom:12px;position:relative;overflow:hidden;
+}
+.tip-banner::before{
+  content:'';position:absolute;top:-30px;right:-20px;
+  width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,98,42,.22),transparent 70%);
+}
+.tip-eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:.1em;
+  color:var(--coral);margin-bottom:5px;
+  font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;
+}
+.tip-icon{font-size:22px;margin-bottom:6px}
+.tip-text{font-size:14px;color:rgba(255,255,255,.88);line-height:1.7;font-family:'Inter',sans-serif}
 
 /* ── Calorie ring ── */
 .cal-section{display:flex;align-items:center;gap:16px;margin-bottom:16px}
-.ring-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-wrap{position:relative;width:100px;height:100px;flex-shrink:0}
 .ring-wrap svg{transform:rotate(-90deg)}
 .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1}
-.ring-label{font-size:10px;color:var(--text3);margin-top:2px}
+.ring-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:var(--text);line-height:1}
+.ring-label{font-size:10px;color:var(--text3);margin-top:2px;font-weight:600;letter-spacing:.04em}
 .cal-stats{flex:1}
-.cal-stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2)}
+.cal-stat-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2)}
 .cal-stat-row:last-child{border-bottom:none}
-.csr-name{font-size:12px;color:var(--text2);font-weight:500}
-.csr-bar-wrap{flex:1;margin:0 10px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
-.csr-bar{height:100%;border-radius:3px;transition:width .4s ease}
-.csr-val{font-size:12px;font-weight:700;color:var(--text);min-width:42px;text-align:right}
+.csr-name{font-size:12px;color:var(--text2);font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;width:56px;flex-shrink:0}
+.csr-bar-wrap{flex:1;margin:0 10px;height:6px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.csr-bar{height:100%;border-radius:4px;transition:width .5s ease}
+.csr-val{font-size:11px;font-weight:700;color:var(--text);min-width:46px;text-align:right}
+/* remaining row big display */
+.rem-display{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;color:var(--success)}
 
 /* ── Meal log ── */
-.meal-row{padding:14px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.meal-row{padding:13px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .meal-row:last-child{border-bottom:none}
-.meal-time{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:3px;text-transform:uppercase}
-.meal-name{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px}
-.meal-detail{font-size:13px;color:var(--text2);line-height:1.6}
+.meal-time{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:3px;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif}
+.meal-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;font-family:'Plus Jakarta Sans',sans-serif}
+.meal-detail{font-size:12px;color:var(--text2);line-height:1.6}
 .meal-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
-.meal-kcal{font-size:14px;font-weight:700;color:var(--teal)}
-.log-pill{padding:9px 18px;border-radius:20px;border:1.5px solid var(--border2);background:#F8FAFB;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;white-space:nowrap;min-height:40px}
-.log-pill:hover{border-color:var(--teal);color:var(--teal)}
-.log-pill.done{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 6px rgba(8,145,178,.3)}
+.meal-kcal{font-size:13px;font-weight:700;color:var(--coral)}
+.log-pill{
+  padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--bg3);font-size:12px;font-weight:700;color:var(--text2);
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s;white-space:nowrap;min-height:38px;
+}
+.log-pill:active{transform:scale(.95)}
+.log-pill.done{background:var(--success);border-color:var(--success);color:#fff;box-shadow:0 2px 8px rgba(22,163,74,.25)}
 
 /* ── Water ── */
 .water-row{display:flex;align-items:center;gap:12px;margin-top:4px}
 .water-glasses{display:flex;gap:5px;flex:1;flex-wrap:wrap}
-.glass{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s;user-select:none}
-.glass:hover{border-color:rgba(55,138,221,.4);background:rgba(55,138,221,.08)}
-.glass.filled{background:rgba(55,138,221,.15);border-color:rgba(55,138,221,.45)}
+.glass{
+  width:36px;height:36px;border-radius:10px;
+  border:1.5px solid var(--border);background:var(--bg3);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:.15s;user-select:none;
+}
+.glass:active{transform:scale(.9)}
+.glass.filled{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.45)}
 .water-label{font-size:12px;color:var(--text2);white-space:nowrap;font-weight:600}
 
 /* ── Week pill nav ── */
 .week-pills{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .week-pills::-webkit-scrollbar{display:none}
-.wpill{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;background:#fff;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0;transition:.15s}
-.wpill:hover{border-color:var(--teal);color:var(--teal)}
-.wpill.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 6px rgba(8,145,178,.2)}
+.wpill{
+  padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);
+  font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;
+  background:#fff;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;transition:.15s;
+}
+.wpill.active{background:var(--coral);border-color:var(--coral);color:#fff;box-shadow:0 2px 8px var(--coral-mid)}
 
-/* ── Meal plan table ── */
-.plan-meal{padding:16px 0;border-bottom:1px solid var(--border2)}
+/* ── Meal plan ── */
+.plan-meal{padding:14px 0;border-bottom:1px solid var(--border2)}
 .plan-meal:last-child{border-bottom:none}
 .pm-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
-.pm-name{font-size:15px;font-weight:600;color:var(--text)}
+.pm-name{font-size:14px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}
 .pm-cals{font-size:12px;font-weight:700}
-.pm-time{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
-.pm-detail{font-size:13px;color:var(--text2);line-height:1.6}
-.pm-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;font-size:14px;margin-left:8px}
-.pm-check.checked{background:var(--teal);border-color:var(--teal);color:#fff}
+.pm-time{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif}
+.pm-detail{font-size:12px;color:var(--text2);line-height:1.6}
+.pm-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;font-size:13px;margin-left:8px}
+.pm-check.checked{background:var(--success);border-color:var(--success);color:#fff}
 .plan-meal.done-meal .pm-name{text-decoration:line-through;color:var(--text3)}
 .plan-meal.done-meal .pm-detail{opacity:.5}
 .plan-meal.done-meal .pm-time{opacity:.5}
+
+/* ── "How to make" button ── */
+.how-to-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:20px;
+  border:1.5px solid var(--coral);background:transparent;
+  color:var(--coral);font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  transition:.15s;margin-top:8px;
+}
+.how-to-btn:active{background:var(--coral-soft)}
+
 /* ── Meal tabs ── */
-.meal-tab{flex:1;padding:10px 0;border-radius:20px;border:1.5px solid var(--border2);font-size:14px;font-weight:700;cursor:pointer;background:transparent;color:var(--text3);transition:.2s;font-family:'DM Sans',sans-serif}
-.meal-tab.active{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(8,145,178,.25)}
+.meal-tab{flex:1;padding:10px 0;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--text3);transition:.2s;font-family:'Plus Jakarta Sans',sans-serif}
+.meal-tab.active{background:var(--coral);border-color:var(--coral);color:#fff;box-shadow:0 2px 8px var(--coral-mid)}
+
 /* ── Calendar ── */
 .cal-cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);background:var(--bg3);border:1.5px solid transparent;transition:.15s;position:relative}
-.cal-cell:hover{border-color:var(--teal)}
-.cal-cell.today{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
+.cal-cell:hover{border-color:var(--coral)}
+.cal-cell.today{border-color:var(--coral);color:var(--coral);background:var(--coral-soft)}
 .cal-cell.has-data{background:#fff;border-color:var(--border2)}
-.cal-cell.selected{background:var(--teal);color:#fff;border-color:var(--teal)}
+.cal-cell.selected{background:var(--coral);color:#fff;border-color:var(--coral)}
 .cal-cell.empty{background:transparent;cursor:default}
 .cal-cell.other-month{opacity:.3}
 .cal-dot-row{display:flex;gap:2px;margin-top:2px}
-.cal-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);opacity:.7}
-.cal-dot.full{background:#22c55e;opacity:1}
-.cal-hdr{font-size:11px;font-weight:700;color:var(--text3);text-align:center;padding:4px 0;letter-spacing:.04em}
+.cal-dot{width:5px;height:5px;border-radius:50%;background:var(--coral);opacity:.7}
+.cal-dot.full{background:var(--success);opacity:1}
+.cal-hdr{font-size:11px;font-weight:700;color:var(--text3);text-align:center;padding:4px 0;letter-spacing:.04em;font-family:'Plus Jakarta Sans',sans-serif}
 .him-cal{color:var(--teal)}
 .her-cal{color:var(--purple)}
 .totals-bar{background:var(--bg3);border-radius:var(--radius-sm);padding:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border2)}
-.tb-label{font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.05em}
+.tb-label{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.05em;font-family:'Plus Jakarta Sans',sans-serif}
 .tb-vals{display:flex;gap:16px}
 .tb-him{font-size:13px;font-weight:700;color:var(--teal)}
 .tb-her{font-size:13px;font-weight:700;color:var(--purple)}
-.note-bar{font-size:11px;color:var(--gold);background:var(--gold-bg);border:1px solid rgba(180,83,9,.15);border-radius:var(--radius-sm);padding:8px 12px;margin-top:10px;line-height:1.5;font-weight:500}
+.note-bar{font-size:11px;color:var(--gold);background:var(--gold-bg);border:1px solid rgba(180,83,9,.15);border-radius:var(--radius-xs);padding:8px 12px;margin-top:10px;line-height:1.5;font-weight:500}
 
 /* ── Workout ── */
 .day-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:14px}
 .day-scroll::-webkit-scrollbar{display:none}
-.day-chip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:#fff;cursor:pointer;min-width:52px;flex-shrink:0;transition:.15s}
-.day-chip .dc-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em}
-.day-chip .dc-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border2)}
-.day-chip.active{border-color:var(--teal);background:var(--teal-light)}
-.day-chip.active .dc-label{color:var(--teal)}
-.day-chip.done .dc-dot{background:var(--teal);border-color:var(--teal)}
+.day-chip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:#fff;cursor:pointer;min-width:52px;flex-shrink:0;transition:.15s}
+.day-chip .dc-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.05em;font-family:'Plus Jakarta Sans',sans-serif}
+.day-chip .dc-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border)}
+.day-chip.active{border-color:var(--coral);background:var(--coral-soft)}
+.day-chip.active .dc-label{color:var(--coral)}
+.day-chip.done .dc-dot{background:var(--success);border-color:var(--success)}
 .day-chip.rest-day .dc-dot{background:var(--text3)}
-.wo-card{background:var(--bg3);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border2)}
-.wo-day-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
-.wo-focus{font-size:12px;color:var(--teal);font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em}
-.wo-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;margin-top:12px;text-transform:uppercase}
+.wo-card{background:var(--bg3);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)}
+.wo-day-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
+.wo-focus{font-size:12px;color:var(--coral);font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.04em;font-family:'Plus Jakarta Sans',sans-serif}
+.wo-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;margin-top:12px;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif}
 .exercise-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
 .exercise-row:last-child{border-bottom:none}
-.ex-num{width:24px;height:24px;border-radius:50%;background:var(--teal-light);border:1.5px solid rgba(8,145,178,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--teal);flex-shrink:0}
+.ex-num{width:24px;height:24px;border-radius:50%;background:var(--coral-soft);border:1.5px solid var(--coral-mid);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--coral);flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
 .ex-name{flex:1;font-size:13px;color:var(--text);font-weight:500}
 .ex-sets{font-size:12px;color:var(--text2);font-weight:600}
-.treadmill-pill{background:linear-gradient(135deg,rgba(8,145,178,.08),rgba(8,145,178,.03));border:1px solid rgba(8,145,178,.15);border-radius:var(--radius-sm);padding:10px 14px;margin-top:12px;display:flex;justify-content:space-between;align-items:center}
-.tp-label{font-size:12px;color:var(--teal);font-weight:700}
+.treadmill-pill{background:var(--coral-glow);border:1px solid var(--coral-mid);border-radius:var(--radius-sm);padding:10px 14px;margin-top:12px;display:flex;justify-content:space-between;align-items:center}
+.tp-label{font-size:12px;color:var(--coral);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
 .tp-val{font-size:13px;color:var(--text);font-weight:600}
-.wo-done-btn{width:100%;margin-top:14px;padding:14px;background:var(--teal);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;letter-spacing:.02em;box-shadow:0 2px 8px rgba(8,145,178,.3)}
-.wo-done-btn:hover{background:var(--teal-dark)}
-.wo-done-btn.done-state{background:var(--bg3);color:var(--text3);box-shadow:none;border:1.5px solid var(--border2)}
+.wo-done-btn{width:100%;margin-top:14px;padding:14px;background:var(--coral);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s;letter-spacing:.02em;box-shadow:0 3px 12px var(--coral-mid)}
+.wo-done-btn:active{transform:scale(.98)}
+.wo-done-btn.done-state{background:var(--bg3);color:var(--text3);box-shadow:none;border:1.5px solid var(--border)}
 
 /* ── Progress ── */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stat-box{background:#fff;border-radius:var(--radius-sm);padding:12px;text-align:center;border:1px solid var(--border2);box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.stat-big{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
-.stat-lbl{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.04em;margin-top:3px;text-transform:uppercase}
-.stat-sub{font-size:11px;margin-top:4px;font-weight:600}
-.stat-good{color:var(--teal)}
+.stat-box{background:#fff;border-radius:var(--radius-sm);padding:14px 10px;text-align:center;box-shadow:var(--shadow-sm)}
+.stat-big{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;margin-top:3px;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif}
+.stat-sub{font-size:11px;margin-top:4px;font-weight:700}
+.stat-good{color:var(--success)}
 .input-group{margin-bottom:10px}
-.input-label{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:6px;display:block}
-.styled-input{width:100%;padding:12px 14px;background:#fff;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:.15s}
-.styled-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-glow)}
-.save-btn{width:100%;padding:14px;background:var(--teal);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:.15s;letter-spacing:.02em;box-shadow:0 2px 8px rgba(8,145,178,.25)}
-.save-btn:hover{background:var(--teal-dark)}
+.input-label{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:6px;display:block;font-family:'Plus Jakarta Sans',sans-serif}
+.styled-input{width:100%;padding:12px 14px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:.15s}
+.styled-input:focus{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-mid)}
+.save-btn{width:100%;padding:14px;background:var(--coral);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:8px;transition:.15s;box-shadow:0 3px 12px var(--coral-mid)}
+.save-btn:active{transform:scale(.98)}
 .checkin-entry{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center}
 .ci-date{font-size:12px;color:var(--text3);font-weight:600}
-.ci-vals{font-size:13px;color:var(--text);font-weight:600}
+.ci-vals{font-size:13px;color:var(--text);font-weight:700}
 .ci-change{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px}
-.change-good{background:rgba(8,145,178,.1);color:var(--teal)}
-.change-bad{background:rgba(220,38,38,.08);color:#DC2626}
+.change-good{background:var(--success-soft);color:var(--success)}
+.change-bad{background:var(--danger-soft);color:var(--danger)}
 
 /* ── Coach / Chat ── */
 .chat-scroll{height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0;margin-bottom:12px;scroll-behavior:smooth}
 .chat-scroll::-webkit-scrollbar{width:3px}
 .chat-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.bubble{max-width:88%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.65}
+.bubble{max-width:88%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.65;font-family:'Inter',sans-serif}
 .bubble.coach{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start}
-.bubble.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.bubble.user{background:var(--coral);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
 .bubble.thinking{color:var(--text3);font-style:italic}
 .chat-input-row{display:flex;gap:8px}
-.chat-input{flex:1;padding:12px 16px;background:#fff;border:1.5px solid var(--border2);border-radius:24px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:.15s}
-.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-glow)}
-.send-btn{width:44px;height:44px;border-radius:50%;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;box-shadow:0 2px 6px rgba(8,145,178,.3)}
-.send-btn:hover{background:var(--teal-dark)}
+.chat-input{flex:1;padding:12px 16px;background:#fff;border:1.5px solid var(--border);border-radius:24px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:.15s}
+.chat-input:focus{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-mid)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:var(--coral);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px var(--coral-mid);transition:.15s}
+.send-btn:active{transform:scale(.92)}
 .send-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .quick-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.qchip{padding:7px 13px;border-radius:20px;border:1.5px solid var(--border2);background:#fff;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
-.qchip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-light)}
-.coach-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.06em;margin-bottom:8px}
-.coach-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.qchip{padding:8px 13px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s}
+.qchip:active{background:var(--coral-soft);border-color:var(--coral);color:var(--coral)}
+.coach-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--coral);letter-spacing:.07em;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase}
+.coach-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--coral);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
 
 /* ── Prep guide ── */
 .prep-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border2)}
 .prep-step:last-child{border-bottom:none}
-.step-num{width:28px;height:28px;border-radius:50%;background:var(--teal-light);border:1.5px solid rgba(8,145,178,.2);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--teal);flex-shrink:0}
-.step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--coral-soft);border:1.5px solid var(--coral-mid);display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:var(--coral);flex-shrink:0}
+.step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif}
 .step-detail{font-size:12px;color:var(--text2);line-height:1.6}
 
-/* ── Scan mode buttons ── */
-.scan-mode-btn{padding:12px 8px;background:#fff;border:1.5px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text2);text-align:center;transition:.15s;width:100%;font-weight:500}
-.scan-mode-btn:hover{border-color:var(--teal);color:var(--teal)}
-.scan-mode-btn.active{border-color:var(--teal);background:var(--teal-light);color:var(--teal);font-weight:700}
-.scan-mode-btn.active div:nth-child(2){color:var(--teal)}
+/* ── Scan ── */
+.scan-mode-btn{padding:12px 8px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text2);text-align:center;transition:.15s;width:100%;font-weight:600}
+.scan-mode-btn:active{background:var(--coral-soft)}
+.scan-mode-btn.active{border-color:var(--coral);background:var(--coral-soft);color:var(--coral);font-weight:700}
+.scan-mode-btn.active div:nth-child(2){color:var(--coral)}
 
 /* ── Responsive desktop ── */
 @media(min-width:600px){
-  .shell{max-width:520px;margin:0 auto;box-shadow:0 0 80px rgba(0,0,0,.5)}
-  body{background:#080e0b}
+  .shell{max-width:520px;margin:0 auto;box-shadow:0 0 80px rgba(0,0,0,.4)}
+  body{background:#0E0A07}
 }
 </style>
 </head>
 <body>
-<!-- ── AUTH OVERLAY ─────────────────────────────────────────────────────── -->
+
+<!-- ── AUTH OVERLAY ── -->
 <div id="auth-overlay" style="
   position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(160deg,#F0FAFB 0%,#ECFEFF 60%,#F8FAFB 100%);
+  background:linear-gradient(160deg,#1A1512 0%,#2E1F12 55%,#1A1512 100%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:32px 24px;text-align:center;
 ">
-  <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#0C1A1F;letter-spacing:-.5px;margin-bottom:6px">
-    Vital<span style="color:#0891B2">Path</span>
+  <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:38px;font-weight:800;color:#FFF;letter-spacing:-.5px;margin-bottom:6px">
+    Vital<span style="color:#E8622A">Path</span>
   </div>
-  <div style="font-size:13px;color:#4B6472;margin-bottom:48px;font-weight:600">Daily Health Coach · Private & Synced</div>
-  
-  <div style="width:72px;height:72px;border-radius:50%;background:rgba(8,145,178,.12);border:2px solid rgba(8,145,178,.25);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:32px">💚</div>
-  
-  <div style="font-size:18px;font-weight:700;color:#0C1A1F;margin-bottom:8px">Sign in to sync your data</div>
-  <div style="font-size:13px;color:#4B6472;line-height:1.7;max-width:320px;margin-bottom:36px">
-    Your meals, workouts, and progress sync in real time between both phones. Each profile signs in separately with their Google account.
-  </div>
-
+  <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:48px;font-weight:700;letter-spacing:.06em;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase">Daily Health Coach · Private &amp; Synced</div>
+  <div style="width:80px;height:80px;border-radius:50%;background:rgba(232,98,42,.15);border:2px solid rgba(232,98,42,.3);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:36px">🔥</div>
+  <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#FFF;margin-bottom:8px">Sign in to sync your data</div>
+  <div style="font-size:13px;color:rgba(255,255,255,.42);line-height:1.8;max-width:300px;margin-bottom:36px">Your meals, workouts and progress sync in real time between both phones. Each profile signs in separately.</div>
   <button id="google-signin-btn" onclick="window._signInWithGoogle()" style="
-    display:flex;align-items:center;gap:12px;
-    padding:16px 28px;
-    background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;
+    display:flex;align-items:center;gap:12px;padding:16px 28px;
+    background:#fff;border:none;border-radius:14px;
     font-size:15px;font-weight:700;color:#1a1a1a;
-    cursor:pointer;font-family:'DM Sans',sans-serif;
-    box-shadow:0 2px 12px rgba(0,0,0,.1);
-    transition:.2s;width:100%;max-width:320px;justify-content:center;
-    margin-bottom:16px;
+    cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+    box-shadow:0 4px 24px rgba(0,0,0,.3);
+    width:100%;max-width:300px;justify-content:center;margin-bottom:16px;
   ">
     <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
     Continue with Google
   </button>
-
-  <div id="auth-error" style="font-size:12px;color:#DC2626;margin-top:8px;display:none"></div>
-  
-  <div style="font-size:11px;color:#8BA4AE;margin-top:32px;line-height:1.7;max-width:300px">
-    🔒 Your data is private. Only you and your partner can access your profiles.<br>
-    Data syncs automatically — no manual backups needed.
-  </div>
-
+  <div id="auth-error" style="font-size:12px;color:#FC8181;margin-top:8px;display:none"></div>
+  <div style="font-size:11px;color:rgba(255,255,255,.22);margin-top:32px;line-height:1.8;max-width:280px">🔒 Private. Only you and your partner can access your profiles. Data syncs automatically.</div>
 </div>
 
-<!-- ── SYNC STATUS BAR ────────────────────────────────────────────────────── -->
+<!-- ── SYNC STATUS BAR ── -->
 <div id="sync-bar" style="
-  display:none;
-  position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-  background:rgba(8,145,178,.95);color:#fff;
+  display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+  background:rgba(232,98,42,.95);color:#fff;
   font-size:12px;font-weight:700;padding:8px 20px;
   border-radius:20px;z-index:500;pointer-events:none;
-  backdrop-filter:blur(8px);
-  transition:opacity .3s;
+  backdrop-filter:blur(8px);transition:opacity .3s;font-family:'Plus Jakarta Sans',sans-serif;
 ">⟳ Syncing...</div>
 
 <div class="shell">
@@ -338,10 +401,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     <div style="display:flex;align-items:center;gap:8px">
       <div class="date-chip" id="date-chip">Mon 8 June 2026</div>
       <div id="user-avatar" onclick="window._signOut()" title="Sign out" style="
-        width:28px;height:28px;border-radius:50%;
-        background:rgba(8,145,178,.1);border:1.5px solid rgba(8,145,178,.3);
+        width:30px;height:30px;border-radius:50%;
+        background:var(--coral-soft);border:1.5px solid rgba(232,98,42,.3);
         display:none;align-items:center;justify-content:center;
-        cursor:pointer;overflow:hidden;font-size:12px;font-weight:700;color:var(--teal);
+        cursor:pointer;overflow:hidden;font-size:12px;font-weight:700;color:var(--coral);
       "></div>
     </div>
   </div>
@@ -351,9 +414,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
   </div>
 </div>
 
-<!-- PAGES -->
+<!-- ═══ PAGES ═══ -->
+
+<!-- TODAY -->
 <div id="p-today" class="page active">
   <div class="tip-banner">
+    <div class="tip-eyebrow" id="tip-eyebrow">Today's briefing</div>
     <div class="tip-icon" id="tip-icon">🏋️</div>
     <div class="tip-text" id="tip-text">Loading your daily briefing...</div>
   </div>
@@ -362,20 +428,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     <div class="card-label">Calories today</div>
     <div class="cal-section">
       <div class="ring-wrap">
-        <svg width="90" height="90" viewBox="0 0 90 90">
-          <circle cx="45" cy="45" r="38" fill="none" stroke="#1a2420" stroke-width="8"/>
-          <circle id="cal-ring" cx="45" cy="45" r="38" fill="none" stroke="#0891B2" stroke-width="8" stroke-linecap="round"
-            stroke-dasharray="238.76" stroke-dashoffset="238.76" style="transition:stroke-dashoffset .5s ease"/>
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#F3F1ED" stroke-width="9"/>
+          <circle id="cal-ring" cx="50" cy="50" r="42" fill="none" stroke="#E8622A" stroke-width="9" stroke-linecap="round"
+            stroke-dasharray="263.9" stroke-dashoffset="263.9" style="transition:stroke-dashoffset .6s ease"/>
         </svg>
         <div class="ring-center">
           <div class="ring-num" id="ring-eaten">0</div>
-          <div class="ring-label">eaten</div>
+          <div class="ring-label">EATEN</div>
         </div>
       </div>
       <div class="cal-stats">
         <div class="cal-stat-row">
           <span class="csr-name">Protein</span>
-          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-p" style="width:0%;background:#C8963E"></div></div>
+          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-p" style="width:0%;background:#E8622A"></div></div>
           <span class="csr-val" id="val-p">0 / <span id="tgt-p">153</span>g</span>
         </div>
         <div class="cal-stat-row">
@@ -385,13 +451,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
         </div>
         <div class="cal-stat-row">
           <span class="csr-name">Fat</span>
-          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-f" style="width:0%;background:#7B5EA7"></div></div>
+          <div class="csr-bar-wrap"><div class="csr-bar" id="bar-f" style="width:0%;background:#7C3AED"></div></div>
           <span class="csr-val" id="val-f">0 / <span id="tgt-f">55</span>g</span>
         </div>
         <div class="cal-stat-row">
-          <span class="csr-name">Remaining</span>
+          <span class="csr-name">Left</span>
           <div class="csr-bar-wrap"></div>
-          <span class="csr-val" id="val-rem" style="color:var(--teal)">1,772</span>
+          <span class="csr-val rem-display" id="val-rem">1,772</span>
         </div>
       </div>
     </div>
@@ -409,24 +475,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     </div>
     <div style="font-size:11px;color:var(--text3);margin-top:8px" id="water-tip">Tap each glass as you drink it. Start with 300ml before gym.</div>
   </div>
-
 </div>
 
+<!-- MEALS -->
 <div id="p-meals" class="page">
-
-  <!-- Tab switcher: Today / Calendar / Plan -->
   <div style="display:flex;gap:8px;margin-bottom:14px">
     <button class="meal-tab active" id="mtab-today" onclick="switchMealTab('today')">Today</button>
     <button class="meal-tab" id="mtab-calendar" onclick="switchMealTab('calendar')">History</button>
     <button class="meal-tab" id="mtab-plan" onclick="switchMealTab('plan')">Weekly Plan</button>
   </div>
-
-  <!-- TODAY TAB -->
   <div id="meal-view-today">
     <div class="card" style="margin-bottom:12px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <div class="card-label" style="margin-bottom:0" id="meals-today-label">Today's meals</div>
-        <div style="font-size:13px;font-weight:700;color:var(--teal)" id="meals-today-progress">0 / 5</div>
+        <div style="font-size:13px;font-weight:700;color:var(--coral)" id="meals-today-progress">0 / 5</div>
       </div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:12px" id="meals-today-week"></div>
       <div id="meal-daily-list"></div>
@@ -439,29 +501,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
       </div>
     </div>
   </div>
-
-  <!-- CALENDAR / HISTORY TAB -->
   <div id="meal-view-calendar" style="display:none">
     <div class="card" style="margin-bottom:12px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <button onclick="shiftCalMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:18px;cursor:pointer;color:var(--text2)">‹</button>
-        <div id="cal-month-label" style="font-size:16px;font-weight:700;color:var(--text)"></div>
-        <button onclick="shiftCalMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:18px;cursor:pointer;color:var(--text2)">›</button>
+        <button onclick="shiftCalMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:18px;cursor:pointer;color:var(--text2)">&#8249;</button>
+        <div id="cal-month-label" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:var(--text)"></div>
+        <button onclick="shiftCalMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:18px;cursor:pointer;color:var(--text2)">&#8250;</button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px" id="cal-day-headers"></div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px" id="cal-grid"></div>
     </div>
-    <!-- Selected day detail -->
     <div class="card" id="cal-day-detail" style="display:none">
       <div class="card-label" id="cal-detail-label"></div>
       <div id="cal-detail-meals"></div>
     </div>
-    <div id="cal-empty-msg" style="text-align:center;padding:24px 16px;color:var(--text3);font-size:15px">
-      No meal history yet.<br>Start checking off meals today!
-    </div>
+    <div id="cal-empty-msg" style="text-align:center;padding:24px 16px;color:var(--text3);font-size:15px">No meal history yet.<br>Start checking off meals today!</div>
   </div>
-
-  <!-- WEEKLY PLAN TAB -->
   <div id="meal-view-plan" style="display:none">
     <div class="week-pills" style="margin-bottom:12px">
       <button class="wpill active" onclick="setMealWeek(1,this)">Week 1</button>
@@ -470,7 +525,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
       <button class="wpill" onclick="setMealWeek(4,this)">Week 4</button>
     </div>
     <div class="card">
-      <div class="card-label" id="meal-week-label">Week 1 · Spicy Thai & Vietnamese</div>
+      <div class="card-label" id="meal-week-label">Week 1 &middot; Spicy Thai &amp; Vietnamese</div>
       <div id="meal-plan-list"></div>
       <div class="totals-bar">
         <span class="tb-label">DAILY TOTAL</span>
@@ -482,278 +537,117 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
       <div class="note-bar">* Daily total = one day's eating (breakfast + 2 snacks + lunch + one dinner). Multiple dinners shown are for different nights — not all eaten the same day.</div>
     </div>
     <div class="card">
-      <div class="card-label">Sunday batch prep (2–3 hrs)</div>
+      <div class="card-label">Sunday batch prep (2&ndash;3 hrs)</div>
       <div id="prep-steps"></div>
     </div>
   </div>
-
 </div>
 
+<!-- GYM -->
 <div id="p-workout" class="page">
-
-  <!-- JW Marriott banner -->
   <div style="background:linear-gradient(135deg,rgba(200,150,62,.15),rgba(200,150,62,.04));border:1px solid rgba(200,150,62,.3);border-radius:var(--radius);padding:13px 14px;margin-bottom:12px">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
       <div style="font-size:22px">🏨</div>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#C8963E">JW Marriott Auckland</div>
-        <div style="font-size:11px;color:var(--text3)">Level 11 Wellness Centre · 22–26 Albert St · Open 24 hrs</div>
+        <div style="font-size:13px;font-weight:700;color:#C8963E;font-family:'Plus Jakarta Sans',sans-serif">JW Marriott Auckland</div>
+        <div style="font-size:11px;color:var(--text3)">Level 11 Wellness Centre &middot; 22&ndash;26 Albert St &middot; Open 24 hrs</div>
       </div>
       <a href="https://www.marriott.com/en-us/hotels/akljw-jw-marriott-auckland/experiences/" target="_blank"
-        style="margin-left:auto;padding:6px 12px;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);border-radius:16px;font-size:11px;font-weight:700;color:#C8963E;text-decoration:none;white-space:nowrap">
-        Book →
+        style="margin-left:auto;padding:6px 12px;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);border-radius:16px;font-size:11px;font-weight:700;color:#C8963E;text-decoration:none;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif">
+        Book &rarr;
       </a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">
-      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:15px">🏋️</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Technogym Gym</div><div style="font-size:10px;color:var(--text3)">Full equipment · city + harbour views</div></div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:15px">🏊</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--text)">14m Indoor Pool</div><div style="font-size:10px;color:var(--text3)">Heated · Harbour Bridge views</div></div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:15px">🧊</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Cold Plunge Pool</div><div style="font-size:10px;color:var(--text3)">Recovery · inflammation reduction</div></div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:15px">🧖</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Dry Sauna + Steam</div><div style="font-size:10px;color:var(--text3)">Detox · muscle recovery</div></div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:15px">💆</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Vitality / Spa Pool</div><div style="font-size:10px;color:var(--text3)">Hot tub · post-workout soak</div></div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:15px">👤</span>
-        <div><div style="font-size:11px;font-weight:700;color:var(--text)">Personal Training</div><div style="font-size:10px;color:var(--text3)">Available on request · Technogym Visio</div></div>
-      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">🏋️</span><div><div style="font-size:11px;font-weight:700;color:var(--text)">Technogym Gym</div><div style="font-size:10px;color:var(--text3)">Full equipment &middot; city + harbour views</div></div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">🏊</span><div><div style="font-size:11px;font-weight:700;color:var(--text)">14m Indoor Pool</div><div style="font-size:10px;color:var(--text3)">Heated &middot; Harbour Bridge views</div></div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">🧊</span><div><div style="font-size:11px;font-weight:700;color:var(--text)">Cold Plunge Pool</div><div style="font-size:10px;color:var(--text3)">Recovery &middot; inflammation reduction</div></div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">🧖</span><div><div style="font-size:11px;font-weight:700;color:var(--text)">Dry Sauna + Steam</div><div style="font-size:10px;color:var(--text3)">Detox &middot; muscle recovery</div></div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">💆</span><div><div style="font-size:11px;font-weight:700;color:var(--text)">Vitality / Spa Pool</div><div style="font-size:10px;color:var(--text3)">Hot tub &middot; post-workout soak</div></div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px"><span style="font-size:15px">👤</span><div><div style="font-size:11px;font-weight:700;color:var(--text)">Personal Training</div><div style="font-size:10px;color:var(--text3)">Available on request &middot; Technogym Visio</div></div></div>
     </div>
   </div>
-
-  <!-- Technogym equipment callout -->
   <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:8px">TECHNOGYM EQUIPMENT HIGHLIGHTS</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--coral);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif">TECHNOGYM EQUIPMENT HIGHLIGHTS</div>
     <div style="display:flex;flex-direction:column;gap:7px">
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Technogym Visio</strong> — virtual personal trainer built into every machine. Hundreds of guided workouts at one tap. One of first NZ hotels to have it.</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Technogym Bench</strong> — 200+ exercises with built-in storage: bands, hex dumbbells, weighted knuckles. Great for your accessory work.</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Full cardio + strength suite</strong> — treadmills, incline trainers, bikes, cable machines, free weights, functional rig.</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:flex-start">
-        <div style="width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:5px;flex-shrink:0"></div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Open 24 hours</strong> — gym never closes. Perfect for your 8–9am window or early starts.</div>
-      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:6px;height:6px;border-radius:50%;background:var(--coral);margin-top:5px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Technogym Visio</strong> &mdash; virtual personal trainer built into every machine. Hundreds of guided workouts at one tap. One of first NZ hotels to have it.</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:6px;height:6px;border-radius:50%;background:var(--coral);margin-top:5px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Technogym Bench</strong> &mdash; 200+ exercises with built-in storage: bands, hex dumbbells, weighted knuckles. Great for your accessory work.</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:6px;height:6px;border-radius:50%;background:var(--coral);margin-top:5px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Full cardio + strength suite</strong> &mdash; treadmills, incline trainers, bikes, cable machines, free weights, functional rig.</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:6px;height:6px;border-radius:50%;background:var(--coral);margin-top:5px;flex-shrink:0"></div><div style="font-size:12px;color:var(--text2);line-height:1.5"><strong style="color:var(--text)">Open 24 hours</strong> &mdash; gym never closes. Perfect for your 8&ndash;9am window or early starts.</div></div>
     </div>
   </div>
-
-  <!-- Week schedule -->
   <div class="day-scroll" id="day-scroll"></div>
   <div class="wo-card" id="wo-detail"></div>
-
-  <!-- Treadmill progression -->
   <div class="card" style="margin-top:12px">
-    <div class="card-label">Technogym treadmill — how to set it up</div>
-
-    <!-- Alert banner for common mistake -->
-    <div style="background:rgba(224,112,57,.12);border:1px solid rgba(224,112,57,.35);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start">
-      <span style="font-size:16px;flex-shrink:0">⚠️</span>
-      <div style="font-size:12px;color:#e07839;line-height:1.6"><strong>Default gradient starts at 1% — always raise it first.</strong> At 1% you burn roughly half the calories vs 6% at the same speed. Tap GRADIENT + five times before starting your walk.</div>
+    <div class="card-label">Technogym treadmill &mdash; how to set it up</div>
+    <div style="background:rgba(217,119,6,.1);border:1px solid rgba(217,119,6,.3);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start">
+      <span style="font-size:16px;flex-shrink:0">&#9888;&#65039;</span>
+      <div style="font-size:12px;color:var(--warn);line-height:1.6"><strong>Default gradient starts at 1% &mdash; always raise it first.</strong> At 1% you burn roughly half the calories vs 6% at the same speed. Tap GRADIENT + five times before starting your walk.</div>
     </div>
-
-    <!-- Interface guide from actual Technogym screen -->
-    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">TECHNOGYM SCREEN CONTROLS</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif">TECHNOGYM SCREEN CONTROLS</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px">
-      <div style="background:var(--bg3);border-radius:8px;padding:10px">
-        <div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:4px">GRADIENT (left side)</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Tap <strong style="color:var(--text)">+</strong> next to GRADIENT at bottom left. Each tap = +1%. Quick-select buttons on left panel: 0, 3, 6, 9. Tap <strong style="color:var(--teal)">6</strong> directly for Week 1 target.</div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:10px">
-        <div style="font-size:11px;font-weight:700;color:#C8963E;margin-bottom:4px">SPEED (right side)</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Tap <strong style="color:var(--text)">+/−</strong> next to SPEED at bottom right. Quick buttons: 4, 6, 8, 10 km/h. Set to <strong style="color:#C8963E">4.5</strong> using + from 4.</div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:10px">
-        <div style="font-size:11px;font-weight:700;color:#7B5EA7;margin-bottom:4px">HR MONITOR</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Shows BPM top right. Grip the metal handles on side rails to read. Him target: <strong style="color:#C8963E">102–111 bpm</strong>. Her: <strong style="color:#7B5EA7">104–113 bpm</strong>.</div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:10px">
-        <div style="font-size:11px;font-weight:700;color:#6ab4e8;margin-bottom:4px">LOG IN (top right)</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Create free Technogym account → tap Log In → auto-tracks every session. Syncs reps, sets, cardio across all visits.</div>
-      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:700;color:var(--teal);margin-bottom:4px">GRADIENT (left side)</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Tap <strong>+</strong> next to GRADIENT at bottom left. Each tap = +1%. Quick-select: 0, 3, 6, 9. Tap <strong style="color:var(--teal)">6</strong> directly for Week 1.</div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:700;color:#C8963E;margin-bottom:4px">SPEED (right side)</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Tap <strong>+/&minus;</strong> next to SPEED at bottom right. Quick: 4, 6, 8, 10 km/h. Set to <strong style="color:#C8963E">4.5</strong> using + from 4.</div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px">HR MONITOR</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Grip side rails. Him: <strong style="color:#C8963E">102&ndash;111 bpm</strong>. Her: <strong style="color:var(--purple)">104&ndash;113 bpm</strong>.</div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:700;color:#6ab4e8;margin-bottom:4px">LOG IN (top right)</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Free Technogym account &rarr; auto-tracks every session. Syncs reps, sets, cardio across all visits.</div></div>
     </div>
-
-    <!-- Set by set targets -->
-    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">WEEK-BY-WEEK TARGETS</div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif">WEEK-BY-WEEK TARGETS</div>
     <div style="display:grid;gap:7px">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--teal)">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--teal)">Weeks 1–2 · Foundation</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 6 on gradient panel · set speed to 4.5</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:13px;font-weight:700;color:var(--text)">6% · 4.5 km/h</div>
-          <div style="font-size:10px;color:var(--text3)">15 min</div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #4caf8a">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:#4caf8a">Weeks 3–4 · Building</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 on gradient panel · tap − once for 8%</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:13px;font-weight:700;color:var(--text)">8% · 5 km/h</div>
-          <div style="font-size:10px;color:var(--text3)">20 min</div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #C8963E">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:#C8963E">Month 2 · Intermediate</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 on gradient panel · tap + once for 10%</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:13px;font-weight:700;color:var(--text)">10% · 5.5 km/h</div>
-          <div style="font-size:10px;color:var(--text3)">25 min</div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #7B5EA7">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:#7B5EA7">Month 3+ · Advanced</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 on panel · tap + three times for 12%</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:13px;font-weight:700;color:var(--text)">12% · 5.5–6 km/h</div>
-          <div style="font-size:10px;color:var(--text3)">30 min</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Calorie comparison -->
-    <div style="margin-top:12px;background:rgba(29,158,117,.07);border:1px solid var(--border);border-radius:8px;padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--teal);margin-bottom:6px">WHY INCLINE MATTERS — CALORIE COMPARISON AT 4.5 KM/H</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center">
-        <div style="background:var(--bg3);border-radius:6px;padding:7px">
-          <div style="font-size:14px;font-weight:700;color:#DC2626">~50</div>
-          <div style="font-size:10px;color:var(--text3)">kcal / 15 min<br>at 1% gradient</div>
-        </div>
-        <div style="background:var(--bg3);border-radius:6px;padding:7px">
-          <div style="font-size:14px;font-weight:700;color:var(--teal)">~110</div>
-          <div style="font-size:10px;color:var(--text3)">kcal / 15 min<br>at 6% gradient</div>
-        </div>
-        <div style="background:var(--bg3);border-radius:6px;padding:7px">
-          <div style="font-size:14px;font-weight:700;color:#C8963E">~150</div>
-          <div style="font-size:10px;color:var(--text3)">kcal / 15 min<br>at 12% gradient</div>
-        </div>
-      </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center">6% burns 2× more than flat walking at the same speed</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--coral)"><div><div style="font-size:12px;font-weight:700;color:var(--coral);font-family:'Plus Jakarta Sans',sans-serif">Weeks 1&ndash;2 &middot; Foundation</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 6 on gradient panel &middot; set speed to 4.5</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--coral)">6% &middot; 4.5 km/h</div><div style="font-size:10px;color:var(--text3)">15 min</div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid #C8963E"><div><div style="font-size:12px;font-weight:700;color:#C8963E;font-family:'Plus Jakarta Sans',sans-serif">Weeks 3&ndash;4 &middot; Building</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 &middot; tap &minus; once for 8%</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#C8963E">8% &middot; 5 km/h</div><div style="font-size:10px;color:var(--text3)">20 min</div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--teal)"><div><div style="font-size:12px;font-weight:700;color:var(--teal);font-family:'Plus Jakarta Sans',sans-serif">Month 2 &middot; Intermediate</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 &middot; tap + once for 10%</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--teal)">10% &middot; 5.5 km/h</div><div style="font-size:10px;color:var(--text3)">25 min</div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--success)"><div><div style="font-size:12px;font-weight:700;color:var(--success);font-family:'Plus Jakarta Sans',sans-serif">Month 3+ &middot; Advanced</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Tap 9 &middot; + three times for 12%</div></div><div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--success)">12% &middot; 5.5&ndash;6 km/h</div><div style="font-size:10px;color:var(--text3)">30 min</div></div></div>
     </div>
   </div>
-
-  <!-- Weight progression table -->
   <div class="card">
-    <div class="card-label">📈 4-week weight progression guide</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--bg3);border-radius:8px">Add 2.5–5kg to machines, 1.25–2.5kg to dumbbells per week — only if you complete all reps with good form</div>
+    <div class="card-label">📈 4-week weight progression</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.6">Add 2.5&ndash;5kg to machines, 1.25&ndash;2.5kg to dumbbells per week &mdash; only when you complete all reps with good form.</div>
     <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:11px">
         <thead>
           <tr style="background:var(--bg3)">
-            <th style="padding:7px 8px;text-align:left;color:var(--text3);font-weight:700;letter-spacing:.04em;border-bottom:1px solid var(--border2)">EXERCISE</th>
-            <th style="padding:7px 8px;text-align:center;color:#C8963E;font-weight:700;border-bottom:1px solid var(--border2)">HIM Wk1</th>
-            <th style="padding:7px 8px;text-align:center;color:#C8963E;font-weight:700;border-bottom:1px solid var(--border2)">HIM Wk4</th>
-            <th style="padding:7px 8px;text-align:center;color:#7B5EA7;font-weight:700;border-bottom:1px solid var(--border2)">HER Wk1</th>
-            <th style="padding:7px 8px;text-align:center;color:#7B5EA7;font-weight:700;border-bottom:1px solid var(--border2)">HER Wk4</th>
+            <th style="padding:7px 8px;text-align:left;color:var(--text2);font-weight:700;border-bottom:2px solid var(--border);font-family:'Plus Jakarta Sans',sans-serif">EXERCISE</th>
+            <th style="padding:7px 4px;text-align:center;color:#C8963E;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap">HIM Wk1</th>
+            <th style="padding:7px 4px;text-align:center;color:#e8b84b;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap">HIM Wk4</th>
+            <th style="padding:7px 4px;text-align:center;color:var(--purple);font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap">HER Wk1</th>
+            <th style="padding:7px 4px;text-align:center;color:#a98fd4;font-weight:700;border-bottom:2px solid var(--border);white-space:nowrap">HER Wk4</th>
           </tr>
         </thead>
         <tbody id="prog-table-body"></tbody>
       </table>
     </div>
   </div>
-
-  <!-- Pool protocol -->
   <div class="card">
-    <div class="card-label">🏊 Pool protocol — add to any session</div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:rgba(55,138,221,.07);border:1px solid rgba(55,138,221,.15);border-radius:8px">14m heated indoor pool · Harbour Bridge views · burns 400–600 kcal/hr</div>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="padding:9px 10px;background:var(--bg3);border-radius:8px">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Beginner lane swim (Weeks 1–4)</div>
-        <div style="font-size:11px;color:var(--text2)">4 laps easy freestyle → 2 laps backstroke → rest 60s → repeat 3 sets. ~20 min total. Low joint impact — great on leg days.</div>
-      </div>
-      <div style="padding:9px 10px;background:var(--bg3);border-radius:8px">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Interval swim (Month 2+)</div>
-        <div style="font-size:11px;color:var(--text2)">2 laps fast → 1 lap easy recovery → repeat 8 rounds. ~25 min. Excellent cardio without treadmill load on joints.</div>
-      </div>
-      <div style="padding:9px 10px;background:var(--bg3);border-radius:8px">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Active recovery swim (Sat or rest days)</div>
-        <div style="font-size:11px;color:var(--text2)">10–15 min easy float and stretch. Increases blood flow to worked muscles without adding fatigue load.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Recovery protocol -->
-  <div class="card">
-    <div class="card-label">🔄 Recovery protocol — post-workout ritual</div>
+    <div class="card-label">🔄 Recovery protocol &mdash; post-workout ritual</div>
     <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.6">Science-backed contrast therapy. Especially powerful on heavy leg days (Tue/Thu) and after Fri full body.</div>
     <div style="display:flex;flex-direction:column;gap:0">
-      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
-        <div style="width:28px;height:28px;border-radius:50%;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">1</div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Dry sauna — 10–12 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Raises core temp, flushes lactic acid, boosts growth hormone release. Sit quietly, breathe deeply.</div></div>
-      </div>
-      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
-        <div style="width:28px;height:28px;border-radius:50%;background:rgba(55,138,221,.12);border:1px solid rgba(55,138,221,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">2</div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Cold plunge — 2–3 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Constricts blood vessels, reduces inflammation and DOMS. Breathe slowly. Build to 3 min over Weeks 1–2.</div></div>
-      </div>
-      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
-        <div style="width:28px;height:28px;border-radius:50%;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">3</div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Repeat 2–3 cycles</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Sauna → cold plunge → sauna → cold plunge. Each cycle drives blood in and out of muscles — the "pump" that accelerates recovery.</div></div>
-      </div>
-      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
-        <div style="width:28px;height:28px;border-radius:50%;background:rgba(123,94,167,.12);border:1px solid rgba(123,94,167,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">4</div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Vitality/spa pool — 8–10 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">End here. Jets target lower back and legs. Parasympathetic nervous system activation — signals full recovery mode.</div></div>
-      </div>
-      <div style="display:flex;gap:10px;padding:10px 0;align-items:flex-start">
-        <div style="width:28px;height:28px;border-radius:50%;background:rgba(29,158,117,.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">5</div>
-        <div><div style="font-size:13px;font-weight:600;color:var(--text)">Steam room — optional 5 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Moist heat opens airways, clears sinuses, promotes deep skin hydration. Good for immunity support. Drink water before and after.</div></div>
-      </div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700;color:#C8963E;font-family:'Plus Jakarta Sans',sans-serif">1</div><div><div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">Dry sauna &mdash; 10&ndash;12 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Raises core temp, flushes lactic acid, boosts growth hormone release. Sit quietly, breathe deeply.</div></div></div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:rgba(55,138,221,.12);border:1px solid rgba(55,138,221,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700;color:#3B82F6;font-family:'Plus Jakarta Sans',sans-serif">2</div><div><div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">Cold plunge &mdash; 2&ndash;3 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Constricts blood vessels, reduces inflammation and DOMS. Breathe slowly. Build to 3 min over Weeks 1&ndash;2.</div></div></div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:rgba(200,150,62,.15);border:1px solid rgba(200,150,62,.3);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700;color:#C8963E;font-family:'Plus Jakarta Sans',sans-serif">3</div><div><div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">Repeat 2&ndash;3 cycles</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Sauna &rarr; cold plunge &rarr; sauna &rarr; cold plunge. Each cycle drives blood in and out of muscles.</div></div></div>
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:rgba(123,94,167,.12);border:1px solid rgba(123,94,167,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700;color:var(--purple);font-family:'Plus Jakarta Sans',sans-serif">4</div><div><div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">Vitality/spa pool &mdash; 8&ndash;10 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">End here. Jets target lower back and legs. Parasympathetic nervous system activation &mdash; signals full recovery mode.</div></div></div>
+      <div style="display:flex;gap:10px;padding:10px 0;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--success-soft);border:1px solid rgba(22,163,74,.2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700;color:var(--success);font-family:'Plus Jakarta Sans',sans-serif">5</div><div><div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">Steam room &mdash; optional 5 min</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Moist heat opens airways, clears sinuses, promotes deep skin hydration. Drink water before and after.</div></div></div>
     </div>
-    <div style="margin-top:10px;padding:8px 10px;background:rgba(29,158,117,.08);border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text3);line-height:1.6">
-      💧 <strong style="color:var(--text2)">Hydration rule:</strong> Drink 500ml water immediately post-gym before entering sauna. Add pinch of pink Himalayan salt. This is critical — sauna + training = major fluid loss.
+    <div style="margin-top:10px;padding:8px 10px;background:var(--success-soft);border:1px solid rgba(22,163,74,.2);border-radius:8px;font-size:11px;color:var(--text3);line-height:1.6">
+      💧 <strong style="color:var(--text2)">Hydration rule:</strong> Drink 500ml water immediately post-gym before entering sauna. Add pinch of pink Himalayan salt. Sauna + training = major fluid loss.
     </div>
   </div>
-
-  <!-- Garmin + watch integration note -->
   <div class="card">
     <div class="card-label">⌚ Smartwatch tips for this gym</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <div style="background:var(--bg3);border-radius:8px;padding:10px">
-        <div style="font-size:11px;font-weight:700;color:#C8963E;margin-bottom:5px">HIM — Garmin 945</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Start "Strength" activity for weights. Switch to "Treadmill" for incline walk. Use PulseOx post-cold-plunge. Pool: use "Pool Swim" mode — set pool length to 14m.</div>
-      </div>
-      <div style="background:var(--bg3);border-radius:8px;padding:10px">
-        <div style="font-size:11px;font-weight:700;color:#7B5EA7;margin-bottom:5px">HER — Oppo Watch</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Use "Gym" or "Free weights" mode for lifting. "Indoor run" for treadmill. HR zone 2–3 target. Note: remove watch before cold plunge — check water rating first.</div>
-      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:700;color:#C8963E;margin-bottom:5px;font-family:'Plus Jakarta Sans',sans-serif">HIM &mdash; Garmin 945</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Start &ldquo;Strength&rdquo; for weights. Switch to &ldquo;Treadmill&rdquo; for incline walk. PulseOx post-cold-plunge. Pool: &ldquo;Pool Swim&rdquo; &mdash; set length to 14m.</div></div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:5px;font-family:'Plus Jakarta Sans',sans-serif">HER &mdash; Oppo Watch</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Use &ldquo;Gym&rdquo; or &ldquo;Free weights&rdquo; for lifting. &ldquo;Indoor run&rdquo; for treadmill. HR zone 2&ndash;3. Remove before cold plunge &mdash; check water rating first.</div></div>
     </div>
-    <div style="margin-top:8px;padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text3)">
-      🔗 Technogym Visio syncs with Technogym App — create a free account and it tracks your reps, sets and loads across visits automatically.
-    </div>
+    <div style="margin-top:8px;padding:8px 10px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text3)">🔗 Technogym Visio syncs with Technogym App &mdash; create a free account and it tracks your reps, sets and loads across visits automatically.</div>
   </div>
-
 </div>
 
+<!-- PROGRESS -->
 <div id="p-progress" class="page">
   <div class="stat-grid" id="stat-grid"></div>
   <div class="card">
     <div class="card-label">Monday morning check-in</div>
     <div class="input-group"><label class="input-label">Weight (kg)</label><input class="styled-input" type="number" id="inp-weight" step="0.1" placeholder="e.g. 84.5"></div>
     <div class="input-group"><label class="input-label">Waist cm (optional)</label><input class="styled-input" type="number" id="inp-waist" step="0.5" placeholder="measure at navel"></div>
-    <div class="input-group"><label class="input-label">Energy score 1–10</label><input class="styled-input" type="number" id="inp-energy" min="1" max="10" placeholder="how do you feel this week?"></div>
+    <div class="input-group"><label class="input-label">Energy score 1&ndash;10</label><input class="styled-input" type="number" id="inp-energy" min="1" max="10" placeholder="how do you feel this week?"></div>
     <button class="save-btn" onclick="saveCheckin()">Save check-in</button>
   </div>
   <div class="card">
@@ -762,6 +656,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
   </div>
 </div>
 
+<!-- COACH -->
 <div id="p-coach" class="page">
   <div class="coach-badge">LIVE AI COACH</div>
   <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6">Ask anything about your meals, workouts, progress, or motivation. Your coach knows both profiles.</div>
@@ -786,83 +681,49 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 <div id="p-scan" class="page">
   <div class="coach-badge">AI FOOD SCANNER</div>
   <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.6">Point your camera at any food, ingredient, nutrition label, or fridge shelf. Your coach analyses it against your personal targets and tells you exactly what to do.</div>
-
-  <!-- Scan mode selector -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-    <button class="scan-mode-btn active" onclick="setScanMode('product',this)">
-      <div style="font-size:20px;margin-bottom:4px">🏷️</div>
-      <div style="font-size:12px;font-weight:700">Product / Label</div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px">Scan a food package or nutrition panel</div>
-    </button>
-    <button class="scan-mode-btn" onclick="setScanMode('fridge',this)">
-      <div style="font-size:20px;margin-bottom:4px">🧊</div>
-      <div style="font-size:12px;font-weight:700">Fridge / Pantry</div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px">What can I make from what I have?</div>
-    </button>
-    <button class="scan-mode-btn" onclick="setScanMode('meal',this)">
-      <div style="font-size:20px;margin-bottom:4px">🍽️</div>
-      <div style="font-size:12px;font-weight:700">Cooked Meal</div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px">Estimate calories from a photo of food</div>
-    </button>
-    <button class="scan-mode-btn" onclick="setScanMode('ingredient',this)">
-      <div style="font-size:20px;margin-bottom:4px">🥦</div>
-      <div style="font-size:12px;font-weight:700">Raw Ingredient</div>
-      <div style="font-size:10px;color:var(--text3);margin-top:2px">Is this on plan? How to use it?</div>
-    </button>
+    <button class="scan-mode-btn active" onclick="setScanMode('product',this)"><div style="font-size:20px;margin-bottom:4px">🏷️</div><div style="font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif">Product / Label</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Scan a food package or nutrition panel</div></button>
+    <button class="scan-mode-btn" onclick="setScanMode('fridge',this)"><div style="font-size:20px;margin-bottom:4px">🧊</div><div style="font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif">Fridge / Pantry</div><div style="font-size:10px;color:var(--text3);margin-top:2px">What can I make from what I have?</div></button>
+    <button class="scan-mode-btn" onclick="setScanMode('meal',this)"><div style="font-size:20px;margin-bottom:4px">🍽️</div><div style="font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif">Cooked Meal</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Estimate calories from a photo of food</div></button>
+    <button class="scan-mode-btn" onclick="setScanMode('ingredient',this)"><div style="font-size:20px;margin-bottom:4px">🥦</div><div style="font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif">Raw Ingredient</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Is this on plan? How to use it?</div></button>
   </div>
-
-  <!-- Upload / camera area -->
-  <div id="scan-drop-zone" onclick="document.getElementById('scan-file-input').click()"
-    style="border:2px dashed var(--border);border-radius:var(--radius);padding:28px 16px;text-align:center;cursor:pointer;margin-bottom:14px;transition:.2s;background:var(--bg3);position:relative">
+  <div id="scan-drop-zone" onclick="document.getElementById('scan-file-input').click()" style="border:2px dashed rgba(232,98,42,.35);border-radius:var(--radius);padding:28px 16px;text-align:center;cursor:pointer;margin-bottom:14px;background:var(--coral-glow);position:relative">
     <input type="file" id="scan-file-input" accept="image/*" capture="environment" style="display:none" onchange="handleScanImage(event)">
     <div id="scan-placeholder">
       <div style="font-size:36px;margin-bottom:8px">📷</div>
-      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Tap to take photo or upload</div>
-      <div style="font-size:11px;color:var(--text3)">On S23: opens camera directly · On PC: browse files</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">Tap to take photo or upload</div>
+      <div style="font-size:11px;color:var(--text3)">On S23: opens camera directly &middot; On PC: browse files</div>
     </div>
     <div id="scan-preview-wrap" style="display:none">
       <img id="scan-preview-img" style="max-width:100%;max-height:220px;border-radius:10px;object-fit:contain">
-      <div style="margin-top:8px;font-size:11px;color:var(--teal);font-weight:600">Image ready — tap Analyse below</div>
+      <div style="margin-top:8px;font-size:11px;color:var(--coral);font-weight:700">Image ready &mdash; tap Analyse below</div>
     </div>
   </div>
-
-  <!-- Analyse button -->
-  <button id="scan-analyse-btn" onclick="analyseImage()" disabled
-    style="width:100%;padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:var(--text3);cursor:not-allowed;font-family:'DM Sans',sans-serif;margin-bottom:14px;transition:.3s;letter-spacing:.03em">
-    ANALYSE WITH AI COACH
-  </button>
-
-  <!-- Result area -->
+  <button id="scan-analyse-btn" onclick="analyseImage()" disabled style="width:100%;padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:var(--text3);cursor:not-allowed;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:14px;transition:.3s;letter-spacing:.03em">ANALYSE WITH AI COACH</button>
   <div id="scan-result" style="display:none">
     <div class="card" id="scan-result-card">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
         <div id="scan-verdict-icon" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"></div>
         <div>
-          <div id="scan-verdict-label" style="font-size:11px;font-weight:700;letter-spacing:.06em"></div>
-          <div id="scan-food-name" style="font-size:15px;font-weight:700;color:var(--text)"></div>
+          <div id="scan-verdict-label" style="font-size:11px;font-weight:700;letter-spacing:.06em;font-family:'Plus Jakarta Sans',sans-serif"></div>
+          <div id="scan-food-name" style="font-size:15px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif"></div>
         </div>
       </div>
       <div id="scan-macros-row" style="display:none;background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:12px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3);margin-bottom:8px">ESTIMATED NUTRITION</div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--text3);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif">ESTIMATED NUTRITION</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center" id="scan-macro-grid"></div>
       </div>
       <div id="scan-analysis-text" style="font-size:13px;color:var(--text);line-height:1.75"></div>
       <div id="scan-log-prompt" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)">
-        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">Log this to today's tracker?</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif">Log this to today's tracker?</div>
         <div style="display:flex;gap:8px">
-          <button onclick="logScanResult()" style="flex:1;padding:10px;background:var(--teal);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif">Yes, log it</button>
-          <button onclick="document.getElementById('scan-log-prompt').style.display='none'" style="flex:1;padding:10px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif">Skip</button>
+          <button onclick="logScanResult()" style="flex:1;padding:10px;background:var(--coral);border:none;border-radius:8px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Yes, log it</button>
+          <button onclick="document.getElementById('scan-log-prompt').style.display='none'" style="flex:1;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Skip</button>
         </div>
       </div>
     </div>
-
-    <!-- Retry -->
-    <button onclick="resetScan()" style="width:100%;margin-top:8px;padding:11px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif">
-      Scan another item
-    </button>
+    <button onclick="resetScan()" style="width:100%;margin-top:8px;padding:11px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Scan another item</button>
   </div>
-
-  <!-- Tips -->
   <div id="scan-tips" style="margin-top:4px">
     <div class="card">
       <div class="card-label">Scanning tips</div>
@@ -871,9 +732,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
         <div>🧊 <strong style="color:var(--text)">Fridge / pantry:</strong> Step back so all items are visible in one shot</div>
         <div>🍽️ <strong style="color:var(--text)">Cooked meal:</strong> Shoot from directly above, good lighting</div>
         <div>🥦 <strong style="color:var(--text)">Ingredient:</strong> Place on a neutral background with any packaging visible</div>
-        <div style="margin-top:8px;padding:8px 10px;background:rgba(29,158,117,.08);border-radius:8px;color:var(--text3)">
-          Calorie estimates from photos are approximate (±10–15%). Use as a guide, not an exact count.
-        </div>
+        <div style="margin-top:8px;padding:8px 10px;background:var(--success-soft);border-radius:8px;color:var(--text3)">Calorie estimates from photos are approximate (&plusmn;10&ndash;15%). Use as a guide, not an exact count.</div>
       </div>
     </div>
   </div>
@@ -887,132 +746,87 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     <button class="wpill" onclick="setShopWeek(3,this)">Week 3</button>
     <button class="wpill" onclick="setShopWeek(4,this)">Week 4</button>
   </div>
-
-  <!-- Smart search toolbar -->
-  <div style="background:linear-gradient(135deg,rgba(29,158,117,.13),rgba(29,158,117,.04));border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">SEARCH THIS WEEK'S LIST ON</div>
-
-    <!-- Store search buttons -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">
-      <button onclick="openStoreSearch('paknsave')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(232,184,75,.3);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-        <span style="font-size:16px">🟡</span>
-        <span style="font-size:11px;font-weight:700;color:#e8b84b">Pak'nSave</span>
-        <span style="font-size:10px;color:var(--text3)">paknsave.co.nz</span>
-      </button>
-      <button onclick="openStoreSearch('woolworths')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(76,175,138,.3);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-        <span style="font-size:16px">🟢</span>
-        <span style="font-size:11px;font-weight:700;color:#4caf8a">Woolworths NZ</span>
-        <span style="font-size:10px;color:var(--text3)">woolworths.co.nz</span>
-      </button>
-      <button onclick="openStoreSearch('newworld')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(220,80,80,.3);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-        <span style="font-size:16px">🔴</span>
-        <span style="font-size:11px;font-weight:700;color:#DC2626">New World</span>
-        <span style="font-size:10px;color:var(--text3)">newworld.co.nz</span>
-      </button>
-      <button onclick="openStoreSearch('grocer')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;background:var(--bg3);border:1px solid rgba(29,158,117,.4);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-        <span style="font-size:16px">🔍</span>
-        <span style="font-size:11px;font-weight:700;color:var(--teal)">grocer.nz</span>
-        <span style="font-size:10px;color:var(--text3)">price compare</span>
-      </button>
+  <div style="background:var(--success-soft);border:1px solid rgba(22,163,74,.2);border-radius:var(--radius);padding:14px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--text3);margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif">SEARCH THIS WEEK'S LIST ON</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px">
+      <button onclick="openStoreSearch('paknsave')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:var(--bg3);border:1px solid rgba(232,184,75,.35);border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif"><span style="font-size:16px">🟡</span><span style="font-size:10px;font-weight:700;color:#B45309">Pak'nSave</span><span style="font-size:9px;color:var(--text3)">paknsave.co.nz</span></button>
+      <button onclick="openStoreSearch('woolworths')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:var(--bg3);border:1px solid rgba(76,175,138,.35);border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif"><span style="font-size:16px">🟢</span><span style="font-size:10px;font-weight:700;color:#4caf8a">Woolworths</span><span style="font-size:9px;color:var(--text3)">woolworths.co.nz</span></button>
+      <button onclick="openStoreSearch('newworld')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:var(--bg3);border:1px solid rgba(220,80,80,.3);border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif"><span style="font-size:16px">🔴</span><span style="font-size:10px;font-weight:700;color:#DC2626">New World</span><span style="font-size:9px;color:var(--text3)">newworld.co.nz</span></button>
+      <button onclick="openStoreSearch('grocer')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;background:var(--bg3);border:1px solid rgba(22,163,74,.35);border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif"><span style="font-size:16px">🔍</span><span style="font-size:10px;font-weight:700;color:var(--success)">grocer.nz</span><span style="font-size:9px;color:var(--text3)">price compare</span></button>
     </div>
-
-    <!-- Item search launcher -->
     <div style="background:var(--bg3);border-radius:10px;padding:10px 12px;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--text3);margin-bottom:8px">SEARCH A SPECIFIC ITEM</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif">SEARCH A SPECIFIC ITEM</div>
       <div style="display:flex;gap:6px">
-        <input id="item-search-input" type="text" placeholder="e.g. chicken breast, gochujang..." style="flex:1;padding:9px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none">
+        <input id="item-search-input" type="text" placeholder="e.g. chicken breast, gochujang..." style="flex:1;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none">
         <button onclick="searchItemOnStore('paknsave')" title="Search Pak'nSave" style="padding:9px 10px;background:rgba(232,184,75,.15);border:1px solid rgba(232,184,75,.3);border-radius:8px;cursor:pointer;font-size:14px">🟡</button>
         <button onclick="searchItemOnStore('woolworths')" title="Search Woolworths" style="padding:9px 10px;background:rgba(76,175,138,.15);border:1px solid rgba(76,175,138,.3);border-radius:8px;cursor:pointer;font-size:14px">🟢</button>
-        <button onclick="searchItemOnStore('grocer')" title="Search grocer.nz" style="padding:9px 10px;background:rgba(29,158,117,.15);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px">🔍</button>
+        <button onclick="searchItemOnStore('grocer')" title="Search grocer.nz" style="padding:9px 10px;background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);border-radius:8px;cursor:pointer;font-size:14px">🔍</button>
       </div>
       <div style="font-size:10px;color:var(--text3);margin-top:6px">Tap a store icon to open search directly in that store's website</div>
     </div>
-
-    <!-- Copy list buttons -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-      <button onclick="copyListForStore('grocer')" style="padding:10px 8px;background:rgba(29,158,117,.12);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.04em">
-        📋 COPY LIST<br><span style="font-size:10px;font-weight:500;color:var(--text3)">for grocer.nz</span>
-      </button>
-      <button onclick="copyListForStore('plain')" style="padding:10px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em">
-        📤 EXPORT LIST<br><span style="font-size:10px;font-weight:500;color:var(--text3)">plain text / share</span>
-      </button>
+      <button onclick="copyListForStore('grocer')" style="padding:10px 8px;background:var(--success-soft);border:1px solid rgba(22,163,74,.25);border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;color:var(--success);letter-spacing:.04em">📋 COPY LIST<br><span style="font-size:10px;font-weight:500;color:var(--text3)">for grocer.nz</span></button>
+      <button onclick="copyListForStore('plain')" style="padding:10px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em">📤 EXPORT LIST<br><span style="font-size:10px;font-weight:500;color:var(--text3)">plain text / share</span></button>
     </div>
-
-    <!-- Copy confirmation -->
-    <div id="copy-confirm" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(29,158,117,.15);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--teal);font-weight:600;text-align:center"></div>
+    <div id="copy-confirm" style="display:none;margin-top:8px;padding:8px 10px;background:var(--success-soft);border:1px solid rgba(22,163,74,.2);border-radius:8px;font-size:12px;color:var(--success);font-weight:700;text-align:center"></div>
   </div>
-
-  <!-- Sunday bulk list -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="card-label" style="margin-bottom:0">🗓 Sunday bulk shop</div>
       <div style="display:flex;gap:8px;align-items:center">
         <span style="font-size:11px;color:var(--text3)" id="sunday-checked-count">0 / 0 checked</span>
-        <button onclick="clearSundayChecks()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border2);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif">Reset</button>
+        <button onclick="clearSundayChecks()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Reset</button>
       </div>
     </div>
     <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:var(--bg3);border-radius:8px">Non-perishables + proteins that keep 4+ days. Buy Sunday, covers the full week.</div>
     <div id="sunday-list"></div>
     <div style="margin-top:12px;padding:10px 12px;background:var(--bg3);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:12px;font-weight:700;color:var(--text2)">EST. WEEKLY COST</span>
-      <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--teal)" id="sunday-est-total">$0.00</span>
+      <span style="font-size:12px;font-weight:700;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif">EST. WEEKLY COST</span>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:var(--success)" id="sunday-est-total">$0.00</span>
     </div>
   </div>
-
-  <!-- Daily fresh list -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="card-label" style="margin-bottom:0">🥬 Daily fresh buys</div>
       <div style="display:flex;gap:8px;align-items:center">
         <span style="font-size:11px;color:var(--text3)" id="daily-checked-count">0 / 0 checked</span>
-        <button onclick="clearDailyChecks()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border2);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif">Reset</button>
+        <button onclick="clearDailyChecks()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Reset</button>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:rgba(200,150,62,.08);border:1px solid rgba(200,150,62,.15);border-radius:8px">⚡ Buy these as needed during the week — wilts fast or is best fresh.</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:rgba(200,150,62,.08);border:1px solid rgba(200,150,62,.15);border-radius:8px">⚡ Buy these as needed during the week &mdash; wilts fast or is best fresh.</div>
     <div id="daily-list"></div>
   </div>
-
-  <!-- Store tip -->
   <div style="padding:10px 0 16px;text-align:center">
-    <div style="font-size:11px;color:var(--text3);line-height:1.7">
-      💡 <strong style="color:var(--text2)">Sunday workflow:</strong> Copy list → paste into grocer.nz → confirm cheapest store for big items → bulk at Pak'nSave, specialty at Woolworths NZ.<br>
-      <span style="color:var(--text3)">Note: Countdown is now fully rebranded as Woolworths NZ (woolworths.co.nz)</span>
-    </div>
+    <div style="font-size:11px;color:var(--text3);line-height:1.7">💡 <strong style="color:var(--text2)">Sunday workflow:</strong> Copy list &rarr; paste into grocer.nz &rarr; confirm cheapest store &rarr; bulk at Pak'nSave, specialty at Woolworths NZ.<br><span style="color:var(--text3)">Note: Countdown is now fully rebranded as Woolworths NZ (woolworths.co.nz)</span></div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" onclick="showPage('today',this)">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    TODAY
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>TODAY
   </button>
   <button class="nav-btn" onclick="showPage('meals',this)">
-    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-    MEALS
+    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>MEALS
   </button>
   <button class="nav-btn" onclick="showPage('scan',this)">
-    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 2v4M17 2v4M7 18v4M17 18v4M2 7h4M18 7h4M2 17h4M18 17h4"/></svg>
-    SCAN
+    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 2v4M17 2v4M7 18v4M17 18v4M2 7h4M18 7h4M2 17h4M18 17h4"/></svg>SCAN
   </button>
   <button class="nav-btn" onclick="showPage('shop',this)">
-    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-    SHOP
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>SHOP
   </button>
   <button class="nav-btn" onclick="showPage('workout',this)">
-    <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><line x1="4" y1="6.5" x2="4" y2="17.5"/><line x1="20" y1="6.5" x2="20" y2="17.5"/><line x1="2" y1="10" x2="2" y2="14"/><line x1="22" y1="10" x2="22" y2="14"/></svg>
-    GYM
+    <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><line x1="4" y1="6.5" x2="4" y2="17.5"/><line x1="20" y1="6.5" x2="20" y2="17.5"/><line x1="2" y1="10" x2="2" y2="14"/><line x1="22" y1="10" x2="22" y2="14"/></svg>GYM
   </button>
   <button class="nav-btn" onclick="showPage('progress',this)">
-    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    TRACK
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>TRACK
   </button>
   <button class="nav-btn" onclick="showPage('coach',this)">
-    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    COACH
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>COACH
   </button>
 </nav>
 </div>
+
 
 <script>
 // ── Data ─────────────────────────────────────────────────────────────────────
@@ -1375,9 +1189,9 @@ function renderToday() {
 
   document.getElementById('ring-eaten').textContent = totCal;
   const pct = Math.min(1, totCal / prof.cal);
-  const circ = 238.76;
+  const circ = 263.9;
   document.getElementById('cal-ring').style.strokeDashoffset = circ - (circ * pct);
-  document.getElementById('cal-ring').style.stroke = pct > 1 ? '#DC2626' : '#0891B2';
+  document.getElementById('cal-ring').style.stroke = pct > 1 ? '#DC2626' : '#E8622A';
 
   document.getElementById('bar-p').style.width = Math.min(100, totP/prof.p*100)+'%';
   document.getElementById('bar-c').style.width = Math.min(100, totC/prof.c*100)+'%';
@@ -1387,7 +1201,7 @@ function renderToday() {
   document.getElementById('val-f').innerHTML = `${totF} / <span id="tgt-f">${prof.f}</span>g`;
   const rem = prof.cal - totCal;
   document.getElementById('val-rem').textContent = rem > 0 ? rem.toLocaleString() : '✓ Done!';
-  document.getElementById('val-rem').style.color = rem < 0 ? '#DC2626' : 'var(--teal)';
+  document.getElementById('val-rem').style.color = rem < 0 ? '#DC2626' : 'var(--success)';
 
   // Meal rows
   const cont = document.getElementById('today-meals');
@@ -1544,7 +1358,7 @@ function renderDailyMeals() {
       </div>
       <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} (${m.himCal} kcal)</div>
       <div class="pm-detail" style="color:var(--purple);font-weight:500;margin-bottom:10px">Her: ${m.her} (${m.herCal} kcal)</div>
-      <button onclick="openPrepModal('${m.name.replace(/'/g,"\\'")}','${m.time}')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1.5px solid var(--teal);background:transparent;color:var(--teal);font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
+      <button onclick="openPrepModal('${m.name.replace(/'/g,"\\'")}','${m.time}')" class="how-to-btn">
         👨‍🍳 How to make
       </button>`;
     cont.appendChild(div);
@@ -2038,10 +1852,10 @@ function renderShop() {
           </div>
           ${item.note?`<div style="font-size:11px;color:var(--text3);margin-top:2px;font-style:italic">${item.note}</div>`:''}
           <div style="display:flex;gap:5px;margin-top:7px" onclick="event.stopPropagation()">
-            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','paknsave')" title="Search Pak'nSave" style="padding:4px 8px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'DM Sans',sans-serif">PNS</button>
-            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','woolworths')" title="Search Woolworths NZ" style="padding:4px 8px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'DM Sans',sans-serif">WW</button>
-            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','newworld')" title="Search New World" style="padding:4px 8px;background:rgba(220,80,80,.1);border:1px solid rgba(220,80,80,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#DC2626;font-family:'DM Sans',sans-serif">NW</button>
-            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','grocer')" title="Compare on grocer.nz" style="padding:4px 8px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'DM Sans',sans-serif">🔍</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','paknsave')" title="Search Pak'nSave" style="padding:4px 8px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'Plus Jakarta Sans',sans-serif">PNS</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','woolworths')" title="Search Woolworths NZ" style="padding:4px 8px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'Plus Jakarta Sans',sans-serif">WW</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','newworld')" title="Search New World" style="padding:4px 8px;background:rgba(220,80,80,.1);border:1px solid rgba(220,80,80,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#DC2626;font-family:'Plus Jakarta Sans',sans-serif">NW</button>
+            <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','grocer')" title="Compare on grocer.nz" style="padding:4px 8px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'Plus Jakarta Sans',sans-serif">🔍</button>
           </div>
         </div>`;
       catDiv.appendChild(row);
@@ -2070,10 +1884,10 @@ function renderShop() {
         <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:1px">${item.when}</div>
         <div style="font-size:11px;color:var(--text3)">${item.note}</div>
         <div style="display:flex;gap:5px;margin-top:7px" onclick="event.stopPropagation()">
-          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','paknsave')" style="padding:4px 8px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'DM Sans',sans-serif">PNS</button>
-          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','woolworths')" style="padding:4px 8px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'DM Sans',sans-serif">WW</button>
-          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','newworld')" style="padding:4px 8px;background:rgba(220,80,80,.1);border:1px solid rgba(220,80,80,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#DC2626;font-family:'DM Sans',sans-serif">NW</button>
-          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','grocer')" style="padding:4px 8px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'DM Sans',sans-serif">🔍</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','paknsave')" style="padding:4px 8px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'Plus Jakarta Sans',sans-serif">PNS</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','woolworths')" style="padding:4px 8px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'Plus Jakarta Sans',sans-serif">WW</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','newworld')" style="padding:4px 8px;background:rgba(220,80,80,.1);border:1px solid rgba(220,80,80,.25);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:#DC2626;font-family:'Plus Jakarta Sans',sans-serif">NW</button>
+          <button onclick="searchItem('${item.item.replace(/'/g,"\\'")}','grocer')" style="padding:4px 8px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'Plus Jakarta Sans',sans-serif">🔍</button>
         </div>
       </div>`;
     dContainer.appendChild(row);
@@ -2193,9 +2007,9 @@ function handleScanImage(event) {
     document.getElementById('scan-tips').style.display = 'none';
     const btn = document.getElementById('scan-analyse-btn');
     btn.disabled = false;
-    btn.style.background = 'var(--teal)';
+    btn.style.background = 'var(--coral)';
     btn.style.color = '#fff';
-    btn.style.borderColor = 'var(--teal)';
+    btn.style.borderColor = 'var(--coral)';
     btn.style.cursor = 'pointer';
   };
   reader.readAsDataURL(file);
@@ -2206,7 +2020,7 @@ async function analyseImage() {
   const btn = document.getElementById('scan-analyse-btn');
   btn.textContent = 'Analysing…';
   btn.disabled = true;
-  btn.style.background = 'var(--teal-dark)';
+  btn.style.background = 'var(--coral-dark)';
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2293,7 +2107,7 @@ function displayScanResult(r) {
       { label: 'Carbs',    val: r.carbs,    unit: 'g',    color: '#0891B2' },
       { label: 'Fat',      val: r.fat,      unit: 'g',    color: '#7B5EA7' },
     ].map(m => `<div style="background:var(--surface);border-radius:8px;padding:8px 4px">
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:${m.color}">${m.val}</div>
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:${m.color}">${m.val}</div>
       <div style="font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.05em;margin-top:2px">${m.label}<br>${m.unit}${r.servingNote ? ' · '+r.servingNote : ''}</div>
     </div>`).join('');
   } else {
@@ -2341,7 +2155,7 @@ function logScanResult() {
   showCopyConfirm && null; // not used here
   // Show confirmation
   const conf = document.createElement('div');
-  conf.style = 'margin-top:8px;padding:10px;background:rgba(29,158,117,.15);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--teal);text-align:center';
+  conf.style = 'margin-top:8px;padding:10px;background:var(--success-soft);border:1px solid rgba(22,163,74,.2);border-radius:8px;font-size:13px;font-weight:600;color:var(--success);text-align:center';
   conf.textContent = `✓ ${lastScanResult.calories} kcal logged to Today's tracker`;
   document.getElementById('scan-result-card').appendChild(conf);
   setTimeout(() => conf.remove(), 3000);
@@ -2927,6 +2741,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles loaded — Him at 1,772 kcal and Her at 1,194 kcal. Starting Monday 8 June. Ask me anything about meals, workouts, or how to push through a tough day.", 'coach');
 </script>
+
+
 <!-- Meal prep modal -->
 <div id="prep-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);padding:16px;overflow-y:auto" onclick="if(event.target===this)closePrepModal()">
   <div style="background:var(--bg);border-radius:16px;max-width:480px;margin:0 auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">
@@ -2940,6 +2756,9 @@ addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles
     <div style="padding:4px 18px 20px" id="prep-modal-steps"></div>
   </div>
 </div>
+
+</body>
+
 
 </body>
 </html>

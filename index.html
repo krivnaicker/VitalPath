@@ -724,23 +724,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
 <!-- SHOPPING PAGE -->
 <div id="p-shop" class="page">
-  <div class="week-pills" style="margin-bottom:6px">
+  <div class="week-pills">
     <button class="wpill active" onclick="setShopWeek(1,this)">Week 1</button>
     <button class="wpill" onclick="setShopWeek(2,this)">Week 2</button>
     <button class="wpill" onclick="setShopWeek(3,this)">Week 3</button>
     <button class="wpill" onclick="setShopWeek(4,this)">Week 4</button>
-    <button class="wpill" id="shop-pantry-tab" onclick="togglePantryView(this)">🏠 Pantry</button>
+    <button class="wpill" id="shop-pantry-tab" onclick="togglePantryView(this)">Pantry</button>
   </div>
   <div id="shop-pantry-view" style="display:none">
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div class="card-label" style="margin-bottom:0">🏠 What's already in the pantry</div>
+        <div class="card-label" style="margin-bottom:0">What's already in the pantry</div>
         <span style="font-size:11px;color:var(--text3)" id="pantry-count">0 stocked</span>
       </div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px 10px;background:var(--bg3);border-radius:8px;line-height:1.6">Tick off what you already have. Stocked items are suppressed from the weekly shopping lists so you only buy what you actually need. Pantry is saved across sessions.</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:8px 10px;background:var(--bg3);border-radius:8px;line-height:1.6">Tick off what you already have. Stocked items are hidden from weekly shopping lists so you only buy what you need.</div>
       <div style="height:4px;background:var(--border2);border-radius:4px;margin-bottom:14px;overflow:hidden"><div id="pantry-pct" style="height:100%;background:var(--success);border-radius:4px;transition:width .4s;width:0%"></div></div>
       <div id="pantry-list"></div>
-      <button onclick="clearAllPantry()" style="margin-top:14px;width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Clear all pantry ticks</button>
+      <button onclick="clearAllPantry()" style="margin-top:14px;width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text3);cursor:pointer">Clear all pantry ticks</button>
     </div>
   </div>
   <div id="shop-weekly-view">
@@ -795,17 +795,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     <div id="daily-list"></div>
   </div>
   <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div class="card-label" style="margin-bottom:0">🧂 Spices &amp; condiments</div>
-      <span style="font-size:11px;color:var(--text3)" id="spices-need-label">—</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="card-label" style="margin-bottom:0">Spices &amp; condiments</div>
+      <span style="font-size:11px;color:var(--text3)" id="spices-need-label"></span>
     </div>
-    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.12);border-radius:8px">Items marked <strong style="color:var(--success)">IN PANTRY</strong> are stocked — only buy items without that badge. Tick off the pantry tab to keep this accurate.</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:7px 10px;background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.12);border-radius:8px">Items marked IN PANTRY are already stocked — only buy items without that badge.</div>
     <div id="spices-list"></div>
   </div>
   <div style="padding:10px 0 16px;text-align:center">
     <div style="font-size:11px;color:var(--text3);line-height:1.7">💡 <strong style="color:var(--text2)">Sunday workflow:</strong> Copy list &rarr; paste into grocer.nz &rarr; confirm cheapest store &rarr; bulk at Pak'nSave, specialty at Woolworths NZ.<br><span style="color:var(--text3)">Note: Countdown is now fully rebranded as Woolworths NZ (woolworths.co.nz)</span></div>
   </div>
-  </div><!-- end shop-weekly-view -->
+  </div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -863,55 +863,55 @@ const MEALS = {
 
 const WEEK_PLANS = {
   1:{
-    title:'Week 1 · Thai & Vietnamese',
+    title:"Week 1 · Thai & Vietnamese",
     himTotal:1800, herTotal:1190,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
-      {name:'Chicken cucumber salad (Nam Tuk style)',time:'Lunch 1:30pm',him:'200g poached chicken · 120g cucumber · 40g vermicelli · chili-lime-fish sauce dressing · fresh mint + coriander',himCal:510,her:'150g poached chicken · 120g cucumber · 20g vermicelli · dressing · fresh herbs',herCal:310},
-      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Pad Ka Prao (Thai basil chili beef/chicken) — Mon/Tue',time:'Dinner 7pm',him:'220g lean beef or chicken · 185g jasmine rice · 80g green beans · oyster sauce · fish sauce · bird-eye chili · Thai basil',himCal:540,her:'150g lean beef or chicken · 90g jasmine rice · 100g green beans · same sauce',herCal:340},
-      {name:'Pho (Vietnamese beef noodle soup) — Wed/Thu',time:'Dinner 7pm',him:'200g beef slices · 80g flat rice noodles · rich star-anise broth · bean sprouts · Thai basil · lime · hoisin',himCal:520,her:'150g beef slices · 50g flat rice noodles · broth · sprouts · herbs',herCal:330},
-      {name:'Tom Yum Goong — Fri/Sat',time:'Dinner 7pm',him:'250g prawns · 185g jasmine rice · tom yum broth (nam prik pao paste · lemongrass · kaffir lime · galangal · chili)',himCal:510,her:'200g prawns · 90g jasmine rice · full broth · mushrooms',herCal:330},
+      {name:"Berry protein oats",time:"Breakfast 10am",him:"60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds",himCal:490,her:"40g oats · 30g protein powder (weighed) · 80g berries",herCal:320},
+      {name:"Greek yogurt + berries",time:"Snack 1 ~11:30am",him:"150g 0% Greek yogurt · 80g berries",himCal:130,her:"150g 0% Greek yogurt · 80g berries",herCal:130},
+      {name:"Chicken cucumber salad (Nam Tuk style)",time:"Lunch 1:30pm",him:"200g poached chicken · 120g cucumber · 40g vermicelli · chili-lime-fish sauce dressing · fresh mint + coriander",himCal:510,her:"150g poached chicken · 120g cucumber · 20g vermicelli · dressing · fresh herbs",herCal:310},
+      {name:"Almonds",time:"Snack 2 3:30pm",him:"20g raw almonds",himCal:120,her:"15g raw almonds",herCal:90},
+      {name:"Pad Ka Prao (Thai basil chili beef/chicken)",time:"Dinner Mon/Tue 7pm",him:"220g lean beef or chicken · 185g jasmine rice · 80g green beans · oyster sauce · fish sauce · bird-eye chili · Thai basil",himCal:540,her:"150g lean beef or chicken · 90g jasmine rice · 100g green beans · same sauce",herCal:340},
+      {name:"Pho (Vietnamese beef noodle soup)",time:"Dinner Wed/Thu 7pm",him:"200g beef slices · 80g flat rice noodles · rich star-anise broth · bean sprouts · Thai basil · lime · hoisin",himCal:520,her:"150g beef slices · 50g flat rice noodles · broth · sprouts · herbs",herCal:330},
+      {name:"Tom Yum Goong",time:"Dinner Fri/Sat 7pm",him:"250g prawns · 185g jasmine rice · tom yum broth with nam prik pao · lemongrass · kaffir lime · galangal · chili",himCal:510,her:"200g prawns · 90g jasmine rice · broth · mushrooms",herCal:330},
     ]
   },
   2:{
-    title:'Week 2 · Asian-Fusion Bowls',
+    title:"Week 2 · Asian-Fusion Bowls",
     himTotal:1810, herTotal:1190,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
-      {name:'Spicy chicken donburi bowl',time:'Lunch 1:30pm',him:'200g chicken thigh (teriyaki-chili glaze) · 185g Japanese short-grain rice · pickled ginger · cucumber · sesame · nori',himCal:530,her:'150g chicken thigh · 90g rice · same toppings',herCal:330},
-      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Korean beef bulgogi — Mon/Tue',time:'Dinner 7pm',him:'220g beef sirloin (soy · pear · sesame · gochugaru marinade) · 185g steamed rice · 100g bok choy · kimchi side',himCal:550,her:'150g beef · 90g rice · bok choy · kimchi',herCal:350},
-      {name:'Japanese curry (Jap curry) — Wed/Thu',time:'Dinner 7pm',him:'200g chicken or pork · 185g Japanese rice · carrots · potato · onion · S&B curry roux · fukujinzuke pickles',himCal:540,her:'150g protein · 100g rice · plenty of veg',herCal:340},
-      {name:'Nam Tok beef salad — Fri/Sat',time:'Dinner 7pm',him:'220g grilled beef (thin-sliced) · 185g jasmine rice · toasted rice powder · fish sauce · lime · chili · shallots · mint',himCal:520,her:'170g grilled beef · 90g jasmine rice · full salad dressing',herCal:330},
+      {name:"Berry protein oats",time:"Breakfast 10am",him:"60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds",himCal:490,her:"40g oats · 30g protein powder (weighed) · 80g berries",herCal:320},
+      {name:"Greek yogurt + berries",time:"Snack 1 ~11:30am",him:"150g 0% Greek yogurt · 80g berries",himCal:130,her:"150g 0% Greek yogurt · 80g berries",herCal:130},
+      {name:"Spicy chicken donburi bowl",time:"Lunch 1:30pm",him:"200g chicken thigh (teriyaki-chili glaze) · 185g Japanese short-grain rice · pickled ginger · cucumber · sesame · nori",himCal:530,her:"150g chicken thigh · 90g rice · same toppings",herCal:330},
+      {name:"Almonds",time:"Snack 2 3:30pm",him:"20g raw almonds",himCal:120,her:"15g raw almonds",herCal:90},
+      {name:"Korean beef bulgogi",time:"Dinner Mon/Tue 7pm",him:"220g beef sirloin (soy · pear · sesame · gochugaru marinade) · 185g steamed rice · 100g bok choy · kimchi side",himCal:550,her:"150g beef · 90g rice · bok choy · kimchi",herCal:350},
+      {name:"Japanese curry (Jap curry)",time:"Dinner Wed/Thu 7pm",him:"200g chicken or pork · 185g Japanese rice · carrots · potato · onion · S&B curry roux · fukujinzuke pickles",himCal:540,her:"150g protein · 100g rice · plenty of veg",herCal:340},
+      {name:"Nam Tok beef salad",time:"Dinner Fri/Sat 7pm",him:"220g grilled beef (thin-sliced) · 185g jasmine rice · toasted rice powder · fish sauce · lime · chili · shallots · mint",himCal:520,her:"170g grilled beef · 90g jasmine rice · full salad dressing",herCal:330},
     ]
   },
   3:{
-    title:'Week 3 · Comfort Noodles & Braises',
+    title:"Week 3 · Comfort Noodles & Braises",
     himTotal:1800, herTotal:1180,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
-      {name:'Ramen (pork chashu belly) bowl',time:'Lunch 1:30pm',him:'150g chashu pork belly · 80g ramen noodles · rich soy-miso broth · soft egg · nori · bamboo · spring onion',himCal:520,her:'100g chashu pork · 60g ramen noodles · broth · egg · greens',herCal:330},
-      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Pickled mustard greens with pork & noodles — Mon/Tue',time:'Dinner 7pm',him:'220g pork (shoulder or mince) · suan cai · 80g glass noodles · chili oil · ginger · garlic · soy',himCal:530,her:'150g pork · suan cai · 50g glass noodles · same aromatics',herCal:330},
-      {name:'Wat Dan Hor (rice noodle egg gravy) — Wed/Thu',time:'Dinner 7pm',him:'220g prawn/chicken · 200g flat rice noodles · wok-fried egg gravy · dark soy · oyster sauce · bok choy',himCal:540,her:'150g protein · 150g noodles · egg gravy · bok choy',herCal:340},
-      {name:'Abalone, broccoli & mushroom egg noodles — Fri/Sat',time:'Dinner 7pm',him:'150g abalone or scallop · 200g broccoli · 100g shiitake · 80g egg noodles · oyster-ginger sauce',himCal:500,her:'100g abalone · 200g broccoli · shiitake · 60g noodles · sauce',herCal:310},
+      {name:"Berry protein oats",time:"Breakfast 10am",him:"60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds",himCal:490,her:"40g oats · 30g protein powder (weighed) · 80g berries",herCal:320},
+      {name:"Greek yogurt + berries",time:"Snack 1 ~11:30am",him:"150g 0% Greek yogurt · 80g berries",himCal:130,her:"150g 0% Greek yogurt · 80g berries",herCal:130},
+      {name:"Ramen (pork chashu belly) bowl",time:"Lunch 1:30pm",him:"150g chashu pork belly · 80g ramen noodles · rich soy-miso broth · soft egg · nori · bamboo · spring onion",himCal:520,her:"100g chashu pork · 60g ramen noodles · broth · egg · greens",herCal:330},
+      {name:"Almonds",time:"Snack 2 3:30pm",him:"20g raw almonds",himCal:120,her:"15g raw almonds",herCal:90},
+      {name:"Pickled mustard greens with pork and noodles",time:"Dinner Mon/Tue 7pm",him:"220g pork (shoulder or mince) · suan cai · 80g glass noodles · chili oil · ginger · garlic · soy",himCal:530,her:"150g pork · suan cai · 50g glass noodles · same aromatics",herCal:330},
+      {name:"Wat Dan Hor (rice noodle egg gravy)",time:"Dinner Wed/Thu 7pm",him:"220g prawn/chicken · 200g flat rice noodles · wok-fried egg gravy · dark soy · oyster sauce · bok choy",himCal:540,her:"150g protein · 150g noodles · egg gravy · bok choy",herCal:340},
+      {name:"Abalone, broccoli and mushroom egg noodles",time:"Dinner Fri/Sat 7pm",him:"150g abalone or scallop · 200g broccoli · 100g shiitake · 80g egg noodles · oyster-ginger sauce",himCal:500,her:"100g abalone · 200g broccoli · shiitake · 60g noodles · sauce",herCal:310},
     ]
   },
   4:{
-    title:'Week 4 · South Asian Spice & Fusion',
+    title:"Week 4 · South Asian Spice & Fusion",
     himTotal:1790, herTotal:1185,
     meals:[
-      {name:'Berry protein oats',time:'Breakfast 10am',him:'60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds',himCal:490,her:'40g oats · 30g protein powder (weighed) · 80g berries',herCal:320},
-      {name:'Greek yogurt + berries',time:'Snack 1 ~11:30am',him:'150g 0% Greek yogurt · 80g berries',himCal:130,her:'150g 0% Greek yogurt · 80g berries',herCal:130},
-      {name:'Durban chicken curry + roti canai',time:'Lunch 1:30pm',him:'200g chicken (bone-in OK) · Durban masala spice · 1.5 roti canai · tomato-onion gravy',himCal:520,her:'150g chicken · 1 roti canai · tomato-onion gravy · 60g cucumber raita',herCal:330},
-      {name:'Almonds',time:'Snack 2 3:30pm',him:'20g raw almonds',himCal:120,her:'15g raw almonds',herCal:90},
-      {name:'Spicy lamb chops — Mon/Tue',time:'Dinner 7pm',him:'3 lamb loin chops (~250g) · harissa-cumin marinade · 185g jasmine rice · 100g cucumber yogurt',himCal:550,her:'2 lamb loin chops (~160g) · marinade · 90g jasmine rice · raita',herCal:350},
-      {name:'Chili con carne nachos — Wed/Thu',time:'Dinner 7pm',him:'220g lean beef mince · kidney beans · chipotle · cumin · 50g baked corn chips · 30g reduced-fat cheese · jalapeños · fresh salsa',himCal:530,her:'150g lean beef mince · beans · chipotle · 30g baked chips · 20g cheese · salsa',herCal:330},
-      {name:'Larb (Thai minced meat salad) — Fri/Sat',time:'Dinner 7pm',him:'220g chicken or pork mince · 185g jasmine rice · toasted rice powder · fish sauce · lime · dried chili · shallots · mint · coriander',himCal:520,her:'170g mince · 90g jasmine rice · full dressing · herbs',herCal:330},
+      {name:"Berry protein oats",time:"Breakfast 10am",him:"60g oats · 40g protein powder (weighed) · 80g berries · 15g almonds",himCal:490,her:"40g oats · 30g protein powder (weighed) · 80g berries",herCal:320},
+      {name:"Greek yogurt + berries",time:"Snack 1 ~11:30am",him:"150g 0% Greek yogurt · 80g berries",himCal:130,her:"150g 0% Greek yogurt · 80g berries",herCal:130},
+      {name:"Durban chicken curry with roti canai",time:"Lunch 1:30pm",him:"200g chicken (bone-in OK) · Durban masala spice · 1.5 roti canai · tomato-onion gravy",himCal:520,her:"150g chicken · 1 roti canai · tomato-onion gravy · 60g cucumber raita",herCal:330},
+      {name:"Almonds",time:"Snack 2 3:30pm",him:"20g raw almonds",himCal:120,her:"15g raw almonds",herCal:90},
+      {name:"Spicy lamb chops",time:"Dinner Mon/Tue 7pm",him:"3 lamb loin chops (~250g) · harissa-cumin marinade · 185g jasmine rice · 100g cucumber yogurt",himCal:550,her:"2 lamb loin chops (~160g) · marinade · 90g jasmine rice · raita",herCal:350},
+      {name:"Chili con carne nachos",time:"Dinner Wed/Thu 7pm",him:"220g lean beef mince · kidney beans · chipotle · cumin · 50g baked corn chips · 30g reduced-fat cheese · jalapenos · fresh salsa",himCal:530,her:"150g lean beef mince · beans · chipotle · 30g baked chips · 20g cheese · salsa",herCal:330},
+      {name:"Larb (Thai minced meat salad)",time:"Dinner Fri/Sat 7pm",him:"220g chicken or pork mince · 185g jasmine rice · toasted rice powder · fish sauce · lime · dried chili · shallots · mint · coriander",himCal:520,her:"170g mince · 90g jasmine rice · full dressing · herbs",herCal:330},
     ]
   },
 };
@@ -1096,367 +1096,284 @@ const MEAL_PREP_STEPS = {
   },
 };
 // Dinner steps are generated dynamically from the plan name
-
-// Full ingredient lists per meal — displayed at top of How To Make modal
-const MEAL_INGREDIENTS = {
-  'Berry protein oats': {
-    him: ['60g rolled oats','40g protein powder (weighed — not scooped)','80g mixed berries (frozen OK)','15g raw almonds','120–150ml water or unsweetened almond milk'],
-    her: ['40g rolled oats','30g protein powder (weighed — not scooped)','80g mixed berries (frozen OK)','80–100ml water or unsweetened almond milk']
-  },
-  'Greek yogurt + berries': {
-    him: ['150g 0% Greek yogurt','80g mixed berries'],
-    her: ['150g 0% Greek yogurt','80g mixed berries']
-  },
-  'Almonds': { him: ['20g raw almonds'], her: ['15g raw almonds'] },
-  'Chicken cucumber salad (Nam Tuk style)': {
-    him: ['200g poached chicken breast','120g Lebanese cucumber (sliced)','40g dried vermicelli noodles','2 tbsp fish sauce','2 tbsp lime juice','1 tsp white sugar','2 bird-eye chilis (sliced)','Fresh mint leaves','Fresh coriander'],
-    her: ['150g poached chicken breast','120g cucumber','20g dried vermicelli','2 tbsp fish sauce','1.5 tbsp lime juice','1 tsp sugar','2 bird-eye chilis','Fresh mint and coriander']
-  },
-  'Pad Ka Prao (Thai basil chili beef/chicken) — Mon/Tue': {
-    him: ['220g lean beef strips or chicken breast','185g cooked jasmine rice','80g green beans','3 cloves garlic (sliced)','4–6 bird-eye chilis (sliced)','2 tbsp oyster sauce','1 tbsp fish sauce','1 tbsp light soy sauce','Pinch white sugar','Large handful Thai/holy basil','1 tbsp neutral oil'],
-    her: ['150g lean beef or chicken','90g cooked jasmine rice','100g green beans','2 cloves garlic','3–4 bird-eye chilis','1.5 tbsp oyster sauce','1 tbsp fish sauce','1 tsp light soy','Pinch sugar','Thai basil','1 tsp oil']
-  },
-  'Pho (Vietnamese beef noodle soup) — Wed/Thu': {
-    him: ['200g beef sirloin or eye round (very thin sliced)','80g dried flat rice noodles','600ml beef broth or pho concentrate','2–3 star anise','1 cinnamon stick','2 tbsp fish sauce','1 tsp white pepper','Pinch sugar','Bean sprouts (80g)','Thai basil leaves','1 lime (wedges)','Hoisin sauce (side)','Sriracha (side)'],
-    her: ['150g beef (thin sliced)','50g dried flat rice noodles','500ml broth','2 star anise','1 cinnamon stick','Fish sauce, white pepper, sugar','Bean sprouts','Thai basil, lime, condiments']
-  },
-  'Tom Yum Goong — Fri/Sat': {
-    him: ['250g raw prawns (shell-on or peeled)','185g cooked jasmine rice','600ml water or light chicken stock','2 stalks lemongrass (bruised)','3 slices galangal','4 kaffir lime leaves','1–2 tbsp nam prik pao paste','2–3 bird-eye chilis (split)','80g straw or shiitake mushrooms','2 tbsp fish sauce','Juice of 1 lime','Pinch sugar','Fresh coriander'],
-    her: ['200g raw prawns','90g cooked jasmine rice','500ml stock','Lemongrass, galangal, kaffir lime','1 tbsp nam prik pao','2 chilis','80g mushrooms','Fish sauce, lime, sugar, coriander']
-  },
-  'Korean beef bulgogi — Mon/Tue': {
-    him: ['220g beef sirloin (thin sliced)','185g cooked Japanese rice','100g bok choy','Kimchi (side)','3 tbsp soy sauce','1 tbsp sesame oil','1 tbsp brown sugar','1 tsp gochugaru','2 cloves garlic (grated)','1 tsp fresh ginger (grated)','2 tbsp Asian pear or kiwi (grated)','1 tsp sesame seeds','Spring onion (garnish)'],
-    her: ['150g beef sirloin (thin sliced)','90g cooked rice','Bok choy','Kimchi','2 tbsp soy sauce','1 tsp sesame oil','1 tsp brown sugar','1 tsp gochugaru','Garlic, ginger, pear/kiwi']
-  },
-  'Japanese curry (Jap curry) — Wed/Thu': {
-    him: ['200g chicken thigh or pork shoulder (cubed)','185g cooked Japanese short-grain rice','1 medium carrot (diced)','1 medium potato (diced)','1 onion (diced)','2.5 cubes S&B Golden Curry roux (med-hot)','500ml water','1 tsp Worcestershire sauce','1 tsp soy sauce','1 tsp tomato paste','Fukujinzuke pickles (side, optional)'],
-    her: ['150g chicken or pork','100g cooked Japanese rice','½ carrot, ½ potato, ½ onion (diced)','2 cubes S&B curry roux','400ml water','Worcestershire, soy, tomato paste']
-  },
-  'Nam Tok beef salad — Fri/Sat': {
-    him: ['220g beef steak (sirloin or rump)','185g cooked jasmine rice','2 tbsp uncooked jasmine rice (for toasting)','3 tbsp fish sauce','Juice of 2 limes','1 tsp dried chili flakes (prik bon)','1 tsp white sugar','2 shallots (thin sliced)','Fresh mint leaves (large handful)','Fresh coriander'],
-    her: ['170g beef steak','90g cooked jasmine rice','Toasted rice powder (same method)','Fish sauce, lime, dried chili, sugar','Shallots, fresh mint, coriander']
-  },
-  'Ramen (pork chashu belly) bowl': {
-    him: ['150g pork belly (rolled and tied)','80g dried ramen noodles','500ml chicken or pork stock','2 tbsp white miso paste','1 tbsp light soy sauce','1 tsp sesame oil','White pepper','3 tbsp soy sauce (chashu braise)','2 tbsp mirin','1 tbsp sake or dry sherry','1 tbsp brown sugar','1 soft-boiled egg (marinated in soy/mirin)','Nori sheet','2 tbsp bamboo shoots (menma)','Spring onion (sliced)'],
-    her: ['100g pork belly','60g ramen noodles','400ml stock + miso broth (same recipe)','1 soft-boiled egg','Nori, bamboo shoots, spring onion']
-  },
-  'Pickled mustard greens with pork & noodles — Mon/Tue': {
-    him: ['220g pork mince or shoulder strips','100g suan cai (pickled mustard greens, rinsed)','80g glass noodles (soaked)','3 cloves garlic (sliced)','1 tsp fresh ginger (sliced)','1 tbsp light soy sauce','1 tsp dark soy sauce','1 tbsp oyster sauce','1 tbsp Shaoxing wine','1–2 tsp chili oil','White pepper','1 tsp sesame oil (finish)','Spring onion (garnish)'],
-    her: ['150g pork mince','80g suan cai (rinsed)','50g glass noodles','Garlic, ginger','Soy, dark soy, oyster, Shaoxing, chili oil, sesame oil']
-  },
-  'Wat Dan Hor (rice noodle egg gravy) — Wed/Thu': {
-    him: ['220g prawns or chicken','200g fresh or dried flat rice noodles','2 eggs','300ml chicken stock','1 tbsp oyster sauce','1 tbsp light soy sauce','1 tsp dark soy sauce','1 tsp sesame oil','White pepper','1 tbsp cornflour + 2 tbsp cold water (slurry)','100g bok choy','1 tbsp neutral oil'],
-    her: ['150g protein','150g flat rice noodles','1 egg','250ml chicken stock','Oyster sauce, soy, dark soy, sesame oil, white pepper, cornflour slurry','100g bok choy']
-  },
-  'Abalone, broccoli & mushroom egg noodles — Fri/Sat': {
-    him: ['150g abalone or scallops','200g broccoli florets','100g shiitake mushrooms (halved)','80g dried egg noodles (cooked)','3 cloves garlic (sliced)','2 slices fresh ginger','2 tbsp oyster sauce','1 tbsp light soy sauce','1 tsp sesame oil','1 tbsp Shaoxing wine','White pepper','1 tsp cornflour + 2 tbsp cold water (slurry)'],
-    her: ['100g abalone or scallops','200g broccoli','Shiitake mushrooms','60g egg noodles','Garlic, ginger','Oyster sauce, soy, sesame oil, Shaoxing, cornflour']
-  },
-  'Durban chicken curry + roti canai': {
-    him: ['200g chicken pieces (bone-in or thigh)','1.5 roti canai','1 large onion (diced)','3 cloves garlic','2 tbsp Durban masala blend','1 tsp ground coriander','1 tsp turmeric','1 tsp chili flakes','1 tsp cumin seeds','1 cinnamon stick','2 bay leaves','150ml tomato passata','100ml water','1 tsp garam masala (finish)','Fresh coriander','1 tbsp neutral oil'],
-    her: ['150g chicken','1 roti canai','½ onion, garlic','1.5 tbsp Durban masala, coriander, turmeric, chili flakes, cumin seeds, cinnamon, bay leaves','100ml passata','Garam masala finish, coriander','60g cucumber raita']
-  },
-  'Spicy lamb chops — Mon/Tue': {
-    him: ['3 lamb loin chops (~250g total)','185g cooked jasmine rice','80g 0% Greek yogurt (raita)','½ cucumber (grated, for raita)','2 tbsp harissa paste','1 tsp ground cumin','1 tsp smoked paprika','1 tsp ground coriander','½ tsp garlic powder','Zest of 1 lemon','1 tbsp olive oil','Salt and black pepper','Pinch cumin (raita)'],
-    her: ['2 lamb loin chops (~160g)','90g cooked jasmine rice','60g Greek yogurt raita','Same marinade: harissa, cumin, smoked paprika, coriander, garlic powder, lemon zest, olive oil, salt, pepper']
-  },
-  'Chili con carne nachos — Wed/Thu': {
-    him: ['220g lean beef mince (<5% fat)','1 can kidney beans (drained)','50g baked corn chips','30g reduced-fat cheddar','1 onion (diced)','3 cloves garlic','1–2 chipotle peppers in adobo sauce + 1 tbsp adobo sauce','1 tsp ground cumin','1 tsp smoked paprika','1 tsp dried oregano','½ tsp cayenne pepper','150ml tomato passata','100ml water','5g dark chocolate (85%)','Pinch cinnamon','Jalapeño slices','Fresh salsa (tomato, coriander, lime, onion)','Fresh coriander'],
-    her: ['150g lean beef mince','½ can kidney beans','30g baked chips','20g reduced-fat cheese','½ onion, garlic','1 chipotle + adobo sauce','Cumin, paprika, oregano, cayenne','100ml passata','Dark chocolate, cinnamon','Salsa, jalapeños, coriander']
-  },
-  'Larb (Thai minced meat salad) — Fri/Sat': {
-    him: ['220g chicken or pork mince','185g cooked jasmine rice','2 tbsp uncooked jasmine rice (for toasting)','3 tbsp fish sauce','Juice of 2 limes','1 tsp dried chili flakes (prik bon)','1 tsp white sugar','2 shallots (thin sliced)','1 stalk lemongrass (very fine sliced, pale part only)','2 kaffir lime leaves (very fine sliced, optional)','Fresh mint leaves (large handful)','Fresh coriander'],
-    her: ['170g chicken or pork mince','90g cooked jasmine rice','Toasted rice powder (same method)','Fish sauce, lime, dried chili, sugar, shallots, lemongrass, mint, coriander']
-  },
-};
-
+// Full recipe steps keyed by meal name — uses double quotes throughout
 const DINNER_STEPS = {
-  'Pad Ka Prao (Thai basil chili beef/chicken) — Mon/Tue': {
-    time:'20 min',
-    spices:'Fish sauce · oyster sauce · light soy sauce · white sugar (pinch) · bird-eye chili (4–6) · white pepper',
+  "Pad Ka Prao (Thai basil chili beef/chicken)": {
+    time:"20 min", spices:"Fish sauce · oyster sauce · light soy · white sugar · bird-eye chili · white pepper",
     him:[
-      {icon:'🔥',step:'Heat wok high, 1 tbsp oil',detail:'Wok must be smoking before adding meat. Cold wok = steamed, not stir-fried.'},
-      {icon:'🌶️',step:'Fry 3 cloves garlic + 4–6 sliced bird-eye chili · 30 sec',detail:'Until golden and fragrant. Adjust chili count to heat preference.'},
-      {icon:'🍗',step:'Add 220g sliced beef or chicken breast',detail:'Spread out, don't stir for 30 sec to sear. Then toss.'},
-      {icon:'🥫',step:'Add sauce: 2 tbsp oyster sauce · 1 tbsp fish sauce · 1 tbsp light soy · pinch sugar',detail:'Toss everything together. Sauce should coat all the meat.'},
-      {icon:'🌿',step:'Kill heat. Add large handful Thai basil',detail:'Stir through off heat — basil wilts instantly and turns bitter if overcooked.'},
-      {icon:'🍚',step:'Serve over 185g jasmine rice + 80g green beans',detail:'490–540 kcal total. Optional: top with a fried egg (adds ~80 kcal).'},
+      {icon:"🔥",step:"Heat wok high with 1 tbsp oil until smoking",detail:"Wok must be smoking before adding meat. Cold wok means steamed, not stir-fried."},
+      {icon:"🌶️",step:"Fry 3 cloves sliced garlic and 4-6 sliced bird-eye chili for 30 seconds",detail:"Until golden and fragrant. Adjust chili count to your heat preference."},
+      {icon:"🍗",step:"Add 220g sliced beef or chicken. Spread out, no stirring for 30 seconds to sear, then toss.",detail:"High heat sear gives the caramelised edges that make this dish."},
+      {icon:"🥫",step:"Add sauce: 2 tbsp oyster sauce, 1 tbsp fish sauce, 1 tbsp light soy, pinch sugar",detail:"Toss everything. Sauce should coat all the meat evenly."},
+      {icon:"🌿",step:"Kill heat. Add large handful Thai basil and stir through.",detail:"Add basil off heat — it wilts instantly and turns bitter if overcooked."},
+      {icon:"🍚",step:"Serve over 185g jasmine rice and 80g green beans. 490-540 kcal total.",detail:"Optional: top with a fried egg (adds ~80 kcal)."},
     ],
     her:[
-      {icon:'🔥',step:'Heat wok high, 1 tsp oil',detail:'Same high heat technique — smaller portion, same flavour.'},
-      {icon:'🌶️',step:'Fry 2 cloves garlic + 3–4 bird-eye chili · 30 sec',detail:'Slightly less chili — adjust to your heat tolerance.'},
-      {icon:'🍗',step:'Add 150g sliced protein',detail:'Sear, then toss.'},
-      {icon:'🥫',step:'Sauce: 1.5 tbsp oyster sauce · 1 tbsp fish sauce · 1 tsp light soy · pinch sugar',detail:'Same ratio, smaller quantity.'},
-      {icon:'🌿',step:'Off heat — add Thai basil',detail:'Stir through immediately.'},
-      {icon:'🍚',step:'Serve over 90g jasmine rice + 100g green beans',detail:'330–340 kcal total.'},
+      {icon:"🔥",step:"Heat wok high with 1 tsp oil",detail:"Same high heat technique — smaller portion, same flavour."},
+      {icon:"🌶️",step:"Fry 2 cloves garlic and 3-4 bird-eye chili for 30 seconds",detail:"Slightly less chili — adjust to your heat tolerance."},
+      {icon:"🍗",step:"Add 150g sliced protein. Sear then toss.",detail:""},
+      {icon:"🥫",step:"Sauce: 1.5 tbsp oyster sauce, 1 tbsp fish sauce, 1 tsp light soy, pinch sugar",detail:"Same ratio, smaller quantity."},
+      {icon:"🌿",step:"Off heat — add Thai basil and stir through immediately.",detail:""},
+      {icon:"🍚",step:"Serve over 90g jasmine rice and 100g green beans. 330-340 kcal total.",detail:""},
     ]
   },
-  'Pho (Vietnamese beef noodle soup) — Wed/Thu': {
-    time:'25 min (using store broth base)',
-    spices:'Star anise (2–3) · cinnamon stick · fish sauce · hoisin sauce · sriracha · white pepper · MSG optional',
+  "Pho (Vietnamese beef noodle soup)": {
+    time:"25 min (using broth base)", spices:"Star anise · cinnamon stick · fish sauce · hoisin sauce · sriracha · white pepper",
     him:[
-      {icon:'🍲',step:'Simmer 600ml beef broth with 2 star anise + 1 cinnamon stick · 10 min',detail:'Or use pho broth concentrate (available at Asian grocers) — much faster.'},
-      {icon:'🌶️',step:'Season broth: 2 tbsp fish sauce · 1 tsp white pepper · pinch sugar',detail:'Taste and adjust — broth should be savoury and fragrant, not salty.'},
-      {icon:'🍜',step:'Soak 80g flat rice noodles in boiling water · 5–8 min until soft',detail:'Drain and portion into bowl.'},
-      {icon:'🥩',step:'Slice 200g raw beef very thin — pour HOT broth over to cook in bowl',detail:'Thin-sliced beef cooks in seconds in the hot broth. Do not pre-cook.'},
-      {icon:'🌿',step:'Top: bean sprouts · Thai basil · sliced chili · lime wedge · hoisin + sriracha on side',detail:'All condiments on the side — add to taste at the table.'},
-      {icon:'✅',step:'~520 kcal · 45g protein',detail:'The noodles are the main carb — don't over-add.'},
+      {icon:"🍲",step:"Simmer 600ml beef broth with 2 star anise and 1 cinnamon stick for 10 minutes",detail:"Or use pho broth concentrate from Asian grocer — much faster."},
+      {icon:"🌶️",step:"Season broth: 2 tbsp fish sauce, 1 tsp white pepper, pinch sugar",detail:"Taste and adjust — broth should be savoury and fragrant, not salty."},
+      {icon:"🍜",step:"Soak 80g flat rice noodles in boiling water for 5-8 minutes until soft. Drain into bowl.",detail:""},
+      {icon:"🥩",step:"Slice 200g raw beef very thin. Pour HOT broth directly over beef in bowl to cook it.",detail:"Thin-sliced beef cooks in seconds in hot broth. Do not pre-cook it."},
+      {icon:"🌿",step:"Top with bean sprouts, Thai basil, sliced chili, lime wedge. Hoisin and sriracha on the side.",detail:"Add all condiments at the table to taste."},
+      {icon:"✅",step:"520 kcal, 45g protein",detail:"The noodles are the main carb — do not over-add."},
     ],
     her:[
-      {icon:'🍲',step:'Simmer 500ml beef broth with star anise + cinnamon · 10 min',detail:'Lightly season with fish sauce and white pepper.'},
-      {icon:'🍜',step:'Soak 50g flat rice noodles',detail:'Smaller portion — still fills the bowl when topped generously.'},
-      {icon:'🥩',step:'150g thin-sliced raw beef — pour hot broth over',detail:'Same technique.'},
-      {icon:'🌿',step:'Full garnish: sprouts · basil · chili · lime · condiments on side',detail:'Garnishes add flavour with almost zero calories.'},
-      {icon:'✅',step:'~330 kcal · 35g protein',detail:''},
+      {icon:"🍲",step:"Simmer 500ml beef broth with star anise and cinnamon for 10 min",detail:"Season with fish sauce and white pepper."},
+      {icon:"🍜",step:"Soak 50g flat rice noodles",detail:"Smaller portion — still fills the bowl with generous toppings."},
+      {icon:"🥩",step:"150g thin-sliced raw beef — pour hot broth over in bowl",detail:"Same technique."},
+      {icon:"🌿",step:"Full garnish: sprouts, basil, chili, lime, condiments on side",detail:"Garnishes add flavour with almost zero calories."},
+      {icon:"✅",step:"330 kcal, 35g protein",detail:""},
     ]
   },
-  'Tom Yum Goong — Fri/Sat': {
-    time:'25 min',
-    spices:'Nam prik pao (Thai roasted chili paste) · fish sauce · lime juice · galangal · lemongrass · kaffir lime leaves · bird-eye chili · sugar',
+  "Tom Yum Goong": {
+    time:"25 min", spices:"Nam prik pao paste · fish sauce · lime juice · galangal · lemongrass · kaffir lime leaves · bird-eye chili · sugar",
     him:[
-      {icon:'🍲',step:'Bring 600ml water or light chicken stock to boil',detail:'Add 2 stalks bruised lemongrass + 3 slices galangal + 4 kaffir lime leaves.'},
-      {icon:'🌶️',step:'Add 1–2 tbsp nam prik pao paste + 2–3 bird-eye chili (split)',detail:'Nam prik pao is the soul of tom yum — adds smoky roasted depth. More paste = more heat and body.'},
-      {icon:'🦐',step:'Add 250g prawns — cook 3–4 min until pink',detail:'Don't overcook. Prawns are done when they curl.'},
-      {icon:'🍋',step:'Season off heat: 2 tbsp fish sauce · juice of 1 lime · pinch sugar',detail:'Always season OFF heat — lime turns bitter if boiled.'},
-      {icon:'🍚',step:'Serve with 185g jasmine rice',detail:'Ladle soup over rice or eat separately. 510 kcal total.'},
+      {icon:"🍲",step:"Bring 600ml water or light chicken stock to boil. Add 2 bruised lemongrass stalks, 3 slices galangal, 4 kaffir lime leaves.",detail:""},
+      {icon:"🌶️",step:"Add 1-2 tbsp nam prik pao paste and 2-3 split bird-eye chili",detail:"Nam prik pao is the soul of tom yum — adds smoky roasted depth. More paste means more heat and body."},
+      {icon:"🦐",step:"Add 250g prawns and cook 3-4 minutes until pink and curled",detail:"Do not overcook. Prawns are done when they curl."},
+      {icon:"🍋",step:"Season OFF heat: 2 tbsp fish sauce, juice of 1 lime, pinch sugar",detail:"Always season off heat — lime turns bitter if boiled."},
+      {icon:"🍚",step:"Serve with 185g jasmine rice. 510 kcal total.",detail:"Ladle soup over rice or eat separately."},
     ],
     her:[
-      {icon:'🍲',step:'Simmer 500ml stock with lemongrass + galangal + kaffir lime leaves',detail:''},
-      {icon:'🌶️',step:'1 tbsp nam prik pao · 2 bird-eye chili',detail:'Adjust heat to taste.'},
-      {icon:'🦐',step:'200g prawns · 80g mushrooms (shiitake or straw)',detail:'Mushrooms add bulk with almost no calories.'},
-      {icon:'🍋',step:'Season: 2 tbsp fish sauce · lime juice · pinch sugar off heat',detail:''},
-      {icon:'🍚',step:'Serve with 90g jasmine rice · 330 kcal total',detail:''},
+      {icon:"🍲",step:"Simmer 500ml stock with lemongrass, galangal, kaffir lime leaves",detail:""},
+      {icon:"🌶️",step:"1 tbsp nam prik pao, 2 bird-eye chili",detail:"Adjust heat to taste."},
+      {icon:"🦐",step:"200g prawns and 80g mushrooms (shiitake or straw)",detail:"Mushrooms add bulk with almost no calories."},
+      {icon:"🍋",step:"Season with 2 tbsp fish sauce, lime juice, pinch sugar off heat",detail:""},
+      {icon:"🍚",step:"Serve with 90g jasmine rice. 330 kcal total.",detail:""},
     ]
   },
-  'Korean beef bulgogi — Mon/Tue': {
-    time:'20 min (plus 30 min marinade)',
-    spices:'Gochugaru (Korean chili flakes) · soy sauce · sesame oil · brown sugar · Asian pear or kiwi (tenderiser) · garlic · ginger · black pepper',
+  "Korean beef bulgogi": {
+    time:"20 min plus 30 min marinade", spices:"Gochugaru · soy sauce · sesame oil · brown sugar · Asian pear or kiwi · garlic · ginger · black pepper",
     him:[
-      {icon:'🥩',step:'Slice 220g beef sirloin thin — partially freeze 20 min first to ease slicing',detail:'Against the grain. Aim for 2–3mm thick strips.'},
-      {icon:'🥫',step:'Marinade: 3 tbsp soy sauce · 1 tbsp sesame oil · 1 tbsp brown sugar · 1 tsp gochugaru · 2 cloves garlic grated · 1 tsp ginger grated · 2 tbsp grated Asian pear',detail:'Asian pear is the tenderiser — don't skip. Kiwi works as substitute.'},
-      {icon:'⏱️',step:'Marinate 30 min (overnight is better)',detail:'The pear enzymes need time to work. 30 min minimum.'},
-      {icon:'🔥',step:'High heat — cook in batches · 2–3 min per batch',detail:'Don't crowd the pan or it steams instead of caramelises.'},
-      {icon:'🍚',step:'Serve over 185g rice + 100g bok choy + kimchi on side',detail:'550 kcal. Kimchi adds probiotics and no meaningful calories.'},
+      {icon:"🥩",step:"Slice 220g beef sirloin very thin — partially freeze for 20 min first to make slicing easier",detail:"Slice against the grain, aiming for 2-3mm thick strips."},
+      {icon:"🥫",step:"Marinade: 3 tbsp soy sauce, 1 tbsp sesame oil, 1 tbsp brown sugar, 1 tsp gochugaru, 2 grated garlic cloves, 1 tsp grated ginger, 2 tbsp grated Asian pear",detail:"Asian pear is the tenderiser — kiwi works as a substitute."},
+      {icon:"⏱️",step:"Marinate for at least 30 minutes. Overnight is better.",detail:"The pear enzymes need time to work."},
+      {icon:"🔥",step:"Cook in batches on high heat, 2-3 minutes per batch",detail:"Do not crowd the pan or it steams instead of caramelising."},
+      {icon:"🍚",step:"Serve over 185g rice with 100g bok choy and kimchi on the side. 550 kcal.",detail:"Kimchi adds probiotics and almost no calories."},
     ],
     her:[
-      {icon:'🥩',step:'150g beef sirloin, same thin slicing',detail:''},
-      {icon:'🥫',step:'Same marinade ratio — 2 tbsp soy · 1 tsp sesame oil · 1 tsp sugar · gochugaru · garlic · ginger · pear',detail:'Scaled to smaller portion.'},
-      {icon:'⏱️',step:'Marinate 30+ min',detail:''},
-      {icon:'🔥',step:'High heat, quick cook',detail:''},
-      {icon:'🍚',step:'90g rice + bok choy + kimchi · 350 kcal',detail:''},
+      {icon:"🥩",step:"150g beef sirloin, same thin slicing technique",detail:""},
+      {icon:"🥫",step:"Same marinade: 2 tbsp soy, 1 tsp sesame oil, 1 tsp sugar, gochugaru, garlic, ginger, pear",detail:"Scaled to smaller portion."},
+      {icon:"⏱️",step:"Marinate 30 minutes minimum",detail:""},
+      {icon:"🔥",step:"High heat, quick cook in batches",detail:""},
+      {icon:"🍚",step:"90g rice, bok choy, kimchi. 350 kcal.",detail:""},
     ]
   },
-  'Japanese curry (Jap curry) — Wed/Thu': {
-    time:'30 min',
-    spices:'S&B Golden Curry roux (medium-hot) · Worcestershire sauce · soy sauce · tomato paste · black pepper',
+  "Japanese curry (Jap curry)": {
+    time:"30 min", spices:"S&B Golden Curry roux (medium-hot) · Worcestershire sauce · soy sauce · tomato paste · black pepper",
     him:[
-      {icon:'🥘',step:'Dice: 1 onion + 1 carrot + 1 medium potato',detail:'Roughly 2cm pieces — they'll soften during cooking.'},
-      {icon:'🍗',step:'Brown 200g chicken or pork cubes in 1 tsp oil · medium-high heat · 3 min',detail:'Don't fully cook yet — they'll finish in the curry.'},
-      {icon:'💧',step:'Add vegetables. Pour in 500ml water. Bring to boil · simmer 10–12 min',detail:'Until potato and carrot are just fork-tender.'},
-      {icon:'🍛',step:'Break in 2.5 cubes S&B curry roux (medium-hot) · stir until dissolved',detail:'Turn heat LOW before adding roux. Stir constantly to prevent sticking.'},
-      {icon:'🌶️',step:'Add: 1 tsp Worcestershire · 1 tsp soy sauce · 1 tsp tomato paste',detail:'These are the umami boosters that make Japanese curry taste complex.'},
-      {icon:'🍚',step:'Simmer 5 min until thick. Serve over 185g Japanese rice',detail:'540 kcal. Fukujinzuke (red pickles) on the side if available.'},
+      {icon:"🥘",step:"Dice 1 onion, 1 carrot, 1 medium potato into roughly 2cm pieces",detail:"They will soften during cooking — rough dice is fine."},
+      {icon:"🍗",step:"Brown 200g chicken or pork cubes in 1 tsp oil on medium-high heat for 3 minutes",detail:"Do not fully cook yet — they finish in the curry."},
+      {icon:"💧",step:"Add vegetables, pour in 500ml water. Bring to boil then simmer 10-12 minutes.",detail:"Until potato and carrot are just fork-tender."},
+      {icon:"🍛",step:"Break in 2.5 cubes S&B curry roux and stir until fully dissolved",detail:"Turn heat LOW before adding roux. Stir constantly to prevent sticking."},
+      {icon:"🌶️",step:"Add 1 tsp Worcestershire, 1 tsp soy sauce, 1 tsp tomato paste",detail:"These are the umami boosters that make Japanese curry taste complex."},
+      {icon:"🍚",step:"Simmer 5 minutes until thick. Serve over 185g Japanese rice. 540 kcal.",detail:"Fukujinzuke red pickles on the side if available."},
     ],
     her:[
-      {icon:'🥘',step:'Same veg dice but use half the potato',detail:'Potato is the main carb — smaller portion keeps calories on target.'},
-      {icon:'🍗',step:'150g protein, same browning technique',detail:''},
-      {icon:'💧',step:'400ml water · simmer veg through',detail:''},
-      {icon:'🍛',step:'2 cubes S&B curry roux',detail:''},
-      {icon:'🌶️',step:'Same Worcestershire + soy + tomato paste boosters',detail:''},
-      {icon:'🍚',step:'Serve over 100g Japanese rice · 340 kcal',detail:''},
+      {icon:"🥘",step:"Same veg dice but use half the potato",detail:"Potato is the main carb — smaller portion keeps calories on target."},
+      {icon:"🍗",step:"150g protein, same browning technique",detail:""},
+      {icon:"💧",step:"400ml water, simmer veg through",detail:""},
+      {icon:"🍛",step:"2 cubes S&B curry roux",detail:""},
+      {icon:"🌶️",step:"Same Worcestershire, soy, tomato paste boosters",detail:""},
+      {icon:"🍚",step:"Serve over 100g Japanese rice. 340 kcal.",detail:""},
     ]
   },
-  'Nam Tok beef salad — Fri/Sat': {
-    time:'20 min',
-    spices:'Fish sauce · lime juice · toasted rice powder · dried chili flakes · white sugar · fresh mint · coriander · shallots',
+  "Nam Tok beef salad": {
+    time:"20 min", spices:"Fish sauce · lime juice · toasted rice powder · dried chili flakes · white sugar · fresh mint · coriander · shallots",
     him:[
-      {icon:'🍳',step:'Grill or pan-sear 220g beef steak · medium-rare · rest 5 min',detail:'Thin-slice against the grain after resting. Slightly pink inside is ideal for this salad.'},
-      {icon:'🌾',step:'Toast 2 tbsp uncooked rice in dry pan until golden · grind in mortar',detail:'This is toasted rice powder — the signature texture element of Nam Tok. Don't skip it.'},
-      {icon:'🥫',step:'Dressing: 3 tbsp fish sauce · juice of 2 limes · 1 tsp dried chili flakes · 1 tsp sugar',detail:'Taste and adjust — should be salty, sour, spicy, just a hint sweet.'},
-      {icon:'🌿',step:'Toss beef with dressing · sliced shallots · fresh mint · coriander',detail:'Do this while beef is still slightly warm — absorbs the dressing better.'},
-      {icon:'🍚',step:'Serve with 185g jasmine rice on the side · 520 kcal',detail:''},
+      {icon:"🍳",step:"Grill or pan-sear 220g beef steak to medium-rare. Rest 5 minutes then slice thin.",detail:"Slightly pink inside is ideal. Slice against the grain."},
+      {icon:"🌾",step:"Toast 2 tbsp uncooked rice in a dry pan until golden. Grind in mortar.",detail:"This is toasted rice powder — the signature texture of Nam Tok. Do not skip it."},
+      {icon:"🥫",step:"Dressing: 3 tbsp fish sauce, juice of 2 limes, 1 tsp dried chili flakes, 1 tsp sugar",detail:"Taste and adjust — should be salty, sour, spicy, and just a hint sweet."},
+      {icon:"🌿",step:"Toss warm beef with dressing, sliced shallots, fresh mint and coriander",detail:"Dress while beef is still slightly warm — it absorbs the dressing better."},
+      {icon:"🍚",step:"Serve with 185g jasmine rice. 520 kcal.",detail:""},
     ],
     her:[
-      {icon:'🍳',step:'Grill or sear 170g beef steak · rest and slice',detail:''},
-      {icon:'🌾',step:'Toasted rice powder — same technique, same amount',detail:''},
-      {icon:'🥫',step:'Same dressing ratio',detail:''},
-      {icon:'🌿',step:'Toss with herbs and shallots while warm',detail:''},
-      {icon:'🍚',step:'Serve with 90g rice · 330 kcal',detail:''},
+      {icon:"🍳",step:"Grill or sear 170g beef steak. Rest and slice thin.",detail:""},
+      {icon:"🌾",step:"Toasted rice powder — same technique",detail:""},
+      {icon:"🥫",step:"Same dressing ratio",detail:""},
+      {icon:"🌿",step:"Toss with herbs and shallots while warm",detail:""},
+      {icon:"🍚",step:"Serve with 90g rice. 330 kcal.",detail:""},
     ]
   },
-  'Ramen (pork chashu belly) bowl': {
-    time:'20 min (using pre-made chashu)',
-    spices:'Soy sauce · mirin · sake (or dry sherry) · brown sugar · white miso paste · sesame oil · white pepper · nori sheets · bamboo shoots (menma)',
+  "Ramen (pork chashu belly) bowl": {
+    time:"20 min (using pre-made chashu)", spices:"Soy sauce · mirin · sake or dry sherry · brown sugar · white miso paste · sesame oil · white pepper",
     him:[
-      {icon:'🥘',step:'Chashu pork: roll 150g pork belly · tie with string · braise in: 3 tbsp soy · 2 tbsp mirin · 1 tbsp sake · 1 tbsp sugar · 100ml water · 45 min low simmer',detail:'Best made Sunday batch. Slice when cold — cleaner cuts.'},
-      {icon:'🍲',step:'Broth: 500ml chicken or pork stock · 2 tbsp white miso · 1 tbsp soy · 1 tsp sesame oil · white pepper to taste',detail:'Whisk miso in separately — never boil miso directly.'},
-      {icon:'🍜',step:'Cook 80g ramen noodles · 3–4 min · drain into bowl',detail:''},
-      {icon:'🥚',step:'Pour hot broth over noodles. Top: sliced chashu · nori · bamboo shoots · spring onion',detail:'Soft-boiled egg (6 min from cold water) marinated in soy + mirin overnight.'},
-      {icon:'✅',step:'520 kcal · 40g protein',detail:'The miso broth sodium is high — drink extra water after.'},
+      {icon:"🥘",step:"Chashu: roll 150g pork belly, tie with string, braise in 3 tbsp soy, 2 tbsp mirin, 1 tbsp sake, 1 tbsp sugar, 100ml water for 45 min on low heat",detail:"Best made on Sunday. Slice when cold for cleaner cuts."},
+      {icon:"🍲",step:"Broth: whisk 2 tbsp white miso into 500ml warm chicken stock. Add 1 tbsp soy, 1 tsp sesame oil, white pepper.",detail:"Never boil miso directly — whisk into warm (not boiling) broth."},
+      {icon:"🍜",step:"Cook 80g ramen noodles for 3-4 minutes. Drain into bowl.",detail:""},
+      {icon:"🥚",step:"Pour hot broth over noodles. Top with sliced chashu, nori, bamboo shoots, spring onion, soft-boiled egg.",detail:"Soft-boil egg: 6 minutes from cold water. Marinate overnight in soy and mirin."},
+      {icon:"✅",step:"520 kcal, 40g protein",detail:"The miso broth is high in sodium — drink extra water after."},
     ],
     her:[
-      {icon:'🥘',step:'100g chashu pork belly, same braise',detail:'Slice 2–3 pieces.'},
-      {icon:'🍲',step:'Same miso broth — 400ml stock',detail:''},
-      {icon:'🍜',step:'60g ramen noodles',detail:''},
-      {icon:'🥚',step:'Same toppings · 330 kcal',detail:''},
+      {icon:"🥘",step:"100g chashu pork belly, same braise method",detail:""},
+      {icon:"🍲",step:"Same miso broth — 400ml stock",detail:""},
+      {icon:"🍜",step:"60g ramen noodles",detail:""},
+      {icon:"🥚",step:"Same toppings. 330 kcal.",detail:""},
     ]
   },
-  'Pickled mustard greens with pork & noodles — Mon/Tue': {
-    time:'25 min',
-    spices:'Suan cai (pickled mustard greens) · chili oil · soy sauce · dark soy sauce · oyster sauce · Shaoxing wine · ginger · garlic · white pepper · sesame oil',
+  "Pickled mustard greens with pork and noodles": {
+    time:"25 min", spices:"Suan cai · chili oil · soy sauce · dark soy · oyster sauce · Shaoxing wine · ginger · garlic · white pepper · sesame oil",
     him:[
-      {icon:'🧄',step:'Fry 3 cloves garlic + 1 tsp ginger · 30 sec in 1 tbsp neutral oil',detail:'Medium heat — don't burn the garlic.'},
-      {icon:'🥩',step:'Add 220g pork mince or shoulder strips · cook through · 5–7 min',detail:'Break up if mince, or let shoulder strips caramelise.'},
-      {icon:'🥬',step:'Add 100g suan cai (drained and rinsed) · stir 2 min',detail:'Rinse suan cai first to control saltiness and acidity.'},
-      {icon:'🥫',step:'Add: 1 tbsp soy · 1 tsp dark soy (for colour) · 1 tbsp oyster sauce · 1 tbsp Shaoxing wine · 1 tsp chili oil · white pepper',detail:'Dark soy adds the deep mahogany colour. Chili oil goes in at the end for heat.'},
-      {icon:'🍜',step:'Add 80g soaked glass noodles · toss everything together · 2 min',detail:'Noodles absorb the sauce — beautiful dish.'},
-      {icon:'🌿',step:'Finish: extra chili oil drizzle + sesame oil + spring onion',detail:'530 kcal.'},
+      {icon:"🧄",step:"Fry 3 cloves sliced garlic and 1 tsp ginger in 1 tbsp neutral oil for 30 seconds on medium heat",detail:"Do not burn the garlic — medium heat only."},
+      {icon:"🥩",step:"Add 220g pork mince or shoulder strips and cook through, 5-7 minutes",detail:"Break up if mince. Let shoulder strips caramelise."},
+      {icon:"🥬",step:"Add 100g suan cai (drained and rinsed) and stir for 2 minutes",detail:"Rinse suan cai first to control saltiness and acidity."},
+      {icon:"🥫",step:"Add 1 tbsp soy, 1 tsp dark soy (for colour), 1 tbsp oyster sauce, 1 tbsp Shaoxing wine, 1 tsp chili oil, white pepper",detail:"Dark soy adds the deep mahogany colour. Chili oil at the end for heat."},
+      {icon:"🍜",step:"Add 80g soaked glass noodles and toss everything together for 2 minutes",detail:"Noodles absorb the sauce beautifully."},
+      {icon:"🌿",step:"Finish with extra chili oil drizzle, sesame oil, and spring onion. 530 kcal.",detail:""},
     ],
     her:[
-      {icon:'🧄',step:'2 cloves garlic + ginger · same technique',detail:''},
-      {icon:'🥩',step:'150g pork, same cook',detail:''},
-      {icon:'🥬',step:'80g suan cai, rinsed',detail:''},
-      {icon:'🥫',step:'Same sauce ratios, slightly less',detail:''},
-      {icon:'🍜',step:'50g glass noodles · 330 kcal',detail:''},
+      {icon:"🧄",step:"2 cloves garlic, 1 tsp ginger, same technique",detail:""},
+      {icon:"🥩",step:"150g pork, cook through",detail:""},
+      {icon:"🥬",step:"80g suan cai, rinsed",detail:""},
+      {icon:"🥫",step:"Same sauce ratios, slightly less",detail:""},
+      {icon:"🍜",step:"50g glass noodles. 330 kcal.",detail:""},
     ]
   },
-  'Wat Dan Hor (rice noodle egg gravy) — Wed/Thu': {
-    time:'20 min',
-    spices:'Dark soy sauce · light soy sauce · oyster sauce · sesame oil · white pepper · cornflour (for gravy thickening) · chicken stock',
+  "Wat Dan Hor (rice noodle egg gravy)": {
+    time:"20 min", spices:"Dark soy sauce · light soy sauce · oyster sauce · sesame oil · white pepper · cornflour · chicken stock",
     him:[
-      {icon:'🔥',step:'Fry 200g flat rice noodles in wok with 1 tbsp dark soy · high heat · 2 min',detail:'Char the noodles slightly — this is the "wok hei" everyone is chasing. High heat only.'},
-      {icon:'🍳',step:'Move noodles aside · scramble 2 eggs in the same wok',detail:'Fold eggs through noodles once half-set.'},
-      {icon:'🦐',step:'Add 220g prawns or chicken · 2 min',detail:''},
-      {icon:'🥫',step:'Add gravy: 300ml chicken stock + 1 tbsp oyster sauce + 1 tbsp light soy + 1 tsp sesame oil + white pepper — thicken with 1 tbsp cornflour mixed in 2 tbsp cold water',detail:'Pour over noodles, toss to coat.'},
-      {icon:'🥦',step:'Add 100g bok choy at last minute · 1 min',detail:'Bok choy should be just wilted.'},
-      {icon:'✅',step:'540 kcal · 45g protein',detail:''},
+      {icon:"🔥",step:"Fry 200g flat rice noodles in wok with 1 tbsp dark soy on high heat for 2 minutes",detail:"Char the noodles slightly — this is the wok hei everyone is chasing. High heat only."},
+      {icon:"🍳",step:"Push noodles aside. Scramble 2 eggs in the same wok, fold through noodles when half-set.",detail:""},
+      {icon:"🦐",step:"Add 220g prawns or chicken and cook for 2 minutes",detail:""},
+      {icon:"🥫",step:"Mix 300ml chicken stock with 1 tbsp oyster sauce, 1 tbsp light soy, 1 tsp sesame oil, white pepper. Thicken with 1 tbsp cornflour mixed in 2 tbsp cold water. Pour over and toss.",detail:""},
+      {icon:"🥦",step:"Add 100g bok choy at last minute, 1 minute only",detail:"Bok choy should be just wilted."},
+      {icon:"✅",step:"540 kcal, 45g protein",detail:""},
     ],
     her:[
-      {icon:'🔥',step:'150g flat rice noodles · same charring technique',detail:''},
-      {icon:'🍳',step:'1 egg scrambled through',detail:''},
-      {icon:'🦐',step:'150g protein',detail:''},
-      {icon:'🥫',step:'Same gravy, 250ml stock',detail:''},
-      {icon:'🥦',step:'100g bok choy · 340 kcal',detail:''},
+      {icon:"🔥",step:"150g flat rice noodles, same charring technique",detail:""},
+      {icon:"🍳",step:"1 egg scrambled through",detail:""},
+      {icon:"🦐",step:"150g protein",detail:""},
+      {icon:"🥫",step:"Same gravy with 250ml stock",detail:""},
+      {icon:"🥦",step:"100g bok choy. 340 kcal.",detail:""},
     ]
   },
-  'Abalone, broccoli & mushroom egg noodles — Fri/Sat': {
-    time:'20 min',
-    spices:'Oyster sauce · soy sauce · sesame oil · Shaoxing wine · ginger · garlic · white pepper · cornflour',
+  "Abalone, broccoli and mushroom egg noodles": {
+    time:"20 min", spices:"Oyster sauce · soy sauce · sesame oil · Shaoxing wine · ginger · garlic · white pepper · cornflour",
     him:[
-      {icon:'🧄',step:'Fry 3 cloves garlic + 2 slices ginger · 1 tsp oil · 30 sec',detail:'Medium heat.'},
-      {icon:'🍄',step:'Add 100g shiitake mushrooms (halved) · fry 3 min until golden',detail:'Don't stir too early — let them colour.'},
-      {icon:'🥦',step:'Add 200g broccoli florets · 100ml water · cover · steam 3 min',detail:'Broccoli should be bright green and just tender.'},
-      {icon:'🦑',step:'Add 150g abalone or scallop · 1 tbsp Shaoxing wine · 2 min',detail:'If using canned abalone, just heat through — already cooked.'},
-      {icon:'🥫',step:'Sauce: 2 tbsp oyster sauce · 1 tbsp soy · 1 tsp sesame oil · white pepper · thicken with 1 tsp cornflour in 2 tbsp cold water',detail:'Stir sauce around everything.'},
-      {icon:'🍜',step:'Add pre-cooked 80g egg noodles · toss · 500 kcal',detail:''},
+      {icon:"🧄",step:"Fry 3 cloves sliced garlic and 2 slices ginger in 1 tsp oil for 30 seconds",detail:"Medium heat."},
+      {icon:"🍄",step:"Add 100g halved shiitake mushrooms and fry for 3 minutes until golden",detail:"Do not stir too early — let them colour on one side first."},
+      {icon:"🥦",step:"Add 200g broccoli florets and 100ml water. Cover and steam for 3 minutes.",detail:"Broccoli should be bright green and just tender."},
+      {icon:"🦑",step:"Add 150g abalone or scallop and 1 tbsp Shaoxing wine. Cook 2 minutes.",detail:"If using canned abalone, just heat through — it is already cooked."},
+      {icon:"🥫",step:"Sauce: 2 tbsp oyster sauce, 1 tbsp soy, 1 tsp sesame oil, white pepper. Thicken with 1 tsp cornflour in 2 tbsp cold water.",detail:"Stir sauce around everything evenly."},
+      {icon:"🍜",step:"Add pre-cooked 80g egg noodles, toss through. 500 kcal.",detail:""},
     ],
     her:[
-      {icon:'🧄',step:'Same aromatics',detail:''},
-      {icon:'🍄',step:'Shiitake + 200g broccoli',detail:'Same veg quantity — fills the bowl beautifully.'},
-      {icon:'🦑',step:'100g abalone or scallop',detail:''},
-      {icon:'🥫',step:'Same sauce',detail:''},
-      {icon:'🍜',step:'60g egg noodles · 310 kcal',detail:''},
+      {icon:"🧄",step:"Same aromatics",detail:""},
+      {icon:"🍄",step:"Shiitake plus 200g broccoli — same veg quantity fills the bowl.",detail:""},
+      {icon:"🦑",step:"100g abalone or scallop",detail:""},
+      {icon:"🥫",step:"Same sauce",detail:""},
+      {icon:"🍜",step:"60g egg noodles. 310 kcal.",detail:""},
     ]
   },
-  'Durban chicken curry + roti canai': {
-    time:'30 min',
-    spices:'Durban masala (Rajah or Kashmiri blend) · cumin seeds · coriander powder · turmeric · garam masala · dried chili flakes · bay leaves · cinnamon stick · tomato passata · fresh chili · curry leaves optional',
+  "Durban chicken curry with roti canai": {
+    time:"30 min", spices:"Durban masala blend · cumin seeds · ground coriander · turmeric · garam masala · dried chili flakes · bay leaves · cinnamon stick · tomato passata · curry leaves (optional)",
     him:[
-      {icon:'🥘',step:'Heat 1 tbsp oil · fry 1 tsp cumin seeds + 1 cinnamon stick + 2 bay leaves · 30 sec',detail:'Let the whole spices bloom in the oil — foundation of the curry.'},
-      {icon:'🧅',step:'Add 1 large onion (diced) · fry until golden · 8 min',detail:'Take your time — golden onion is the backbone.'},
-      {icon:'🌶️',step:'Add: 2 tbsp Durban masala · 1 tsp coriander · 1 tsp turmeric · 1 tsp chili flakes · stir 1 min',detail:'Fry spices briefly in the oil/onion mix — this is blooming. Takes the raw edge off.'},
-      {icon:'🍗',step:'Add 200g chicken pieces · coat in spice mix · fry 5 min',detail:'Seal the chicken in the spiced oil before adding liquid.'},
-      {icon:'🍅',step:'Add 150ml tomato passata + 100ml water · simmer 15 min lid on',detail:'Gravy should thicken and oil should start to separate (this is correct).'},
-      {icon:'🌿',step:'Finish with 1 tsp garam masala + fresh coriander · serve with 1.5 roti canai · 520 kcal',detail:'Garam masala always goes in at the end — loses aroma if cooked too long.'},
+      {icon:"🥘",step:"Heat 1 tbsp oil. Fry 1 tsp cumin seeds, 1 cinnamon stick, 2 bay leaves for 30 seconds.",detail:"Let the whole spices bloom in oil — this is the foundation of the curry."},
+      {icon:"🧅",step:"Add 1 large diced onion and fry until golden, about 8 minutes",detail:"Take your time — golden onion is the backbone."},
+      {icon:"🌶️",step:"Add 2 tbsp Durban masala, 1 tsp ground coriander, 1 tsp turmeric, 1 tsp chili flakes. Stir for 1 minute.",detail:"Fry spices briefly in the oil — this is blooming. Takes the raw edge off."},
+      {icon:"🍗",step:"Add 200g chicken pieces, coat in spice mix, fry for 5 minutes",detail:"Seal the chicken in the spiced oil before adding liquid."},
+      {icon:"🍅",step:"Add 150ml tomato passata and 100ml water. Simmer covered for 15 minutes.",detail:"Gravy should thicken and oil should start to separate — this is correct."},
+      {icon:"🌿",step:"Finish with 1 tsp garam masala and fresh coriander. Serve with 1.5 roti canai. 520 kcal.",detail:"Garam masala always goes in at the end — it loses aroma if cooked too long."},
     ],
     her:[
-      {icon:'🥘',step:'Same spice bloom technique',detail:''},
-      {icon:'🧅',step:'½ onion diced · golden',detail:''},
-      {icon:'🌶️',step:'1.5 tbsp Durban masala + same dry spices',detail:''},
-      {icon:'🍗',step:'150g chicken',detail:''},
-      {icon:'🍅',step:'100ml passata + 80ml water · simmer',detail:''},
-      {icon:'🌿',step:'Garam masala finish + coriander · 1 roti canai · 330 kcal',detail:'60g cucumber raita on the side.'},
+      {icon:"🥘",step:"Same spice bloom technique",detail:""},
+      {icon:"🧅",step:"Half onion diced, fry until golden",detail:""},
+      {icon:"🌶️",step:"1.5 tbsp Durban masala plus same dry spices",detail:""},
+      {icon:"🍗",step:"150g chicken",detail:""},
+      {icon:"🍅",step:"100ml passata, 80ml water, simmer",detail:""},
+      {icon:"🌿",step:"Garam masala finish, coriander. 1 roti canai. 330 kcal. Serve with 60g cucumber raita.",detail:""},
     ]
   },
-  'Spicy lamb chops — Mon/Tue': {
-    time:'25 min',
-    spices:'Harissa paste · ground cumin · smoked paprika · coriander powder · garlic powder · olive oil · lemon zest · chili flakes · salt · black pepper',
+  "Spicy lamb chops": {
+    time:"25 min plus marinating", spices:"Harissa paste · ground cumin · smoked paprika · ground coriander · garlic powder · olive oil · lemon zest · chili flakes · salt · black pepper",
     him:[
-      {icon:'🥩',step:'Pat dry 3 loin chops (~250g) · score fat lightly',detail:'Scoring helps fat render and marinade penetrate.'},
-      {icon:'🌶️',step:'Marinade: 2 tbsp harissa · 1 tsp cumin · 1 tsp smoked paprika · 1 tsp coriander · ½ tsp garlic powder · zest of 1 lemon · 1 tbsp olive oil · salt + black pepper',detail:'Coat chops well. 30 min if time allows. Overnight is exceptional.'},
-      {icon:'🔥',step:'Grill or cast iron · high heat · 3–4 min each side',detail:'Lamb chops should be medium — pink inside. Over-cooking makes them tough.'},
-      {icon:'🥣',step:'Raita: 80g 0% Greek yogurt · grated cucumber · pinch cumin · salt',detail:'Cooling contrast to the spiced chops.'},
-      {icon:'🍚',step:'Serve with 185g jasmine rice · 550 kcal',detail:''},
+      {icon:"🥩",step:"Pat dry 3 loin chops (~250g). Score fat lightly.",detail:"Scoring helps fat render and marinade penetrate."},
+      {icon:"🌶️",step:"Marinade: 2 tbsp harissa, 1 tsp cumin, 1 tsp smoked paprika, 1 tsp coriander, half tsp garlic powder, zest of 1 lemon, 1 tbsp olive oil, salt and black pepper. Coat chops well.",detail:"30 minutes minimum. Overnight is exceptional."},
+      {icon:"🔥",step:"Grill or cast iron on high heat. 3-4 minutes each side.",detail:"Lamb chops should be medium — pink inside. Overcooking makes them tough."},
+      {icon:"🥣",step:"Raita: 80g 0% Greek yogurt, grated cucumber, pinch cumin, salt",detail:"Cooling contrast to the spiced chops."},
+      {icon:"🍚",step:"Serve with 185g jasmine rice. 550 kcal.",detail:""},
     ],
     her:[
-      {icon:'🥩',step:'2 loin chops (~160g) · same scoring + marinade',detail:''},
-      {icon:'🔥',step:'Same grill technique',detail:''},
-      {icon:'🥣',step:'Raita same recipe · 60g yogurt',detail:''},
-      {icon:'🍚',step:'90g jasmine rice · 350 kcal',detail:''},
+      {icon:"🥩",step:"2 loin chops (~160g), same scoring and marinade",detail:""},
+      {icon:"🔥",step:"Same grill technique",detail:""},
+      {icon:"🥣",step:"Raita with 60g yogurt",detail:""},
+      {icon:"🍚",step:"90g jasmine rice. 350 kcal.",detail:""},
     ]
   },
-  'Chili con carne nachos — Wed/Thu': {
-    time:'30 min',
-    spices:'Chipotle peppers in adobo sauce · cumin · smoked paprika · oregano · garlic powder · onion powder · cayenne pepper · dark chocolate (small piece — secret depth ingredient)',
+  "Chili con carne nachos": {
+    time:"30 min", spices:"Chipotle peppers in adobo sauce · cumin · smoked paprika · oregano · garlic powder · cayenne · dark chocolate · cinnamon",
     him:[
-      {icon:'🧅',step:'Fry 1 diced onion + 3 garlic cloves · 5 min',detail:''},
-      {icon:'🥩',step:'Add 220g lean beef mince · break up · brown well · 5 min',detail:'Drain excess fat if needed.'},
-      {icon:'🌶️',step:'Add: 1–2 chipotle peppers (chopped) + 1 tbsp adobo sauce · 1 tsp cumin · 1 tsp smoked paprika · 1 tsp oregano · ½ tsp cayenne',detail:'Chipotle is the key ingredient — smoky, not just hot.'},
-      {icon:'🥫',step:'Add 1 can kidney beans (drained) + 150ml tomato passata + 100ml water',detail:''},
-      {icon:'🍫',step:'Simmer 15 min. Add small square dark chocolate + pinch cinnamon',detail:'Dark chocolate (5g) adds deep mole-like richness with virtually no calories. This is the secret.'},
-      {icon:'🌮',step:'Bake 50g corn chips 5 min 180°C until crisp · top with chili · 30g reduced-fat cheese · jalapeños · fresh salsa · coriander · 530 kcal',detail:''},
+      {icon:"🧅",step:"Fry 1 diced onion and 3 garlic cloves for 5 minutes",detail:""},
+      {icon:"🥩",step:"Add 220g lean beef mince, break up and brown well for 5 minutes. Drain excess fat.",detail:""},
+      {icon:"🌶️",step:"Add 1-2 chopped chipotle peppers plus 1 tbsp adobo sauce, 1 tsp cumin, 1 tsp smoked paprika, 1 tsp oregano, half tsp cayenne",detail:"Chipotle is the key ingredient — smoky, not just hot."},
+      {icon:"🥫",step:"Add 1 can drained kidney beans, 150ml tomato passata, 100ml water. Simmer 15 minutes.",detail:""},
+      {icon:"🍫",step:"Stir in a small square of dark chocolate (5g) and a pinch of cinnamon",detail:"Dark chocolate adds deep mole-like richness with almost no calories. This is the secret weapon."},
+      {icon:"🌮",step:"Bake 50g corn chips at 180C for 5 min. Top with chili, 30g reduced-fat cheese, jalapenos, fresh salsa, coriander. 530 kcal.",detail:""},
     ],
     her:[
-      {icon:'🧅',step:'½ onion + garlic, same technique',detail:''},
-      {icon:'🥩',step:'150g lean mince',detail:''},
-      {icon:'🌶️',step:'Same spices, 1 chipotle',detail:''},
-      {icon:'🥫',step:'Kidney beans + 100ml passata',detail:''},
-      {icon:'🍫',step:'Same chocolate finish',detail:''},
-      {icon:'🌮',step:'30g baked chips · 20g cheese · salsa · 330 kcal',detail:''},
+      {icon:"🧅",step:"Half onion and garlic, same technique",detail:""},
+      {icon:"🥩",step:"150g lean mince",detail:""},
+      {icon:"🌶️",step:"Same spices, 1 chipotle",detail:""},
+      {icon:"🥫",step:"Kidney beans, 100ml passata",detail:""},
+      {icon:"🍫",step:"Same chocolate finish",detail:""},
+      {icon:"🌮",step:"30g baked chips, 20g cheese, salsa. 330 kcal.",detail:""},
     ]
   },
-  'Larb (Thai minced meat salad) — Fri/Sat': {
-    time:'20 min',
-    spices:'Fish sauce · lime juice · dried chili flakes (prik bon) · toasted rice powder · fresh mint · coriander · shallots · lemongrass (fine-sliced) · kaffir lime leaves (fine-sliced)',
+  "Larb (Thai minced meat salad)": {
+    time:"20 min", spices:"Fish sauce · lime juice · dried chili flakes (prik bon) · toasted rice powder · fresh mint · coriander · shallots · lemongrass · kaffir lime leaves",
     him:[
-      {icon:'🌾',step:'Toast 2 tbsp raw rice in dry pan until golden · grind fine in mortar',detail:'Toasted rice powder is the signature texture. Make fresh each time.'},
-      {icon:'🥩',step:'Dry-cook 220g chicken or pork mince · no oil · until just cooked through',detail:'Mince releases its own fat. Don't overcook or it goes dry.'},
-      {icon:'🥫',step:'Dressing: 3 tbsp fish sauce · juice of 2 limes · 1 tsp dried chili flakes · 1 tsp sugar',detail:'Classic Thai balance: salty → sour → heat → hint sweet.'},
-      {icon:'🌿',step:'Toss mince in dressing while still warm. Add: toasted rice powder · sliced shallots · fresh mint · coriander · fine-sliced lemongrass',detail:'The warm mince absorbs the dressing — cool mince doesn't take it as well.'},
-      {icon:'🍚',step:'Serve with 185g jasmine rice · 520 kcal',detail:'Also great with sticky rice or eaten in lettuce cups.'},
+      {icon:"🌾",step:"Toast 2 tbsp raw rice in a dry pan until golden. Grind fine in a mortar.",detail:"Toasted rice powder is the signature texture. Make it fresh each time."},
+      {icon:"🥩",step:"Dry-cook 220g chicken or pork mince with no oil until just cooked through",detail:"Mince releases its own fat. Do not overcook or it goes dry."},
+      {icon:"🥫",step:"Dressing: 3 tbsp fish sauce, juice of 2 limes, 1 tsp dried chili flakes, 1 tsp sugar",detail:"Classic Thai balance: salty, sour, heat, hint sweet."},
+      {icon:"🌿",step:"Toss warm mince in dressing. Add toasted rice powder, sliced shallots, fresh mint, coriander, fine-sliced lemongrass.",detail:"Warm mince absorbs the dressing — cool mince does not take it as well."},
+      {icon:"🍚",step:"Serve with 185g jasmine rice. 520 kcal. Also great with sticky rice or in lettuce cups.",detail:""},
     ],
     her:[
-      {icon:'🌾',step:'Same toasted rice powder',detail:''},
-      {icon:'🥩',step:'170g mince, same dry-cook',detail:''},
-      {icon:'🥫',step:'Same dressing ratio',detail:''},
-      {icon:'🌿',step:'Same herbs and shallots',detail:''},
-      {icon:'🍚',step:'90g jasmine rice · 330 kcal',detail:''},
+      {icon:"🌾",step:"Same toasted rice powder",detail:""},
+      {icon:"🥩",step:"170g mince, same dry-cook",detail:""},
+      {icon:"🥫",step:"Same dressing ratio",detail:""},
+      {icon:"🌿",step:"Same herbs and shallots",detail:""},
+      {icon:"🍚",step:"90g jasmine rice. 330 kcal.",detail:""},
     ]
   },
 };
 
 function getDinnerPrepSteps(mealName, isHim) {
-  // Strip "— Mon/Tue" type suffixes to match DINNER_STEPS keys
-  const cleanName = mealName.replace(/\s*—\s*[A-Za-z/]+$/, '').trim();
-  const fullKey = Object.keys(DINNER_STEPS).find(k => k.startsWith(cleanName) || cleanName.startsWith(k.split(' —')[0]));
-  if (fullKey && DINNER_STEPS[fullKey]) {
-    const entry = DINNER_STEPS[fullKey];
+  const cleanName = mealName.replace(/\s*—\s*[A-Za-z/]+$/, '').trim()
+    .replace('(Thai basil chili beef/chicken) — Mon/Tue', '(Thai basil chili beef/chicken)')
+    .replace('— Mon/Tue', '').replace('— Wed/Thu', '').replace('— Fri/Sat', '').trim();
+  const key = Object.keys(DINNER_STEPS).find(k =>
+    cleanName === k || cleanName.startsWith(k) || k.startsWith(cleanName.split(' —')[0])
+  );
+  if (key && DINNER_STEPS[key]) {
+    const entry = DINNER_STEPS[key];
     const steps = isHim ? entry.him : entry.her;
     const spiceStep = entry.spices ? [{
-      icon:'🧂', step:'Spices & condiments needed',
+      icon:'🧂', step:'Spices and condiments needed',
       detail: entry.spices
     }] : [];
     return [...spiceStep, ...steps];
   }
-  // Generic fallback
   return [{
-    icon:'🍳', step:mealName.replace(/^Dinner [^:]+:\s*/i,'').trim(),
-    detail: isHim
-      ? 'Him portions: 220g protein · 185g jasmine rice · vegetables as listed.'
-      : 'Her portions: 150g protein · 90g rice or cauliflower rice · extra vegetables.'
-  }, {
-    icon:'⏱️', step:'Cook time: 15–20 min', detail:'All under 25 min with Sunday prep done.'
+    icon:'🍳', step:'Follow the weekly plan recipe for: ' + mealName,
+    detail: isHim ? 'Him: 220g protein, 185g jasmine rice, vegetables as listed.' : 'Her: 150g protein, 90g rice, extra vegetables.'
   }];
+}
+
+function getDinnerPrepTime(mealName) {
+  const cleanName = mealName.replace(/\s*—\s*[A-Za-z/]+$/, '').trim();
+  const key = Object.keys(DINNER_STEPS).find(k => cleanName === k || k.startsWith(cleanName.split(' —')[0]));
+  return (key && DINNER_STEPS[key]) ? DINNER_STEPS[key].time : '20-25 min';
 }
 
 const PREP_STEPS = [
@@ -1481,8 +1398,8 @@ let mealWeek = 1;
 let checkins = { him:[], her:[] };
 let chatHistory = [];
 let mealSwaps = {}; // mealSwaps[dateKey][slotIdx] = {name,him,her,himCal,herCal,time}
-let exLog = {}; // exLog[dateKey][exIdx] = true
-let pantryChecked = {}; // pantryChecked[itemKey] = true
+let exLog = {};
+let pantryChecked = {};
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 function showPage(id, btn) {
@@ -1598,13 +1515,13 @@ function renderTodayExercise() {
     return;
   }
   const isHim = profile === 'him';
-  const totalEx = wo.exercises.length + 1; // +1 for treadmill
+  const totalEx = wo.exercises.length + 1;
   const doneCount = wo.exercises.filter((e,i) => todayExLog[i]).length + (todayExLog['treadmill'] ? 1 : 0);
   if (progEl) progEl.textContent = `${doneCount} / ${totalEx} done`;
 
   const exHtml = wo.exercises.map((e,i) => {
     const done = !!todayExLog[i];
-    return `<div style="padding:11px 0;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start;${done?'opacity:.55':''}">
+    return `<div style="padding:11px 0;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start;opacity:${done?'.55':'1'}">
       <div style="flex:1">
         <div style="font-size:13px;font-weight:700;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif">${e.n} <span style="font-weight:500;color:var(--text3)">${e.s}</span></div>
         <div style="font-size:12px;color:${isHim?'var(--gold)':'var(--purple)'};font-weight:600;margin-top:2px">${isHim?e.him:e.her}</div>
@@ -1615,7 +1532,7 @@ function renderTodayExercise() {
   }).join('');
 
   const tmDone = !!todayExLog['treadmill'];
-  const tmHtml = `<div style="margin-top:10px;padding:11px 12px;background:var(--teal-light);border-radius:10px;border:1px solid rgba(8,145,178,.15);display:flex;align-items:center;gap:10px;${tmDone?'opacity:.55':''}">
+  const tmHtml = `<div style="margin-top:10px;padding:11px 12px;background:var(--teal-light);border-radius:10px;border:1px solid rgba(8,145,178,.15);display:flex;align-items:center;gap:10px;opacity:${tmDone?'.55':'1'}">
     <div style="flex:1">
       <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.06em;margin-bottom:3px">🏃 TREADMILL</div>
       <div style="font-size:12px;color:var(--text2)">${wo.treadmill}</div>
@@ -1625,8 +1542,7 @@ function renderTodayExercise() {
 
   el.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
     <div style="background:var(--coral-soft);border-radius:10px;padding:6px 12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:var(--coral)">${wo.focus}</div>
-  </div>
-  ${exHtml}${tmHtml}`;
+  </div>${exHtml}${tmHtml}`;
 }
 
 function toggleExLog(dateKey, exIdx) {
@@ -1755,23 +1671,26 @@ function renderDailyMeals() {
     if (done) { himCal+=m.himCal; herCal+=m.herCal; }
     const div = document.createElement('div');
     div.className = 'plan-meal'+(done?' done-meal':'');
-    div.innerHTML = `<div class="pm-time">${m.time}${isSwapped?'<span style="margin-left:6px;font-size:10px;background:var(--coral-soft);color:var(--coral);padding:2px 6px;border-radius:8px;font-weight:700">SWAPPED</span>':''}</div>
+    const swappedBadge = isSwapped ? '<span style="margin-left:6px;font-size:10px;background:var(--coral-soft);color:var(--coral);padding:2px 6px;border-radius:8px;font-weight:700">SWAPPED</span>' : '';
+    const resetBtn = isSwapped ? `<button onclick="resetSwap('${key}',${idx})" class="how-to-btn" style="color:var(--text3)">Reset</button>` : '';
+    div.innerHTML = `<div class="pm-time">${m.time}${swappedBadge}</div>
       <div class="pm-header">
         <span class="pm-name">${m.name}</span>
-        <button class="pm-check ${done?'checked':''}" onclick="toggleDailyMeal('${key}',${idx})">${done?'✓':''}</button>
+        <button class="pm-check ${done?'checked':''}" onclick="toggleDailyMeal('${key}',${idx})">${done?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':''}</button>
       </div>
       <div class="pm-detail" style="color:var(--gold);font-weight:500;margin-bottom:3px">Him: ${m.him} (${m.himCal} kcal)</div>
       <div class="pm-detail" style="color:var(--purple);font-weight:500;margin-bottom:10px">Her: ${m.her} (${m.herCal} kcal)</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <button onclick="openPrepModal('${m.name.replace(/'/g,"\'")}','${m.time}')" class="how-to-btn">👨\u200d🍳 How to make</button>
-        <button onclick="openSwapModal('${key}',${idx},${idx>=4})" class="how-to-btn" style="background:var(--teal-light);color:var(--teal);border-color:rgba(8,145,178,.2)">🔄 Swap meal</button>
-        ${isSwapped?`<button onclick="resetSwap('${key}',${idx})" class="how-to-btn" style="color:var(--text3)">↩ Reset</button>`:''}
+        <button onclick="openPrepModal('${m.name.replace(/'/g,"\\'")}')" class="how-to-btn">How to make</button>
+        <button onclick="openSwapModal('${key}',${idx})" class="how-to-btn" style="background:var(--teal-light);color:var(--teal);border-color:rgba(8,145,178,.2)">Swap meal</button>
+        ${resetBtn}
       </div>`;
     cont.appendChild(div);
   });
   document.getElementById('daily-total-him').textContent = himCal.toLocaleString()+' kcal';
   document.getElementById('daily-total-her').textContent = herCal.toLocaleString()+' kcal';
 }
+
 
 function toggleDailyMeal(dateKey, idx) {
   if (!dailyMealLog[dateKey]) dailyMealLog[dateKey]={};
@@ -2076,133 +1995,6 @@ function updateDateChip() {
 
 // ── Shopping Data ─────────────────────────────────────────────────────────────
 // Prices are NZ$ estimates (Pak'nSave / NW mid-2026). Split: sunday=bulk, daily=perishable fresh.
-
-// ── Pantry Staples ─────────────────────────────────────────────────────────
-const PANTRY_STAPLES = [
-  { cat: 'Asian Sauces & Condiments', items: [
-    { key:'fish_sauce',       name:'Fish sauce',                        note:'Tiparos or Tra Chang — core Thai/Viet dressing' },
-    { key:'oyster_sauce',     name:'Oyster sauce',                      note:'Lee Kum Kee — stir-fries, noodles, braised dishes' },
-    { key:'light_soy',        name:'Light soy sauce',                   note:'All-purpose — Kikkoman or Pearl River Bridge' },
-    { key:'dark_soy',         name:'Dark soy sauce',                    note:'Colour and depth — Wat Dan Hor, mustard noodles' },
-    { key:'sesame_oil',       name:'Sesame oil (toasted)',               note:'Finishing oil only — Kadoya brand' },
-    { key:'hoisin_sauce',     name:'Hoisin sauce',                      note:'Pho condiment, Peking duck wraps, spring rolls' },
-    { key:'shaoxing_wine',    name:'Shaoxing rice wine',                 note:'Chinese braised dishes, Wat Dan Hor' },
-    { key:'mirin',            name:'Mirin',                             note:'Japanese sweet wine — bulgogi, chashu, ramen' },
-    { key:'rice_vinegar',     name:'Rice wine vinegar',                  note:'Ginger-lime dressing base, pickling' },
-    { key:'chili_oil',        name:'Chili oil (Lao Gan Ma)',             note:'Pickled mustard noodles, dumpling dip' },
-    { key:'nam_prik_pao',     name:'Nam prik pao (Thai chili paste)',    note:'Tom Yum soul ingredient — Maesri brand' },
-    { key:'gochugaru',        name:'Gochugaru (Korean chili flakes)',    note:'Bulgogi marinade — coarse flakes not powder' },
-    { key:'gochujang',        name:'Gochujang paste',                   note:'Fermented Korean chili — salmon glaze' },
-    { key:'sriracha',         name:'Sriracha',                          note:'Table condiment + pho dipping sauce' },
-    { key:'worcestershire',   name:'Worcestershire sauce',               note:'Japanese curry depth booster' },
-    { key:'white_miso',       name:'White miso paste',                  note:'Ramen broth — refrigerate after opening' },
-  ]},
-  { cat: 'Dry Spices', items: [
-    { key:'cumin_ground',     name:'Ground cumin',                      note:'Durban curry, chili con carne, lamb chops' },
-    { key:'cumin_seeds',      name:'Cumin seeds (whole)',                note:'Bloom in oil for Durban curry base' },
-    { key:'coriander_ground', name:'Ground coriander',                  note:'Durban curry, Indian dishes' },
-    { key:'turmeric',         name:'Turmeric',                          note:'Durban curry colour and flavour' },
-    { key:'garam_masala',     name:'Garam masala',                      note:'Always added at end — never bloomed in oil' },
-    { key:'smoked_paprika',   name:'Smoked paprika',                    note:'Lamb chops, chili con carne' },
-    { key:'durban_masala',    name:'Durban masala blend',               note:'Rajah or Kashmiri brand — Durban chicken curry' },
-    { key:'cayenne',          name:'Cayenne pepper',                    note:'Chili con carne and chili bases' },
-    { key:'dried_chili',      name:'Dried chili flakes (prik bon)',     note:'Larb, Nam Tok dressing, general heat' },
-    { key:'white_pepper',     name:'White pepper (ground)',             note:'All Chinese/SE Asian dishes' },
-    { key:'black_pepper',     name:'Black pepper (coarse)',             note:'Lamb chops, black pepper beef, pasta' },
-    { key:'star_anise',       name:'Star anise (whole)',                note:'Pho broth, ramen, chashu braise' },
-    { key:'cinnamon_sticks',  name:'Cinnamon sticks',                  note:'Pho broth, Durban curry base' },
-    { key:'bay_leaves',       name:'Bay leaves',                        note:'Durban curry, bolognaise, cottage pie' },
-    { key:'oregano_dried',    name:'Dried oregano',                     note:'Chili con carne, bolognaise' },
-  ]},
-  { cat: 'Pastes & Roux', items: [
-    { key:'garlic_powder',    name:'Garlic powder',                     note:'Dry rubs — lamb chops, burgers' },
-    { key:'harissa',          name:'Harissa paste',                     note:'Lamb chop marinade — rose or regular' },
-    { key:'chipotle_adobo',   name:'Chipotle peppers in adobo sauce',   note:'Chili con carne — one tin lasts several uses' },
-    { key:'tomato_paste',     name:'Tomato paste',                      note:'Curry depth, Japanese curry, chili base' },
-    { key:'sbcurry_roux',     name:'S&B Golden Curry roux (med-hot)',   note:'Japanese curry essential' },
-    { key:'tom_yum_paste',    name:'Tom Yum paste (jar)',               note:'Backup when fresh aromatics unavailable' },
-    { key:'tandoori_spice',   name:'Tandoori spice blend',             note:'MDH or Shan brand — chicken skewers' },
-  ]},
-  { cat: 'Grains, Noodles & Pantry', items: [
-    { key:'jasmine_rice',     name:'Jasmine rice (2kg min)',            note:'Him dinner base — keep stocked' },
-    { key:'japanese_rice',    name:'Japanese short-grain rice',         note:'Donburi, Jap curry — Koshihikari preferred' },
-    { key:'rolled_oats',      name:'Rolled oats (1kg min)',             note:'Daily breakfast — never run out' },
-    { key:'ramen_noodles',    name:'Ramen noodles (dried)',             note:'Myojo or Sun Noodle brand' },
-    { key:'glass_noodles',    name:'Glass noodles (bean thread)',       note:'Soak 10 min in hot water before use' },
-    { key:'flat_rice_noodles',name:'Flat rice noodles (dried)',         note:'Pho and Wat Dan Hor — wide, not thin' },
-    { key:'egg_noodles',      name:'Egg noodles (dried)',               note:'Abalone mushroom dish' },
-    { key:'orzo',             name:'Orzo pasta',                        note:'Smoked salmon salad, beef pasta bake' },
-    { key:'rice_paper',       name:'Rice paper rounds',                 note:'Vietnamese spring rolls' },
-    { key:'panko',            name:'Panko breadcrumbs',                 note:'Pasta bake topping' },
-    { key:'cornflour',        name:'Cornflour (cornstarch)',            note:'Gravy thickening — Wat Dan Hor, abalone' },
-    { key:'raw_almonds',      name:'Raw almonds (300g min)',            note:'Him 20g / Her 15g daily snack' },
-    { key:'brown_sugar',      name:'Brown sugar',                       note:'Bulgogi, chashu, chili con carne' },
-    { key:'dark_choc',        name:'Dark chocolate 85%',               note:'Chili con carne secret ingredient — 5g only' },
-    { key:'salt_himalayan',   name:'Pink Himalayan salt',               note:'Post-gym electrolyte + cooking' },
-  ]},
-  { cat: 'Oils', items: [
-    { key:'neutral_oil',      name:'Neutral oil (rice bran/canola)',    note:'Stir-frying — high smoke point required' },
-    { key:'olive_oil',        name:'Olive oil (light)',                 note:'Lamb chops, Mediterranean dishes' },
-    { key:'cooking_spray',    name:'Cooking spray (olive oil)',         note:'Air fryer coating' },
-  ]},
-  { cat: 'Preserved & Specialty', items: [
-    { key:'suan_cai',         name:'Suan cai (pickled mustard greens)', note:'Asian grocer only — Sunrise brand. Refrigerate.' },
-    { key:'bamboo_shoots',    name:'Bamboo shoots (canned)',            note:'Ramen topping — menma style' },
-    { key:'nori_sheets',      name:'Nori sheets',                      note:'Ramen, donburi — airtight container' },
-    { key:'dried_scallops',   name:'Dried scallops (conpoy)',          note:'Spring onion soup — Asian grocer specialty' },
-    { key:'kaffir_lime',      name:'Kaffir lime leaves (frozen)',       note:'Tom Yum — Tai Ping or Lim Chour, Auckland CBD' },
-    { key:'lemongrass_frz',   name:'Lemongrass (freeze extra stalks)', note:'Tom Yum — freeze fresh for year-round supply' },
-    { key:'galangal_frz',     name:'Galangal (frozen slices)',         note:'Tom Yum — freeze from fresh root' },
-    { key:'kimchi',           name:'Kimchi (jar)',                     note:'Bulgogi side — Jongga brand. Refrigerate.' },
-    { key:'asian_pear',       name:'Asian pear or kiwi',               note:'Bulgogi tenderiser — 2 tbsp grated per batch' },
-  ]},
-  { cat: 'Fridge Staples', items: [
-    { key:'greek_yogurt',     name:'0% Greek yogurt (2 tubs)',         note:'Daily snack + raita base — never run out' },
-    { key:'protein_powder',   name:'Protein powder',                   note:'Him 40g / Her 30g daily — weighed, not scooped' },
-    { key:'eggs',             name:'Eggs (large free-range)',          note:'Ramen soft-boil, carbonara, Wat Dan Hor' },
-    { key:'parmesan',         name:'Parmesan / Pecorino (block)',      note:'Carbonara, pasta bake — block not pre-grated' },
-  ]},
-];
-
-function renderPantry() {
-  const cont = document.getElementById('pantry-list');
-  if (!cont) return;
-  let total = 0, have = 0;
-  cont.innerHTML = '';
-  PANTRY_STAPLES.forEach(cat => {
-    const catDiv = document.createElement('div');
-    catDiv.style.marginBottom = '16px';
-    catDiv.innerHTML = `<div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border2)">${cat.cat.toUpperCase()}</div>`;
-    cat.items.forEach(item => {
-      total++;
-      const checked = !!pantryChecked[item.key];
-      if (checked) have++;
-      const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2);cursor:pointer;' + (checked ? 'opacity:.5' : '');
-      row.onclick = () => { pantryChecked[item.key] = !pantryChecked[item.key]; renderPantry(); if(typeof scheduleSave==='function')scheduleSave(600); };
-      const tick = checked ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
-      const badge = checked ? '<span style="margin-left:6px;font-size:10px;font-weight:700;color:var(--success)">IN PANTRY</span>' : '';
-      row.innerHTML = `
-        <div style="width:22px;height:22px;border-radius:6px;border:1px solid ${checked?'var(--success)':'var(--border2)'};background:${checked?'var(--success)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${tick}</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">${item.name}${badge}</div>
-          <div style="font-size:11px;color:var(--text3);line-height:1.5">${item.note}</div>
-        </div>`;
-      catDiv.appendChild(row);
-    });
-    cont.appendChild(catDiv);
-  });
-  const pct = document.getElementById('pantry-pct');
-  const countEl = document.getElementById('pantry-count');
-  if (countEl) countEl.textContent = have + ' / ' + total + ' stocked';
-  if (pct) {
-    const p = Math.round((have/total)*100);
-    pct.style.width = p + '%';
-  }
-}
-
-window.renderPantry = renderPantry;
-
 const SHOP_DATA = {
   1: {
     sunday: [
@@ -2240,21 +2032,6 @@ const SHOP_DATA = {
       {item:'Fresh mint',when:'Weekly — Mon pickup',note:'Vietnamese salad garnish. Fridge in damp paper.'},
       {item:'Lemongrass stalks',when:'Thu or Fri',note:'Fri pork marinade. Fridge up to 5 days.'},
     ],
-    spices: [
-      {pantryKey:'nam_prik_pao',    item:'Nam prik pao (Thai chili paste)',    qty:'1 jar',    store:'New World / Asian grocer',   note:'Tom Yum — Maesri brand. Check pantry first.'},
-      {pantryKey:'fish_sauce',      item:'Fish sauce',                         qty:'1 bottle', store:'New World / Asian grocer',   note:'Core of every Thai/Viet dish. Tiparos brand.'},
-      {pantryKey:'oyster_sauce',    item:'Oyster sauce',                       qty:'1 bottle', store:"Pak'nSave",                  note:'Pad Ka Prao, stir-fries. Lee Kum Kee brand.'},
-      {pantryKey:'light_soy',       item:'Light soy sauce (low sodium)',       qty:'1 bottle', store:"Pak'nSave",                  note:'All dishes. Check pantry first.'},
-      {pantryKey:'sesame_oil',      item:'Sesame oil (toasted)',               qty:'1 bottle', store:'New World',                  note:'Finishing oil — Kadoya brand. Lasts all 4 weeks.'},
-      {pantryKey:'rice_vinegar',    item:'Rice wine vinegar',                  qty:'1 bottle', store:'New World',                  note:'Ginger-lime dressing. Lasts all 4 weeks.'},
-      {pantryKey:'star_anise',      item:'Star anise (whole)',                 qty:'1 small pack', store:'New World / Asian grocer', note:'Pho broth. Check pantry.'},
-      {pantryKey:'cinnamon_sticks', item:'Cinnamon sticks',                   qty:'1 pack',   store:'New World',                  note:'Pho broth. Check pantry.'},
-      {pantryKey:'white_pepper',    item:'White pepper (ground)',             qty:'1 jar',    store:'New World',                  note:'All SE Asian dishes. Check pantry.'},
-      {pantryKey:'dried_chili',     item:'Dried chili flakes (prik bon)',     qty:'1 jar',    store:'Asian grocer',               note:'Larb, Nam Tok dressing. Check pantry.'},
-      {pantryKey:'kaffir_lime',     item:'Kaffir lime leaves (frozen)',       qty:'1 pack',   store:'Asian grocer — Tai Ping / Lim Chour', note:'Tom Yum. Call ahead — stock varies.'},
-      {pantryKey:'lemongrass_frz',  item:'Lemongrass stalks (freeze extras)', qty:'4–6 stalks', store:"Pak'nSave / Asian grocer", note:'Tom Yum. Freeze what you don't use.'},
-      {pantryKey:'galangal_frz',    item:'Galangal root',                    qty:'1 small piece', store:'Asian grocer',           note:'Tom Yum. Slice and freeze extras.'},
-    ],
   },
   2: {
     sunday: [
@@ -2284,18 +2061,6 @@ const SHOP_DATA = {
       {item:'Fresh limes',when:'Buy mid-week',note:'Dressings + Tom Yum. Keep on counter.'},
       {item:'Fresh coriander',when:'Every 2 days',note:'All Asian dishes garnish.'},
       {item:'Fresh kaffir lime leaves',when:'Buy Mon or Tue — source early',note:'Tom Yum — buy from Asian grocer (Tai Ping, Lim Chour or similar in Auckland CBD). Call ahead as stock varies.'},
-    ],
-    spices: [
-      {pantryKey:'gochugaru',       item:'Gochugaru (Korean chili flakes)',   qty:'1 pack',   store:'New World / H Mart Auckland', note:'Bulgogi marinade — coarse flakes not powder.'},
-      {pantryKey:'gochujang',       item:'Gochujang paste',                   qty:'1 tub',    store:'New World / Asian grocer',   note:'Salmon glaze. Refrigerate after opening.'},
-      {pantryKey:'mirin',           item:'Mirin',                             qty:'1 bottle', store:'New World',                  note:'Bulgogi, chashu braise. Check pantry.'},
-      {pantryKey:'shaoxing_wine',   item:'Shaoxing rice wine',                qty:'1 bottle', store:'Asian grocer / New World',   note:'Chinese braised dishes. Check pantry.'},
-      {pantryKey:'white_miso',      item:'White miso paste',                  qty:'1 tub',    store:'New World',                  note:'Ramen broth. Refrigerate. Check pantry.'},
-      {pantryKey:'hoisin_sauce',    item:'Hoisin sauce',                      qty:'1 bottle', store:'New World',                  note:'Pho condiment. Check pantry.'},
-      {pantryKey:'sbcurry_roux',    item:'S&B Golden Curry roux (med-hot)',   qty:'1 box',    store:'New World / Asian grocer',   note:'Japanese curry. Check pantry.'},
-      {pantryKey:'brown_sugar',     item:'Brown sugar',                       qty:'1 pack',   store:"Pak'nSave",                  note:'Bulgogi, chashu. Check pantry.'},
-      {pantryKey:'fish_sauce',      item:'Fish sauce (top up)',               qty:'check',    store:'New World',                  note:'Nam Tok dressing. Replenish if low.'},
-      {pantryKey:'toasted_rice_pwd',item:'Raw jasmine rice (for toasting)',   qty:'use existing', store:'—',                    note:'Toast 2 tbsp dry in pan until golden, grind in mortar for Nam Tok.'},
     ],
   },
   3: {
@@ -2327,16 +2092,6 @@ const SHOP_DATA = {
       {item:'Green beans',when:'Buy Wed',note:'Wed/Thu fish side. Blanch same day.'},
       {item:'Bird\'s eye chilis',when:'2× per week',note:'Keep in fridge door.'},
     ],
-    spices: [
-      {pantryKey:'chili_oil',       item:'Chili oil (Lao Gan Ma)',            qty:'1 jar',    store:'Asian grocer / New World',   note:'Pickled mustard noodles. Check pantry.'},
-      {pantryKey:'dark_soy',        item:'Dark soy sauce',                    qty:'1 bottle', store:'Asian grocer',               note:'Wat Dan Hor colour. Check pantry.'},
-      {pantryKey:'cornflour',       item:'Cornflour (cornstarch)',            qty:'1 pack',   store:"Pak'nSave",                  note:'Wat Dan Hor gravy, abalone sauce thickening.'},
-      {pantryKey:'bamboo_shoots',   item:'Bamboo shoots (canned/vacuum)',     qty:'1 can',    store:'Asian grocer / New World',   note:'Ramen topping — menma style.'},
-      {pantryKey:'nori_sheets',     item:'Nori sheets',                      qty:'1 pack',   store:'New World',                  note:'Ramen topping. Keep airtight.'},
-      {pantryKey:'suan_cai',        item:'Suan cai (pickled mustard greens)', qty:'1 pack',  store:'Asian grocer — Sunrise brand', note:'Check pantry. Refrigerate after opening.'},
-      {pantryKey:'shaoxing_wine',   item:'Shaoxing wine (top up)',            qty:'check',   store:'Asian grocer',               note:'Pickled mustard noodles, abalone dish.'},
-      {pantryKey:'oyster_sauce',    item:'Oyster sauce (top up)',             qty:'check',   store:"Pak'nSave",                  note:'Abalone dish, Wat Dan Hor.'},
-    ],
   },
   4: {
     sunday: [
@@ -2366,22 +2121,6 @@ const SHOP_DATA = {
       {item:'Fresh coriander',when:'Every 2 days',note:'All Indo-Asian finishes.'},
       {item:'Stir-fry greens mix',when:'Buy Thu or Fri',note:'Fri/Sat ginger-garlic stir-fry.'},
     ],
-    spices: [
-      {pantryKey:'durban_masala',   item:'Durban masala blend',               qty:'1 jar',    store:'New World / Indian grocer',  note:'Rajah or Kashmiri brand — Durban chicken curry.'},
-      {pantryKey:'cumin_seeds',     item:'Cumin seeds (whole)',               qty:'check',    store:'New World / Spice World',    note:'Bloom for Durban curry base.'},
-      {pantryKey:'cumin_ground',    item:'Ground cumin',                      qty:'check',    store:'New World',                  note:'Lamb chops, chili con carne.'},
-      {pantryKey:'coriander_ground',item:'Ground coriander',                  qty:'check',    store:'New World',                  note:'Durban curry, Indian dishes.'},
-      {pantryKey:'turmeric',        item:'Turmeric',                          qty:'check',    store:'New World',                  note:'Durban curry colour.'},
-      {pantryKey:'garam_masala',    item:'Garam masala',                      qty:'check',    store:'New World',                  note:'Always add at end of cooking.'},
-      {pantryKey:'smoked_paprika',  item:'Smoked paprika',                    qty:'check',    store:'New World',                  note:'Lamb chops, chili con carne.'},
-      {pantryKey:'cayenne',         item:'Cayenne pepper',                    qty:'check',    store:'New World',                  note:'Chili con carne heat.'},
-      {pantryKey:'harissa',         item:'Harissa paste',                     qty:'1 jar',    store:'New World',                  note:'Lamb chops — rose or regular.'},
-      {pantryKey:'chipotle_adobo',  item:'Chipotle peppers in adobo sauce',   qty:'1 can',    store:'New World / Woolworths',     note:'Chili con carne. One can lasts 2–3 uses.'},
-      {pantryKey:'dark_choc',       item:'Dark chocolate 85%',               qty:'1 block',  store:"Pak'nSave / Woolworths",     note:'Secret chili con carne ingredient — 5g only.'},
-      {pantryKey:'bay_leaves',      item:'Bay leaves',                        qty:'check',    store:'New World',                  note:'Durban curry base. Check pantry.'},
-      {pantryKey:'cinnamon_sticks', item:'Cinnamon sticks (top up)',          qty:'check',    store:'New World',                  note:'Durban curry. Check pantry.'},
-      {pantryKey:'dried_chili',     item:'Dried chili flakes (top up)',       qty:'check',    store:'Asian grocer',               note:'Larb dressing. Check pantry.'},
-    ],
   },
 };
 
@@ -2391,7 +2130,6 @@ let dailyChecked = {};
 
 function setShopWeek(w, btn) {
   shopWeek = w;
-  // Show weekly view, hide pantry view
   const wv = document.getElementById('shop-weekly-view');
   const pv = document.getElementById('shop-pantry-view');
   if (wv) wv.style.display = '';
@@ -2403,24 +2141,6 @@ function setShopWeek(w, btn) {
   renderShop();
   if (typeof scheduleSave === 'function') scheduleSave(500);
 }
-
-function togglePantryView(btn) {
-  const wv = document.getElementById('shop-weekly-view');
-  const pv = document.getElementById('shop-pantry-view');
-  document.querySelectorAll('#p-shop .wpill').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  if (wv) wv.style.display = 'none';
-  if (pv) { pv.style.display = ''; renderPantry(); }
-}
-
-function clearAllPantry() {
-  if (!confirm('Clear all pantry ticks?')) return;
-  pantryChecked = {};
-  renderPantry();
-  if (typeof scheduleSave === 'function') scheduleSave(600);
-}
-window.togglePantryView = togglePantryView;
-window.clearAllPantry   = clearAllPantry;
 
 function renderShop() {
   const data = SHOP_DATA[shopWeek];
@@ -2504,41 +2224,27 @@ function renderShop() {
   const dailyCheckedCount = Object.values(dailyChecked).filter(Boolean).length;
   document.getElementById('daily-checked-count').textContent = `${dailyCheckedCount} / ${data.daily.length} checked`;
 
-  // Render spices/condiments section with pantry suppression
-  const spicesData = data.spices || [];
-  let spicesContainer = document.getElementById('spices-list');
+  // Render spices section
+  const spicesData = WEEK_SPICES[shopWeek] || [];
+  const spicesContainer = document.getElementById('spices-list');
   if (!spicesContainer) return;
   spicesContainer.innerHTML = '';
-  const spicesCard = spicesContainer.closest ? spicesContainer.closest('.card') : null;
   let needBuy = 0;
-  const spiceRows = spicesData.map((item, i) => {
+  spicesData.forEach((item, i) => {
     const inPantry = !!pantryChecked[item.pantryKey];
     if (!inPantry) needBuy++;
-    const key = 'sp_' + i;
     const checked = !!sundayChecked['sp' + i];
     const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2);cursor:pointer;' + (inPantry ? 'opacity:.4' : '') + (checked&&!inPantry ? 'opacity:.55' : '');
-    if (!inPantry) {
-      row.onclick = () => { sundayChecked['sp'+i] = !sundayChecked['sp'+i]; renderShop(); };
-    }
-    const tick = (checked||inPantry) ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+    row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2);cursor:pointer;opacity:' + (inPantry ? '.4' : (checked ? '.55' : '1'));
+    if (!inPantry) row.onclick = () => { sundayChecked['sp'+i] = !sundayChecked['sp'+i]; renderShop(); };
     const bg = inPantry ? 'var(--success)' : (checked ? 'var(--teal)' : 'transparent');
     const border = inPantry ? 'var(--success)' : (checked ? 'var(--teal)' : 'var(--border2)');
-    const badge = inPantry ? '<span style="margin-left:6px;font-size:10px;font-weight:700;color:var(--success)">IN PANTRY</span>' : (item.qty==='check' ? '<span style="margin-left:6px;font-size:10px;font-weight:600;color:var(--gold)">CHECK PANTRY</span>' : '');
-    row.innerHTML = `
-      <div style="width:22px;height:22px;border-radius:6px;border:1px solid ${border};background:${bg};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${tick}</div>
-      <div style="flex:1;min-width:0">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
-          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">${item.item}${badge}</div>
-          ${!inPantry && item.qty !== 'check' ? `<span style="font-size:11px;font-weight:700;color:var(--teal);white-space:nowrap">${item.qty}</span>` : ''}
-        </div>
-        <div style="font-size:11px;color:var(--text3);line-height:1.5">${item.store}${item.note ? ' · ' + item.note : ''}</div>
-        ${!inPantry ? `<div style="display:flex;gap:5px;margin-top:6px" onclick="event.stopPropagation()">
-          <button onclick="searchItem('${item.item.replace(/'/g,"\'")}','paknsave')" style="padding:3px 7px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.25);border-radius:5px;cursor:pointer;font-size:10px;font-weight:700;color:#e8b84b;font-family:'Plus Jakarta Sans',sans-serif">PNS</button>
-          <button onclick="searchItem('${item.item.replace(/'/g,"\'")}','woolworths')" style="padding:3px 7px;background:rgba(76,175,138,.1);border:1px solid rgba(76,175,138,.25);border-radius:5px;cursor:pointer;font-size:10px;font-weight:700;color:#4caf8a;font-family:'Plus Jakarta Sans',sans-serif">WW</button>
-          <button onclick="searchItem('${item.item.replace(/'/g,"\'")}','grocer')" style="padding:3px 7px;background:rgba(29,158,117,.1);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:10px;font-weight:700;color:var(--teal);font-family:'Plus Jakarta Sans',sans-serif">🔍</button>
-        </div>` : ''}
-      </div>`;
+    const tick = (checked || inPantry) ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+    const badge = inPantry ? '<span style="margin-left:6px;font-size:10px;font-weight:700;color:var(--success)">IN PANTRY</span>' : (item.qty === 'check' ? '<span style="margin-left:6px;font-size:10px;font-weight:600;color:var(--gold)">CHECK PANTRY</span>' : '');
+    const qty = (!inPantry && item.qty !== 'check') ? '<span style="font-size:11px;font-weight:700;color:var(--teal);white-space:nowrap">' + item.qty + '</span>' : '';
+    row.innerHTML = '<div style="width:22px;height:22px;border-radius:6px;border:1px solid ' + border + ';background:' + bg + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">' + tick + '</div>' +
+      '<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">' + item.item + badge + '</div>' + qty + '</div>' +
+      '<div style="font-size:11px;color:var(--text3);line-height:1.5">' + item.store + '</div></div>';
     spicesContainer.appendChild(row);
   });
   const spiceLabelEl = document.getElementById('spices-need-label');
@@ -3349,7 +3055,76 @@ window.searchItemOnStore   = searchItemOnStore;
 window.openStoreSearch     = openStoreSearch;
 window.copyListForStore    = copyListForStore;
 window.clearSundayChecks   = clearSundayChecks;
-function openPrepModal(mealName, mealTime) {
+const MEAL_INGREDIENTS = {
+  "Berry protein oats": {
+    him: ["60g rolled oats","40g protein powder (weighed, not scooped)","80g mixed berries (frozen is fine)","15g raw almonds","120-150ml water or unsweetened almond milk"],
+    her: ["40g rolled oats","30g protein powder (weighed, not scooped)","80g mixed berries","80-100ml water or unsweetened almond milk"]
+  },
+  "Greek yogurt + berries": { him: ["150g 0% Greek yogurt","80g mixed berries"], her: ["150g 0% Greek yogurt","80g mixed berries"] },
+  "Almonds": { him: ["20g raw almonds"], her: ["15g raw almonds"] },
+  "Chicken cucumber salad (Nam Tuk style)": {
+    him: ["200g poached chicken breast","120g Lebanese cucumber (sliced)","40g dried vermicelli noodles","2 tbsp fish sauce","2 tbsp lime juice","1 tsp white sugar","2 bird-eye chilis (sliced)","Fresh mint","Fresh coriander"],
+    her: ["150g poached chicken breast","120g cucumber","20g dried vermicelli","2 tbsp fish sauce","1.5 tbsp lime juice","1 tsp sugar","2 bird-eye chilis","Fresh mint and coriander"]
+  },
+  "Pad Ka Prao (Thai basil chili beef/chicken)": {
+    him: ["220g lean beef strips or chicken breast","185g cooked jasmine rice","80g green beans","3 cloves garlic (sliced)","4-6 bird-eye chilis (sliced)","2 tbsp oyster sauce","1 tbsp fish sauce","1 tbsp light soy sauce","Pinch white sugar","Large handful Thai basil","1 tbsp neutral oil"],
+    her: ["150g lean beef or chicken","90g cooked jasmine rice","100g green beans","2 cloves garlic","3-4 bird-eye chilis","1.5 tbsp oyster sauce","1 tbsp fish sauce","1 tsp light soy","Pinch sugar","Thai basil","1 tsp oil"]
+  },
+  "Pho (Vietnamese beef noodle soup)": {
+    him: ["200g beef sirloin or eye round (very thin sliced)","80g dried flat rice noodles","600ml beef broth or pho concentrate","2-3 star anise","1 cinnamon stick","2 tbsp fish sauce","1 tsp white pepper","Pinch sugar","80g bean sprouts","Thai basil leaves","1 lime","Hoisin sauce (side)","Sriracha (side)"],
+    her: ["150g beef (thin sliced)","50g dried flat rice noodles","500ml broth","2 star anise, 1 cinnamon stick","Fish sauce, white pepper, sugar","Bean sprouts, Thai basil, lime, condiments"]
+  },
+  "Tom Yum Goong": {
+    him: ["250g raw prawns","185g cooked jasmine rice","600ml water or light chicken stock","2 stalks lemongrass (bruised)","3 slices galangal","4 kaffir lime leaves","1-2 tbsp nam prik pao paste","2-3 bird-eye chilis (split)","80g straw or shiitake mushrooms","2 tbsp fish sauce","Juice of 1 lime","Pinch sugar","Fresh coriander"],
+    her: ["200g raw prawns","90g cooked jasmine rice","500ml stock","Lemongrass, galangal, kaffir lime","1 tbsp nam prik pao","2 chilis, 80g mushrooms","Fish sauce, lime, sugar, coriander"]
+  },
+  "Korean beef bulgogi": {
+    him: ["220g beef sirloin (thin sliced)","185g cooked Japanese rice","100g bok choy","Kimchi (side)","3 tbsp soy sauce","1 tbsp sesame oil","1 tbsp brown sugar","1 tsp gochugaru","2 cloves garlic (grated)","1 tsp fresh ginger (grated)","2 tbsp Asian pear or kiwi (grated)","1 tsp sesame seeds","Spring onion (garnish)"],
+    her: ["150g beef sirloin","90g cooked rice","Bok choy, kimchi","2 tbsp soy, 1 tsp sesame oil, 1 tsp sugar, gochugaru, garlic, ginger, pear or kiwi"]
+  },
+  "Japanese curry (Jap curry)": {
+    him: ["200g chicken thigh or pork shoulder (cubed)","185g cooked Japanese short-grain rice","1 medium carrot (diced)","1 medium potato (diced)","1 onion (diced)","2.5 cubes S&B Golden Curry roux","500ml water","1 tsp Worcestershire sauce","1 tsp soy sauce","1 tsp tomato paste","Fukujinzuke pickles (optional)"],
+    her: ["150g chicken or pork","100g cooked Japanese rice","Half carrot, half potato, half onion (diced)","2 cubes S&B curry roux","400ml water","Worcestershire, soy, tomato paste"]
+  },
+  "Nam Tok beef salad": {
+    him: ["220g beef steak (sirloin or rump)","185g cooked jasmine rice","2 tbsp uncooked jasmine rice (for toasting)","3 tbsp fish sauce","Juice of 2 limes","1 tsp dried chili flakes","1 tsp white sugar","2 shallots (thin sliced)","Fresh mint (large handful)","Fresh coriander"],
+    her: ["170g beef steak","90g cooked jasmine rice","Toasted rice powder","Fish sauce, lime, dried chili, sugar","Shallots, fresh mint, coriander"]
+  },
+  "Ramen (pork chashu belly) bowl": {
+    him: ["150g pork belly (rolled and tied)","80g dried ramen noodles","500ml chicken or pork stock","2 tbsp white miso paste","1 tbsp light soy sauce","1 tsp sesame oil","White pepper","3 tbsp soy (chashu braise)","2 tbsp mirin","1 tbsp sake or dry sherry","1 tbsp brown sugar","1 soft-boiled egg (marinated in soy/mirin)","Nori sheet","2 tbsp bamboo shoots","Spring onion (sliced)"],
+    her: ["100g pork belly","60g ramen noodles","400ml stock + miso broth","1 soft-boiled egg","Nori, bamboo shoots, spring onion"]
+  },
+  "Pickled mustard greens with pork and noodles": {
+    him: ["220g pork mince or shoulder strips","100g suan cai (pickled mustard greens, rinsed)","80g glass noodles (soaked)","3 cloves garlic (sliced)","1 tsp fresh ginger (sliced)","1 tbsp light soy sauce","1 tsp dark soy sauce","1 tbsp oyster sauce","1 tbsp Shaoxing wine","1-2 tsp chili oil","White pepper","1 tsp sesame oil","Spring onion (garnish)"],
+    her: ["150g pork mince","80g suan cai (rinsed)","50g glass noodles","Garlic, ginger","Soy, dark soy, oyster, Shaoxing, chili oil, sesame oil"]
+  },
+  "Wat Dan Hor (rice noodle egg gravy)": {
+    him: ["220g prawns or chicken","200g flat rice noodles","2 eggs","300ml chicken stock","1 tbsp oyster sauce","1 tbsp light soy sauce","1 tsp dark soy sauce","1 tsp sesame oil","White pepper","1 tbsp cornflour mixed in 2 tbsp cold water","100g bok choy","1 tbsp neutral oil"],
+    her: ["150g protein","150g flat rice noodles","1 egg","250ml chicken stock","Oyster sauce, soy, dark soy, sesame oil, white pepper, cornflour","100g bok choy"]
+  },
+  "Abalone, broccoli and mushroom egg noodles": {
+    him: ["150g abalone or scallops","200g broccoli florets","100g shiitake mushrooms (halved)","80g dried egg noodles (cooked)","3 cloves garlic (sliced)","2 slices fresh ginger","2 tbsp oyster sauce","1 tbsp light soy sauce","1 tsp sesame oil","1 tbsp Shaoxing wine","White pepper","1 tsp cornflour mixed in 2 tbsp cold water"],
+    her: ["100g abalone or scallops","200g broccoli","Shiitake mushrooms","60g egg noodles","Garlic, ginger","Oyster sauce, soy, sesame oil, Shaoxing, cornflour"]
+  },
+  "Durban chicken curry with roti canai": {
+    him: ["200g chicken pieces (bone-in or thigh)","1.5 roti canai","1 large onion (diced)","3 cloves garlic","2 tbsp Durban masala blend","1 tsp ground coriander","1 tsp turmeric","1 tsp chili flakes","1 tsp cumin seeds","1 cinnamon stick","2 bay leaves","150ml tomato passata","100ml water","1 tsp garam masala (finish)","Fresh coriander","1 tbsp neutral oil"],
+    her: ["150g chicken","1 roti canai","Half onion, garlic","Durban masala, coriander, turmeric, chili flakes, cumin seeds, cinnamon, bay leaves","100ml passata","Garam masala finish, coriander, 60g cucumber raita"]
+  },
+  "Spicy lamb chops": {
+    him: ["3 lamb loin chops (~250g total)","185g cooked jasmine rice","80g 0% Greek yogurt (raita)","Half cucumber (grated, for raita)","2 tbsp harissa paste","1 tsp ground cumin","1 tsp smoked paprika","1 tsp ground coriander","Half tsp garlic powder","Zest of 1 lemon","1 tbsp olive oil","Salt and black pepper","Pinch cumin (raita)"],
+    her: ["2 lamb loin chops (~160g)","90g cooked jasmine rice","60g Greek yogurt raita","Harissa, cumin, smoked paprika, coriander, garlic powder, lemon zest, olive oil, salt, pepper"]
+  },
+  "Chili con carne nachos": {
+    him: ["220g lean beef mince","1 can kidney beans (drained)","50g baked corn chips","30g reduced-fat cheddar","1 onion (diced)","3 cloves garlic","1-2 chipotle peppers in adobo sauce plus 1 tbsp adobo sauce","1 tsp ground cumin","1 tsp smoked paprika","1 tsp dried oregano","Half tsp cayenne","150ml tomato passata","100ml water","5g dark chocolate (85%)","Pinch cinnamon","Jalapeno slices","Fresh salsa","Fresh coriander"],
+    her: ["150g lean beef mince","Half can kidney beans","30g baked chips","20g reduced-fat cheese","Half onion, garlic","1 chipotle + adobo sauce","Cumin, paprika, oregano, cayenne","100ml passata","Dark chocolate, cinnamon","Salsa, jalapenos, coriander"]
+  },
+  "Larb (Thai minced meat salad)": {
+    him: ["220g chicken or pork mince","185g cooked jasmine rice","2 tbsp uncooked jasmine rice (for toasting)","3 tbsp fish sauce","Juice of 2 limes","1 tsp dried chili flakes","1 tsp white sugar","2 shallots (thin sliced)","1 stalk lemongrass (very fine sliced, pale part only)","2 kaffir lime leaves (very fine sliced, optional)","Fresh mint (large handful)","Fresh coriander"],
+    her: ["170g chicken or pork mince","90g cooked jasmine rice","Toasted rice powder","Fish sauce, lime, dried chili, sugar, shallots, lemongrass, mint, coriander"]
+  },
+};
+
+function openPrepModal(mealName) {
   const isHim = profile === 'him';
   let steps;
   if (MEAL_PREP_STEPS[mealName]) {
@@ -3358,22 +3133,23 @@ function openPrepModal(mealName, mealTime) {
     steps = getDinnerPrepSteps(mealName, isHim);
   }
   const prepTime = MEAL_PREP_STEPS[mealName]?.time || getDinnerPrepTime(mealName);
-  const cleanTitle = mealName.replace(/^Dinner [^:]+:\s*/i,'').replace(/\s*—\s*[A-Za-z/]+$/,'');
+  const cleanTitle = mealName.replace(/^Dinner [^:]+:\s*/i,'').replace(/\s*—\s*[A-Za-z/]+$/,'').trim();
 
-  // Build ingredients section
-  const ingrKey = Object.keys(MEAL_INGREDIENTS).find(k => mealName.startsWith(k.split(' —')[0]) || k.startsWith(mealName.split(' —')[0])) || mealName;
-  const ingr = MEAL_INGREDIENTS[ingrKey];
+  const ingrKey = Object.keys(MEAL_INGREDIENTS).find(k =>
+    mealName.startsWith(k) || k.startsWith(mealName.split(' —')[0]) || mealName.includes(k)
+  );
+  const ingr = ingrKey ? MEAL_INGREDIENTS[ingrKey] : null;
   const ingrList = ingr ? (isHim ? ingr.him : ingr.her) : null;
   const ingrHtml = ingrList ? `
-    <div style="margin:12px 0 4px;padding:12px;background:var(--bg3);border-radius:12px;border:1px solid var(--border2)">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif">🛒 INGREDIENTS — ${isHim ? 'HIM' : 'HER'}</div>
+    <div style="margin:0 0 4px;padding:12px;background:var(--bg3);border-radius:12px;border:1px solid var(--border2)">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:8px">INGREDIENTS — ${isHim ? 'HIM' : 'HER'}</div>
       <ul style="margin:0;padding:0 0 0 16px;list-style:disc">
-        ${ingrList.map(i => `<li style="font-size:13px;color:var(--text);line-height:1.8;padding:1px 0">${i}</li>`).join('')}
+        ${ingrList.map(i => `<li style="font-size:13px;color:var(--text);line-height:1.8">${i}</li>`).join('')}
       </ul>
     </div>` : '';
 
   document.getElementById('prep-modal-title').textContent = cleanTitle;
-  document.getElementById('prep-modal-time').textContent = mealTime + '  ·  ⏱ ' + prepTime;
+  document.getElementById('prep-modal-time').textContent = '⏱ ' + prepTime;
   document.getElementById('prep-modal-steps').innerHTML = ingrHtml + steps.map((s,i) => `
     <div style="display:flex;gap:12px;padding:12px 0;border-bottom:${i<steps.length-1?'1px solid var(--border2)':'none'}">
       <div style="width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${s.icon}</div>
@@ -3385,119 +3161,284 @@ function openPrepModal(mealName, mealTime) {
   document.getElementById('prep-modal').style.display = '';
   document.body.style.overflow = 'hidden';
 }
-
-function getDinnerPrepTime(mealName) {
-  const clean = mealName.replace(/\s*—\s*[A-Za-z/]+$/,'').trim();
-  const key = Object.keys(DINNER_STEPS).find(k => k.startsWith(clean) || clean.startsWith(k.split(' —')[0]));
-  return (key && DINNER_STEPS[key]) ? DINNER_STEPS[key].time : '20–25 min';
-}
 function closePrepModal() {
   document.getElementById('prep-modal').style.display = 'none';
   document.body.style.overflow = '';
 }
 
-window.toggleDailyMeal     = toggleDailyMeal;
-window.switchMealTab       = switchMealTab;
-window.openPrepModal       = openPrepModal;
-window.closePrepModal      = closePrepModal;
-window.shiftCalMonth       = shiftCalMonth;
-window.selectCalDay        = selectCalDay;
-window.clearDailyChecks    = clearDailyChecks;
-
-// ── Meal swap modal ──────────────────────────────────────────────────────────
-// All preferred meals from the user list, with Him/Her calorie estimates
+// ── SWAP_MEALS catalogue ─────────────────────────────────────────────────────
 const SWAP_MEALS = [
-  {name:'Nam Tok beef salad',him:'220g grilled beef · toasted rice powder · fish sauce · lime · chili · shallots · mint · 185g jasmine rice',her:'170g grilled beef · dressing · herbs · 90g jasmine rice',himCal:520,herCal:330},
-  {name:'Durban chicken curry',him:'220g chicken · Durban masala · tomato-onion gravy · 185g jasmine rice',her:'150g chicken · gravy · 90g jasmine rice or roti',himCal:540,herCal:340},
-  {name:'Chili con carne spicy nachos',him:'220g lean beef mince · kidney beans · chipotle · 50g baked chips · 30g cheese · jalapeños · salsa',her:'150g mince · beans · 30g baked chips · 20g cheese · salsa',himCal:530,herCal:330},
-  {name:'Healthy burger (bunless)',him:'220g beef patty · lettuce · tomato · onion · pickles · mustard · 185g sweet potato wedges',her:'150g beef patty · salad · pickles · 100g wedges',himCal:540,herCal:340},
-  {name:'Pad Ka Prao (Thai basil chili)',him:'220g chicken or beef · bird-eye chili · Thai basil · oyster sauce · fish sauce · 185g jasmine rice',her:'150g protein · same sauce · 90g jasmine rice',himCal:530,herCal:330},
-  {name:'Roti canai + curry',him:'2 roti canai · Durban chicken curry dhal · cucumber raita',her:'1 roti canai · curry dhal · raita',himCal:520,herCal:330},
-  {name:'Spicy chicken donburi bowl',him:'200g chicken thigh (teriyaki-chili) · 185g Japanese rice · pickled ginger · cucumber · sesame · nori',her:'150g chicken · 90g rice · toppings',himCal:530,herCal:330},
-  {name:'Minestrone soup + bread',him:'large bowl minestrone · beans · veg · pasta · 1 slice sourdough',her:'large bowl minestrone · extra veg · no bread',himCal:450,herCal:280},
-  {name:'Pan-fried fish + veg',him:'220g blue cod or snapper · pan-fried in olive oil · 185g jasmine rice · 100g steamed greens',her:'180g fish · 90g rice · 100g greens',himCal:500,herCal:310},
-  {name:'Congee (rice porridge)',him:'240g cooked congee · 150g poached chicken · ginger · spring onion · sesame oil · white pepper',her:'200g congee · 100g chicken · ginger · toppings',himCal:430,herCal:280},
-  {name:'Bolognaise pasta bake (panko)',him:'180g penne · 200g beef bolognaise · panko + parmesan crust · oven-baked',her:'120g penne · 150g bolognaise · light panko topping',himCal:560,herCal:360},
-  {name:'Carbonara pasta',him:'180g spaghetti · 80g pancetta · 2 egg yolks · pecorino · black pepper · no cream',her:'120g spaghetti · 50g pancetta · 1 egg yolk · pecorino',himCal:570,herCal:360},
-  {name:'Orzo beef pasta bake',him:'200g orzo · 180g beef mince · tomato · herbs · 30g parmesan topping',her:'130g orzo · 130g beef mince · tomato sauce',himCal:540,herCal:340},
-  {name:'Mac and cheese (white sauce)',him:'180g pasta · béchamel · 40g cheddar · panko crust',her:'120g pasta · béchamel · 25g cheddar',himCal:550,herCal:350},
-  {name:'Venison + wedges',him:'220g venison steak · red wine jus · 200g oven wedges · 80g greens',her:'170g venison · jus · 120g wedges · 80g greens',himCal:540,herCal:340},
-  {name:'Cottage pie',him:'200g lean beef mince filling · peas · carrots · 180g mashed potato topping',her:'150g mince filling · veg · 120g mash',himCal:520,herCal:330},
-  {name:'Smoked salmon orzo salad',him:'150g smoked salmon · 180g orzo · cucumber · capers · lemon · dill · crème fraîche',her:'100g smoked salmon · 120g orzo · salad',himCal:520,herCal:330},
-  {name:'Pho (Vietnamese beef noodle)',him:'200g beef slices · 80g flat rice noodles · star anise broth · sprouts · Thai basil · lime',her:'150g beef · 50g noodles · broth · herbs',himCal:510,herCal:320},
-  {name:'Ramen (pork chashu)',him:'150g chashu pork belly · 80g ramen noodles · soy-miso broth · soft egg · nori · bamboo',her:'100g chashu · 60g noodles · broth · egg',himCal:520,herCal:330},
-  {name:'Korean beef bulgogi',him:'220g beef sirloin (soy·pear·sesame·gochugaru) · 185g rice · bok choy · kimchi',her:'150g beef · 90g rice · bok choy · kimchi',himCal:550,herCal:350},
-  {name:'Japanese curry (Jap curry)',him:'200g chicken or pork · 185g Japanese rice · carrots · potato · S&B roux · pickles',her:'150g protein · 100g rice · veg',himCal:540,herCal:340},
-  {name:'Spicy lamb chops',him:'3 loin chops ~250g · harissa-cumin marinade · 185g jasmine rice · raita',her:'2 loin chops ~160g · marinade · 90g rice · raita',himCal:550,herCal:350},
-  {name:'Tom Yum Goong soup',him:'250g prawns · tom yum broth (nam prik pao · lemongrass · kaffir lime · galangal) · 185g jasmine rice',her:'180g prawns · broth · 90g jasmine rice',himCal:510,herCal:330},
-  {name:'Larb (Thai minced salad)',him:'220g chicken or pork mince · toasted rice powder · fish sauce · lime · dried chili · mint · 185g jasmine rice',her:'170g mince · dressing · herbs · 90g jasmine rice',himCal:520,herCal:330},
-  {name:'Abalone, broccoli & mushroom noodles',him:'150g abalone or scallop · 200g broccoli · 100g shiitake · 80g egg noodles · oyster-ginger sauce',her:'100g abalone · 200g broccoli · shiitake · 60g noodles',himCal:500,herCal:310},
-  {name:'Taco bowl',him:'200g seasoned chicken or beef mince · 50g black beans · salsa · guac · jalapeños · 185g jasmine rice',her:'150g protein · beans · salsa · guac · 90g rice',himCal:530,herCal:330},
-  {name:'Seafood chowder',him:'200g mixed seafood · potato · corn · light cream broth · 1 slice sourdough',her:'180g seafood · potato · corn · broth · no bread',himCal:480,herCal:300},
-  {name:'Borscht with beef',him:'200g beef chunk · beetroot · cabbage · carrot · sour cream · 1 slice dark rye bread',her:'150g beef · full soup · sour cream · no bread',himCal:470,herCal:300},
-  {name:'Braised tofu + protein',him:'200g firm tofu + 100g beef · soy-ginger braise · 185g jasmine rice · bok choy',her:'200g tofu + 80g beef · braise · 90g jasmine rice · greens',himCal:490,herCal:310},
-  {name:'Wat Dan Hor (rice noodle egg gravy)',him:'220g prawn or chicken · 200g flat rice noodles · egg gravy · dark soy · oyster sauce · bok choy',her:'150g protein · 150g noodles · egg gravy · bok choy',himCal:540,herCal:340},
-  {name:'Pickled mustard greens with pork & noodles',him:'220g pork shoulder or mince · suan cai · 80g glass noodles · chili oil · ginger · garlic · soy',her:'150g pork · suan cai · 50g noodles · aromatics',himCal:530,herCal:330},
-  {name:'Vietnamese fresh spring rolls',him:'6 spring rolls · 120g prawns · rice paper · verm. · herbs · hoisin-peanut dip',her:'5 spring rolls · 90g prawns · rice paper · herbs · dip',himCal:390,herCal:250},
-  {name:'Japanese tofu pockets, mushroom & sashimi',him:'4 inari pockets · 150g sashimi · 100g marinated mushrooms · 80g Japanese seaweed salad',her:'3 inari pockets · 120g sashimi · mushrooms · seaweed',himCal:440,herCal:280},
-  {name:'Peking duck wraps',him:'4 wraps · 150g duck · hoisin · cucumber · spring onion · 180g jasmine rice side',her:'3 wraps · 100g duck · hoisin · cucumber · 90g rice side',himCal:540,herCal:340},
-  {name:'Black pepper beef',him:'220g beef strips · black pepper sauce · oyster sauce · 185g jasmine rice · 100g broccoli',her:'160g beef · sauce · 90g jasmine rice · broccoli',himCal:530,herCal:330},
-  {name:'Spring onion pancake + soup',him:'2 spring onion pancakes · chicken mushroom soup with dried scallop · Parma ham',her:'1.5 pancakes · soup · scallop broth',himCal:440,herCal:280},
-  {name:'BBQ pork with rice',him:'220g char siu pork · 185g jasmine rice · 100g steamed bok choy',her:'150g char siu · 90g jasmine rice · bok choy',himCal:540,herCal:340},
-  {name:'Tomato cream sauce pasta',him:'180g pasta · tomato cream sauce · 150g chicken or prawn · basil · parmesan',her:'120g pasta · sauce · 100g protein',himCal:540,herCal:340},
-  {name:'Sour mustard greens soup with fish',him:'200g white fish · suan cai · ginger · glass noodles · chili',her:'180g fish · suan cai · ginger · light noodles',himCal:390,herCal:250},
-  {name:'Cheeseburger bowl (bunless)',him:'200g beef patty (crumbled) · 30g cheddar · lettuce · tomato · pickles · mustard · sweet potato wedges 150g',her:'150g patty · 20g cheddar · salad · 80g wedges',himCal:530,herCal:330},
+  {name:"Nam Tok beef salad",him:"220g grilled beef, toasted rice powder, fish sauce, lime, chili, shallots, mint, 185g rice",her:"170g grilled beef, dressing, herbs, 90g rice",himCal:520,herCal:330},
+  {name:"Durban chicken curry",him:"220g chicken, Durban masala, tomato-onion gravy, 185g jasmine rice",her:"150g chicken, gravy, 90g rice or roti",himCal:540,herCal:340},
+  {name:"Chili con carne nachos",him:"220g lean beef mince, kidney beans, chipotle, 50g baked chips, 30g cheese, jalapenos, salsa",her:"150g mince, beans, 30g baked chips, 20g cheese, salsa",himCal:530,herCal:330},
+  {name:"Healthy burger (bunless)",him:"220g beef patty, lettuce, tomato, onion, pickles, mustard, 185g sweet potato wedges",her:"150g beef patty, salad, pickles, 100g wedges",himCal:540,herCal:340},
+  {name:"Pad Ka Prao (Thai basil chili)",him:"220g chicken or beef, bird-eye chili, Thai basil, oyster sauce, fish sauce, 185g jasmine rice",her:"150g protein, same sauce, 90g jasmine rice",himCal:530,herCal:330},
+  {name:"Roti canai with curry",him:"2 roti canai, Durban chicken curry dhal, cucumber raita",her:"1 roti canai, curry dhal, raita",himCal:520,herCal:330},
+  {name:"Spicy chicken donburi bowl",him:"200g chicken thigh (teriyaki-chili), 185g Japanese rice, pickled ginger, cucumber, sesame, nori",her:"150g chicken, 90g rice, toppings",himCal:530,herCal:330},
+  {name:"Minestrone soup",him:"Large bowl minestrone, beans, veg, pasta, 1 slice sourdough",her:"Large bowl minestrone, extra veg, no bread",himCal:450,herCal:280},
+  {name:"Pan-fried fish with veg",him:"220g blue cod or snapper, pan-fried, 185g jasmine rice, 100g steamed greens",her:"180g fish, 90g rice, 100g greens",himCal:500,herCal:310},
+  {name:"Congee (rice porridge)",him:"240g cooked congee, 150g poached chicken, ginger, spring onion, sesame oil, white pepper",her:"200g congee, 100g chicken, ginger, toppings",himCal:430,herCal:280},
+  {name:"Bolognaise pasta bake (panko crust)",him:"180g penne, 200g beef bolognaise, panko and parmesan crust, oven-baked",her:"120g penne, 150g bolognaise, light panko topping",himCal:560,herCal:360},
+  {name:"Carbonara pasta",him:"180g spaghetti, 80g pancetta, 2 egg yolks, pecorino, black pepper, no cream",her:"120g spaghetti, 50g pancetta, 1 egg yolk, pecorino",himCal:570,herCal:360},
+  {name:"Orzo beef pasta bake",him:"200g orzo, 180g beef mince, tomato, herbs, 30g parmesan topping",her:"130g orzo, 130g beef mince, tomato sauce",himCal:540,herCal:340},
+  {name:"Mac and cheese white sauce",him:"180g pasta, bechamel, 40g cheddar, panko crust",her:"120g pasta, bechamel, 25g cheddar",himCal:550,herCal:350},
+  {name:"Venison with wedges",him:"220g venison steak, red wine jus, 200g oven wedges, 80g greens",her:"170g venison, jus, 120g wedges, 80g greens",himCal:540,herCal:340},
+  {name:"Cottage pie",him:"200g lean beef mince filling, peas, carrots, 180g mashed potato topping",her:"150g mince filling, veg, 120g mash",himCal:520,herCal:330},
+  {name:"Smoked salmon orzo salad",him:"150g smoked salmon, 180g orzo, cucumber, capers, lemon, dill",her:"100g smoked salmon, 120g orzo, salad",himCal:520,herCal:330},
+  {name:"Pho (Vietnamese beef noodle)",him:"200g beef slices, 80g flat rice noodles, star anise broth, sprouts, Thai basil, lime",her:"150g beef, 50g noodles, broth, herbs",himCal:510,herCal:320},
+  {name:"Korean beef bulgogi",him:"220g beef sirloin (soy, pear, sesame, gochugaru), 185g rice, bok choy, kimchi",her:"150g beef, 90g rice, bok choy, kimchi",himCal:550,herCal:350},
+  {name:"Japanese curry",him:"200g chicken or pork, 185g Japanese rice, carrots, potato, S&B roux, pickles",her:"150g protein, 100g rice, veg",himCal:540,herCal:340},
+  {name:"Spicy lamb chops",him:"3 loin chops (~250g), harissa-cumin marinade, 185g jasmine rice, raita",her:"2 loin chops (~160g), marinade, 90g rice, raita",himCal:550,herCal:350},
+  {name:"Tom Yum Goong soup",him:"250g prawns, tom yum broth (nam prik pao, lemongrass, kaffir lime, galangal), 185g jasmine rice",her:"180g prawns, broth, 90g jasmine rice",himCal:510,herCal:330},
+  {name:"Larb (Thai minced salad)",him:"220g chicken or pork mince, toasted rice powder, fish sauce, lime, dried chili, mint, 185g rice",her:"170g mince, dressing, herbs, 90g rice",himCal:520,herCal:330},
+  {name:"Abalone, broccoli and mushroom noodles",him:"150g abalone or scallop, 200g broccoli, 100g shiitake, 80g egg noodles, oyster-ginger sauce",her:"100g abalone, 200g broccoli, shiitake, 60g noodles",himCal:500,herCal:310},
+  {name:"Taco bowl",him:"200g seasoned chicken or beef mince, 50g black beans, salsa, guac, jalapenos, 185g rice",her:"150g protein, beans, salsa, guac, 90g rice",himCal:530,herCal:330},
+  {name:"Seafood chowder",him:"200g mixed seafood, potato, corn, light cream broth, 1 slice sourdough",her:"180g seafood, potato, corn, broth, no bread",himCal:480,herCal:300},
+  {name:"Borscht with beef",him:"200g beef, beetroot, cabbage, carrot, sour cream, 1 slice dark rye bread",her:"150g beef, full soup, sour cream, no bread",himCal:470,herCal:300},
+  {name:"Braised tofu and protein",him:"200g firm tofu, 100g beef, soy-ginger braise, 185g jasmine rice, bok choy",her:"200g tofu, 80g beef, braise, 90g rice, greens",himCal:490,herCal:310},
+  {name:"Wat Dan Hor (rice noodle egg gravy)",him:"220g prawn or chicken, 200g flat rice noodles, egg gravy, dark soy, oyster sauce, bok choy",her:"150g protein, 150g noodles, egg gravy, bok choy",himCal:540,herCal:340},
+  {name:"Vietnamese fresh spring rolls",him:"6 rolls, 120g prawns, rice paper, vermicelli, herbs, hoisin-peanut dip",her:"5 rolls, 90g prawns, rice paper, herbs, dip",himCal:390,herCal:250},
+  {name:"Peking duck wraps",him:"4 wraps, 150g duck, hoisin, cucumber, spring onion, 180g jasmine rice side",her:"3 wraps, 100g duck, hoisin, cucumber, 90g rice side",himCal:540,herCal:340},
+  {name:"Black pepper beef",him:"220g beef strips, black pepper sauce, oyster sauce, 185g jasmine rice, 100g broccoli",her:"160g beef, sauce, 90g jasmine rice, broccoli",himCal:530,herCal:330},
+  {name:"BBQ pork with rice",him:"220g char siu pork, 185g jasmine rice, 100g steamed bok choy",her:"150g char siu, 90g jasmine rice, bok choy",himCal:540,herCal:340},
+  {name:"Cheeseburger bowl (bunless)",him:"200g beef patty (crumbled), 30g cheddar, lettuce, tomato, pickles, mustard, 150g sweet potato wedges",her:"150g patty, 20g cheddar, salad, 80g wedges",himCal:530,herCal:330},
 ];
 
-let swapCtx = null; // {dateKey, slotIdx, isDinner}
+let swapCtx = null;
 
-function openSwapModal(dateKey, slotIdx, isDinner) {
-  swapCtx = { dateKey, slotIdx, isDinner };
-  const modal = document.getElementById('swap-modal');
-  const list = document.getElementById('swap-meal-list');
-  const heading = document.getElementById('swap-modal-heading');
-  heading.textContent = isDinner ? 'Choose a dinner swap' : 'Choose a meal swap';
-  // Filter relevant meals based on slot (non-dinner slots show lighter options too)
-  const showMeals = SWAP_MEALS;
-  list.innerHTML = '';
-  showMeals.forEach((m, i) => {
-    const div = document.createElement('div');
-    div.style.cssText = 'padding:12px 0;border-bottom:1px solid var(--border2);cursor:pointer';
-    div.innerHTML = `<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px">${m.name}</div>
-      <div style="font-size:12px;color:var(--gold);font-weight:500;margin-bottom:2px">Him: ${m.himCal} kcal</div>
-      <div style="font-size:12px;color:var(--purple);font-weight:500">Her: ${m.herCal} kcal</div>`;
+function openSwapModal(dateKey, slotIdx) {
+  swapCtx = { dateKey, slotIdx };
+  const list = document.getElementById("swap-meal-list");
+  list.innerHTML = "";
+  SWAP_MEALS.forEach((m, i) => {
+    const div = document.createElement("div");
+    div.style.cssText = "padding:12px 0;border-bottom:1px solid var(--border2);cursor:pointer";
+    div.innerHTML = "<div style='font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px'>" + m.name + "</div>" +
+      "<div style='font-size:12px;color:var(--gold);font-weight:500;margin-bottom:2px'>Him: " + m.himCal + " kcal</div>" +
+      "<div style='font-size:12px;color:var(--purple);font-weight:500'>Her: " + m.herCal + " kcal</div>";
     div.onclick = () => applySwap(i);
     list.appendChild(div);
   });
-  modal.style.display = '';
-  document.body.style.overflow = 'hidden';
+  document.getElementById("swap-modal").style.display = "";
+  document.body.style.overflow = "hidden";
 }
 
 function applySwap(mealIdx) {
   if (!swapCtx) return;
-  const {dateKey, slotIdx} = swapCtx;
+  const { dateKey, slotIdx } = swapCtx;
   const m = SWAP_MEALS[mealIdx];
   if (!mealSwaps[dateKey]) mealSwaps[dateKey] = {};
-  mealSwaps[dateKey][slotIdx] = {name:m.name, him:m.him, her:m.her, himCal:m.himCal, herCal:m.herCal};
+  mealSwaps[dateKey][slotIdx] = { name:m.name, him:m.him, her:m.her, himCal:m.himCal, herCal:m.herCal };
   closeSwapModal();
   renderDailyMeals();
   renderToday();
-  if (typeof scheduleSave === 'function') scheduleSave(600);
+  if (typeof scheduleSave === "function") scheduleSave(600);
 }
 
 function resetSwap(dateKey, slotIdx) {
   if (mealSwaps[dateKey]) delete mealSwaps[dateKey][slotIdx];
   renderDailyMeals();
   renderToday();
-  if (typeof scheduleSave === 'function') scheduleSave(600);
+  if (typeof scheduleSave === "function") scheduleSave(600);
 }
 
 function closeSwapModal() {
-  document.getElementById('swap-modal').style.display = 'none';
-  document.body.style.overflow = '';
+  document.getElementById("swap-modal").style.display = "none";
+  document.body.style.overflow = "";
   swapCtx = null;
 }
 
+// ── PANTRY_STAPLES ────────────────────────────────────────────────────────────
+const PANTRY_STAPLES = [
+  { cat: "Asian Sauces & Condiments", items: [
+    { key:"fish_sauce",       name:"Fish sauce",                        note:"Tiparos or Tra Chang. Core of all Thai and Viet dressings." },
+    { key:"oyster_sauce",     name:"Oyster sauce",                      note:"Lee Kum Kee. Stir-fries, noodles, braised dishes." },
+    { key:"light_soy",        name:"Light soy sauce",                   note:"All-purpose. Kikkoman or Pearl River Bridge." },
+    { key:"dark_soy",         name:"Dark soy sauce",                    note:"Colour and depth. Wat Dan Hor, mustard noodles." },
+    { key:"sesame_oil",       name:"Sesame oil (toasted)",               note:"Finishing oil only. Kadoya brand." },
+    { key:"hoisin_sauce",     name:"Hoisin sauce",                      note:"Pho condiment, Peking duck wraps, spring rolls." },
+    { key:"shaoxing_wine",    name:"Shaoxing rice wine",                 note:"Chinese braised dishes, Wat Dan Hor." },
+    { key:"mirin",            name:"Mirin",                             note:"Japanese sweet wine. Bulgogi, chashu, ramen." },
+    { key:"rice_vinegar",     name:"Rice wine vinegar",                  note:"Ginger-lime dressing base, pickling." },
+    { key:"chili_oil",        name:"Chili oil (Lao Gan Ma)",             note:"Pickled mustard noodles, dumpling dip." },
+    { key:"nam_prik_pao",     name:"Nam prik pao (Thai chili paste)",    note:"Tom Yum soul ingredient. Maesri brand." },
+    { key:"gochugaru",        name:"Gochugaru (Korean chili flakes)",    note:"Bulgogi marinade. Coarse flakes not powder." },
+    { key:"gochujang",        name:"Gochujang paste",                   note:"Fermented Korean chili. Salmon glaze." },
+    { key:"sriracha",         name:"Sriracha",                          note:"Table condiment and pho dipping sauce." },
+    { key:"worcestershire",   name:"Worcestershire sauce",               note:"Japanese curry depth booster." },
+    { key:"white_miso",       name:"White miso paste",                  note:"Ramen broth. Refrigerate after opening." },
+  ]},
+  { cat: "Dry Spices", items: [
+    { key:"cumin_ground",     name:"Ground cumin",                      note:"Durban curry, chili con carne, lamb chops." },
+    { key:"cumin_seeds",      name:"Cumin seeds (whole)",                note:"Bloom in oil for Durban curry base." },
+    { key:"coriander_ground", name:"Ground coriander",                  note:"Durban curry, Indian dishes." },
+    { key:"turmeric",         name:"Turmeric",                          note:"Durban curry colour and flavour." },
+    { key:"garam_masala",     name:"Garam masala",                      note:"Always added at end. Never bloomed in oil." },
+    { key:"smoked_paprika",   name:"Smoked paprika",                    note:"Lamb chops, chili con carne." },
+    { key:"durban_masala",    name:"Durban masala blend",               note:"Rajah or Kashmiri brand. Durban chicken curry." },
+    { key:"cayenne",          name:"Cayenne pepper",                    note:"Chili con carne and chili bases." },
+    { key:"dried_chili",      name:"Dried chili flakes (prik bon)",     note:"Larb, Nam Tok dressing, general heat." },
+    { key:"white_pepper",     name:"White pepper (ground)",             note:"All Chinese and SE Asian dishes." },
+    { key:"black_pepper",     name:"Black pepper (coarse)",             note:"Lamb chops, black pepper beef, pasta." },
+    { key:"star_anise",       name:"Star anise (whole)",                note:"Pho broth, ramen, chashu braise." },
+    { key:"cinnamon_sticks",  name:"Cinnamon sticks",                  note:"Pho broth, Durban curry base." },
+    { key:"bay_leaves",       name:"Bay leaves",                        note:"Durban curry, bolognaise, cottage pie." },
+    { key:"oregano_dried",    name:"Dried oregano",                     note:"Chili con carne, bolognaise." },
+  ]},
+  { cat: "Pastes & Roux", items: [
+    { key:"garlic_powder",    name:"Garlic powder",                     note:"Dry rubs. Lamb chops, burgers." },
+    { key:"harissa",          name:"Harissa paste",                     note:"Lamb chop marinade. Rose or regular." },
+    { key:"chipotle_adobo",   name:"Chipotle peppers in adobo sauce",   note:"Chili con carne. One tin lasts several uses." },
+    { key:"tomato_paste",     name:"Tomato paste",                      note:"Curry depth, Japanese curry, chili base." },
+    { key:"sbcurry_roux",     name:"S&B Golden Curry roux (med-hot)",   note:"Japanese curry essential." },
+    { key:"tom_yum_paste",    name:"Tom Yum paste (jar backup)",        note:"Use when fresh aromatics unavailable." },
+  ]},
+  { cat: "Grains, Noodles & Pantry", items: [
+    { key:"jasmine_rice",     name:"Jasmine rice (2kg min)",            note:"Him dinner base. Keep stocked." },
+    { key:"japanese_rice",    name:"Japanese short-grain rice",         note:"Donburi, Jap curry. Koshihikari preferred." },
+    { key:"rolled_oats",      name:"Rolled oats (1kg min)",             note:"Daily breakfast. Never run out." },
+    { key:"ramen_noodles",    name:"Ramen noodles (dried)",             note:"Myojo or Sun Noodle brand." },
+    { key:"glass_noodles",    name:"Glass noodles (bean thread)",       note:"Soak 10 min in hot water before use." },
+    { key:"flat_rice_noodles",name:"Flat rice noodles (dried)",         note:"Pho and Wat Dan Hor. Wide, not thin." },
+    { key:"egg_noodles",      name:"Egg noodles (dried)",               note:"Abalone mushroom dish." },
+    { key:"orzo",             name:"Orzo pasta",                        note:"Smoked salmon salad, beef pasta bake." },
+    { key:"rice_paper",       name:"Rice paper rounds",                 note:"Vietnamese spring rolls." },
+    { key:"panko",            name:"Panko breadcrumbs",                 note:"Pasta bake topping." },
+    { key:"cornflour",        name:"Cornflour (cornstarch)",            note:"Gravy thickening. Wat Dan Hor, abalone." },
+    { key:"raw_almonds",      name:"Raw almonds (300g min)",            note:"Him 20g and Her 15g daily snack." },
+    { key:"brown_sugar",      name:"Brown sugar",                       note:"Bulgogi, chashu, chili con carne." },
+    { key:"dark_choc",        name:"Dark chocolate 85%",               note:"Chili con carne secret ingredient. 5g only." },
+    { key:"salt_himalayan",   name:"Pink Himalayan salt",               note:"Post-gym electrolyte and cooking." },
+  ]},
+  { cat: "Oils", items: [
+    { key:"neutral_oil",      name:"Neutral oil (rice bran or canola)", note:"Stir-frying. High smoke point required." },
+    { key:"olive_oil",        name:"Olive oil (light)",                 note:"Lamb chops, Mediterranean dishes." },
+    { key:"cooking_spray",    name:"Cooking spray (olive oil)",         note:"Air fryer coating." },
+  ]},
+  { cat: "Preserved & Specialty", items: [
+    { key:"suan_cai",         name:"Suan cai (pickled mustard greens)", note:"Asian grocer only. Sunrise brand. Refrigerate." },
+    { key:"bamboo_shoots",    name:"Bamboo shoots (canned)",            note:"Ramen topping. Menma style." },
+    { key:"nori_sheets",      name:"Nori sheets",                      note:"Ramen, donburi. Keep airtight." },
+    { key:"kaffir_lime",      name:"Kaffir lime leaves (frozen)",       note:"Tom Yum. Tai Ping or Lim Chour, Auckland CBD." },
+    { key:"lemongrass_frz",   name:"Lemongrass (freeze extra stalks)", note:"Tom Yum. Freeze fresh for year-round supply." },
+    { key:"galangal_frz",     name:"Galangal (frozen slices)",         note:"Tom Yum. Freeze slices from fresh root." },
+    { key:"kimchi",           name:"Kimchi (jar)",                     note:"Bulgogi side. Jongga brand. Refrigerate." },
+    { key:"asian_pear",       name:"Asian pear or kiwi",               note:"Bulgogi tenderiser. 2 tbsp grated per batch." },
+  ]},
+  { cat: "Fridge Staples", items: [
+    { key:"greek_yogurt",     name:"0% Greek yogurt (2 tubs)",         note:"Daily snack and raita base. Never run out." },
+    { key:"protein_powder",   name:"Protein powder",                   note:"Him 40g and Her 30g daily. Weighed not scooped." },
+    { key:"eggs",             name:"Eggs (large free-range)",          note:"Ramen soft-boil, carbonara, Wat Dan Hor." },
+    { key:"parmesan",         name:"Parmesan or Pecorino (block)",     note:"Carbonara, pasta bake. Block not pre-grated." },
+  ]},
+];
+
+function renderPantry() {
+  const cont = document.getElementById("pantry-list");
+  if (!cont) return;
+  let total = 0, have = 0;
+  cont.innerHTML = "";
+  PANTRY_STAPLES.forEach(cat => {
+    const catDiv = document.createElement("div");
+    catDiv.style.marginBottom = "16px";
+    catDiv.innerHTML = "<div style='font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border2)'>" + cat.cat.toUpperCase() + "</div>";
+    cat.items.forEach(item => {
+      total++;
+      const checked = !!pantryChecked[item.key];
+      if (checked) have++;
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2);cursor:pointer;opacity:" + (checked ? ".5" : "1");
+      row.onclick = () => { pantryChecked[item.key] = !pantryChecked[item.key]; renderPantry(); if(typeof scheduleSave==="function")scheduleSave(600); };
+      const tick = checked ? "<svg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>" : "";
+      const badge = checked ? "<span style='margin-left:6px;font-size:10px;font-weight:700;color:var(--success)'>IN PANTRY</span>" : "";
+      row.innerHTML = "<div style='width:22px;height:22px;border-radius:6px;border:1px solid " + (checked?"var(--success)":"var(--border2)") + ";background:" + (checked?"var(--success)":"transparent") + ";display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px'>" + tick + "</div>" +
+        "<div style='flex:1;min-width:0'><div style='font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px'>" + item.name + badge + "</div>" +
+        "<div style='font-size:11px;color:var(--text3);line-height:1.5'>" + item.note + "</div></div>";
+      catDiv.appendChild(row);
+    });
+    cont.appendChild(catDiv);
+  });
+  const countEl = document.getElementById("pantry-count");
+  if (countEl) countEl.textContent = have + " / " + total + " stocked";
+  const pct = document.getElementById("pantry-pct");
+  if (pct) pct.style.width = Math.round((have/total)*100) + "%";
+}
+
+function togglePantryView(btn) {
+  const wv = document.getElementById("shop-weekly-view");
+  const pv = document.getElementById("shop-pantry-view");
+  document.querySelectorAll("#p-shop .wpill").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  if (wv) wv.style.display = "none";
+  if (pv) { pv.style.display = ""; renderPantry(); }
+}
+
+function clearAllPantry() {
+  if (!confirm("Clear all pantry ticks?")) return;
+  pantryChecked = {};
+  renderPantry();
+  if (typeof scheduleSave === "function") scheduleSave(600);
+}
+
+const WEEK_SPICES = {
+  1: [
+    {pantryKey:"nam_prik_pao",    item:"Nam prik pao (Thai chili paste)",    qty:"1 jar",    store:"Asian grocer"},
+    {pantryKey:"fish_sauce",      item:"Fish sauce",                         qty:"1 bottle", store:"New World / Asian grocer"},
+    {pantryKey:"oyster_sauce",    item:"Oyster sauce",                       qty:"1 bottle", store:"Pak nSave"},
+    {pantryKey:"light_soy",       item:"Light soy sauce",                    qty:"1 bottle", store:"Pak nSave"},
+    {pantryKey:"sesame_oil",      item:"Sesame oil (toasted)",               qty:"1 bottle", store:"New World"},
+    {pantryKey:"star_anise",      item:"Star anise (whole)",                 qty:"1 pack",   store:"Asian grocer"},
+    {pantryKey:"cinnamon_sticks", item:"Cinnamon sticks",                    qty:"1 pack",   store:"New World"},
+    {pantryKey:"white_pepper",    item:"White pepper (ground)",             qty:"1 jar",    store:"New World"},
+    {pantryKey:"dried_chili",     item:"Dried chili flakes (prik bon)",     qty:"1 jar",    store:"Asian grocer"},
+    {pantryKey:"kaffir_lime",     item:"Kaffir lime leaves (frozen)",       qty:"1 pack",   store:"Asian grocer"},
+    {pantryKey:"lemongrass_frz",  item:"Lemongrass stalks",                 qty:"4-6 stalks", store:"Pak nSave / Asian grocer"},
+    {pantryKey:"galangal_frz",    item:"Galangal root",                    qty:"1 small piece", store:"Asian grocer"},
+  ],
+  2: [
+    {pantryKey:"gochugaru",       item:"Gochugaru (Korean chili flakes)",   qty:"1 pack",   store:"New World / H Mart"},
+    {pantryKey:"gochujang",       item:"Gochujang paste",                   qty:"1 tub",    store:"New World / Asian grocer"},
+    {pantryKey:"mirin",           item:"Mirin",                             qty:"1 bottle", store:"New World"},
+    {pantryKey:"shaoxing_wine",   item:"Shaoxing rice wine",                qty:"1 bottle", store:"Asian grocer"},
+    {pantryKey:"white_miso",      item:"White miso paste",                  qty:"1 tub",    store:"New World"},
+    {pantryKey:"hoisin_sauce",    item:"Hoisin sauce",                      qty:"1 bottle", store:"New World"},
+    {pantryKey:"sbcurry_roux",    item:"S&B Golden Curry roux (med-hot)",   qty:"1 box",    store:"New World / Asian grocer"},
+    {pantryKey:"brown_sugar",     item:"Brown sugar",                       qty:"1 pack",   store:"Pak nSave"},
+    {pantryKey:"fish_sauce",      item:"Fish sauce (top up if low)",        qty:"check",    store:"New World"},
+  ],
+  3: [
+    {pantryKey:"chili_oil",       item:"Chili oil (Lao Gan Ma)",            qty:"1 jar",    store:"Asian grocer"},
+    {pantryKey:"dark_soy",        item:"Dark soy sauce",                    qty:"1 bottle", store:"Asian grocer"},
+    {pantryKey:"cornflour",       item:"Cornflour (cornstarch)",            qty:"1 pack",   store:"Pak nSave"},
+    {pantryKey:"bamboo_shoots",   item:"Bamboo shoots (canned)",            qty:"1 can",    store:"Asian grocer"},
+    {pantryKey:"nori_sheets",     item:"Nori sheets",                      qty:"1 pack",   store:"New World"},
+    {pantryKey:"suan_cai",        item:"Suan cai (pickled mustard greens)", qty:"1 pack",  store:"Asian grocer"},
+    {pantryKey:"shaoxing_wine",   item:"Shaoxing wine (top up if low)",     qty:"check",   store:"Asian grocer"},
+    {pantryKey:"oyster_sauce",    item:"Oyster sauce (top up if low)",      qty:"check",   store:"Pak nSave"},
+  ],
+  4: [
+    {pantryKey:"durban_masala",   item:"Durban masala blend",               qty:"1 jar",    store:"New World / Indian grocer"},
+    {pantryKey:"cumin_seeds",     item:"Cumin seeds (whole)",               qty:"check",    store:"New World"},
+    {pantryKey:"cumin_ground",    item:"Ground cumin",                      qty:"check",    store:"New World"},
+    {pantryKey:"coriander_ground",item:"Ground coriander",                  qty:"check",    store:"New World"},
+    {pantryKey:"turmeric",        item:"Turmeric",                          qty:"check",    store:"New World"},
+    {pantryKey:"garam_masala",    item:"Garam masala",                      qty:"check",    store:"New World"},
+    {pantryKey:"smoked_paprika",  item:"Smoked paprika",                    qty:"check",    store:"New World"},
+    {pantryKey:"cayenne",         item:"Cayenne pepper",                    qty:"check",    store:"New World"},
+    {pantryKey:"harissa",         item:"Harissa paste",                     qty:"1 jar",    store:"New World"},
+    {pantryKey:"chipotle_adobo",  item:"Chipotle peppers in adobo sauce",   qty:"1 can",    store:"New World / Woolworths"},
+    {pantryKey:"dark_choc",       item:"Dark chocolate 85%",               qty:"1 block",  store:"Pak nSave"},
+    {pantryKey:"bay_leaves",      item:"Bay leaves",                        qty:"check",    store:"New World"},
+    {pantryKey:"dried_chili",     item:"Dried chili flakes (top up if low)", qty:"check",  store:"Asian grocer"},
+  ],
+};
+
+window.openSwapModal = openSwapModal;
+window.closeSwapModal = closeSwapModal;
+window.resetSwap = resetSwap;
+window.renderPantry = renderPantry;
+window.togglePantryView = togglePantryView;
+window.clearAllPantry = clearAllPantry;
 window.openSwapModal = openSwapModal;
 window.closeSwapModal = closeSwapModal;
 window.resetSwap = resetSwap;
@@ -3545,5 +3486,19 @@ addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles
   </div>
 </div>
 
+
+<!-- SWAP MEAL MODAL -->
+<div id="swap-modal" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);padding:16px;overflow-y:auto" onclick="if(event.target===this)closeSwapModal()">
+  <div style="background:#fff;border-radius:20px;max-width:480px;margin:0 auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px">MEAL SWAP</div>
+        <div style="font-size:17px;font-weight:700;color:var(--text)">Choose a different meal</div>
+      </div>
+      <button onclick="closeSwapModal()" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg3);font-size:16px;cursor:pointer">&#x2715;</button>
+    </div>
+    <div style="padding:4px 18px 20px;max-height:70vh;overflow-y:auto" id="swap-meal-list"></div>
+  </div>
+</div>
 </body>
 </html>

@@ -127,6 +127,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .page{display:none;padding:14px 14px 8px;flex:1;animation:fadeIn .18s ease}
 .page.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 /* ── Cards ── */
 .card{
@@ -326,6 +327,33 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .scan-mode-btn:active{background:var(--coral-soft)}
 .scan-mode-btn.active{border-color:var(--coral);background:var(--coral-soft);color:var(--coral);font-weight:700}
 .scan-mode-btn.active div:nth-child(2){color:var(--coral)}
+
+
+/* ── Pantry tab ── */
+.pantry-sub-tabs{display:flex;gap:4px;background:var(--bg3);padding:3px;border-radius:24px;margin-bottom:14px}
+.pstab{flex:1;padding:9px 0;border-radius:20px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--text3);transition:.2s;font-family:'Plus Jakarta Sans',sans-serif}
+.pstab.active{background:#fff;color:var(--teal);box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.pantry-search{width:100%;padding:10px 14px;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:.15s;margin-bottom:10px}
+.pantry-search:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.12)}
+.pantry-cat-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--teal);padding:6px 0 4px;border-bottom:1px solid var(--border2);margin-bottom:4px;text-transform:uppercase;font-family:'Plus Jakarta Sans',sans-serif}
+.pantry-item-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border2);cursor:pointer}
+.pantry-item-row:last-child{border-bottom:none}
+.pantry-tick{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:.15s}
+.pantry-tick.checked{background:var(--success);border-color:var(--success)}
+.pantry-item-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px}
+.pantry-item-note{font-size:11px;color:var(--text3);line-height:1.5}
+.pantry-in-badge{margin-left:6px;font-size:10px;font-weight:700;color:var(--success)}
+.add-item-form{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+.add-item-form .form-row{margin-bottom:10px}
+.add-item-form label{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:5px;display:block;font-family:'Plus Jakarta Sans',sans-serif}
+.add-item-form input,.add-item-form select,.add-item-form textarea{width:100%;padding:10px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius-xs);font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:.15s}
+.add-item-form input:focus,.add-item-form select:focus,.add-item-form textarea:focus{border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px rgba(8,145,178,.1)}
+.add-item-form textarea{resize:vertical;min-height:56px}
+.pantry-user-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.pantry-user-item:last-child{border-bottom:none}
+.pantry-user-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:6px}
+.scan-add-zone{border:2px dashed rgba(8,145,178,.3);border-radius:var(--radius);padding:20px 16px;text-align:center;cursor:pointer;background:rgba(8,145,178,.04);margin-bottom:12px;transition:.15s}
+.scan-add-zone:active{background:rgba(8,145,178,.1)}
 
 /* ── Responsive desktop ── */
 @media(min-width:600px){
@@ -808,6 +836,149 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
+
+<!-- PANTRY PAGE -->
+<div id="p-pantry" class="page">
+
+  <!-- Sub-tab toggle -->
+  <div class="pantry-sub-tabs">
+    <button class="pstab active" id="ptab-catalogue" onclick="switchPantryTab('catalogue')">📦 My Pantry</button>
+    <button class="pstab" id="ptab-add" onclick="switchPantryTab('add')">＋ Add Item</button>
+  </div>
+
+  <!-- CATALOGUE sub-view -->
+  <div id="pantry-catalogue-view">
+    <!-- Stats bar -->
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <div style="flex:1;background:#fff;border-radius:var(--radius-sm);padding:12px;text-align:center;box-shadow:var(--shadow-sm)">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:var(--teal)" id="pantry-stat-stocked">0</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;margin-top:2px;text-transform:uppercase">Stocked</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:var(--radius-sm);padding:12px;text-align:center;box-shadow:var(--shadow-sm)">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:var(--coral)" id="pantry-stat-needed">0</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;margin-top:2px;text-transform:uppercase">To Buy</div>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:var(--radius-sm);padding:12px;text-align:center;box-shadow:var(--shadow-sm)">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:var(--success)" id="pantry-stat-custom">0</div>
+        <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;margin-top:2px;text-transform:uppercase">Custom</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div style="height:5px;background:var(--border2);border-radius:4px;margin-bottom:14px;overflow:hidden">
+      <div id="pantry-prog-bar" style="height:100%;background:var(--success);border-radius:4px;transition:width .4s;width:0%"></div>
+    </div>
+
+    <!-- Search -->
+    <input class="pantry-search" id="pantry-search-input" placeholder="🔍  Search pantry items…" oninput="filterPantryCatalogue(this.value)">
+
+    <!-- Info note -->
+    <div style="font-size:11px;color:var(--text3);margin-bottom:12px;padding:8px 10px;background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.12);border-radius:8px;line-height:1.6">
+      ✅ Tick what you have. Ticked items are marked <strong>IN PANTRY</strong> in the shopping list so you only buy what you actually need.
+    </div>
+
+    <!-- Custom items section (user-added) -->
+    <div id="pantry-custom-section" style="display:none">
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="card-label" style="margin-bottom:0">✏️ My custom items</div>
+        </div>
+        <div id="pantry-custom-list"></div>
+      </div>
+    </div>
+
+    <!-- Standard pantry list (PANTRY_STAPLES) -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-label" style="margin-bottom:0">🏠 Kitchen staples</div>
+        <button onclick="clearAllPantry()" style="font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:12px;padding:4px 10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Clear all</button>
+      </div>
+      <div id="pantry-catalogue-list"></div>
+    </div>
+  </div>
+
+  <!-- ADD ITEM sub-view -->
+  <div id="pantry-add-view" style="display:none">
+
+    <!-- Scan to add -->
+    <div class="add-item-form">
+      <div class="card-label">📷 Scan to add</div>
+      <div class="scan-add-zone" id="pantry-scan-zone" onclick="document.getElementById('pantry-scan-input').click()">
+        <input type="file" id="pantry-scan-input" accept="image/*" capture="environment" style="display:none" onchange="handlePantryScan(event)">
+        <div id="pantry-scan-placeholder">
+          <div style="font-size:32px;margin-bottom:6px">📷</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif">Take a photo of a product or label</div>
+          <div style="font-size:11px;color:var(--text3)">AI reads the item name automatically</div>
+        </div>
+        <div id="pantry-scan-preview" style="display:none">
+          <img id="pantry-scan-img" style="max-width:100%;max-height:160px;border-radius:8px;object-fit:contain">
+          <div style="margin-top:6px;font-size:12px;color:var(--teal);font-weight:700">Reading label…</div>
+        </div>
+      </div>
+      <div id="pantry-scan-result" style="display:none;padding:10px;background:rgba(8,145,178,.08);border:1px solid rgba(8,145,178,.2);border-radius:8px;margin-bottom:10px">
+        <div style="font-size:12px;color:var(--teal);font-weight:700;margin-bottom:4px">📦 Detected item</div>
+        <div id="pantry-scan-detected" style="font-size:13px;color:var(--text)"></div>
+        <button onclick="useScanResult()" style="margin-top:8px;padding:7px 14px;background:var(--teal);border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Use this →</button>
+      </div>
+    </div>
+
+    <!-- Manual entry form -->
+    <div class="add-item-form">
+      <div class="card-label">✏️ Manual entry</div>
+
+      <div class="form-row">
+        <label>Item name *</label>
+        <input type="text" id="pi-name" placeholder="e.g. Fish sauce, Jasmine rice, Cumin seeds…">
+      </div>
+
+      <div class="form-row">
+        <label>Category</label>
+        <select id="pi-cat">
+          <option value="Asian Sauces & Condiments">Asian Sauces & Condiments</option>
+          <option value="Dry Spices">Dry Spices</option>
+          <option value="Pastes & Roux">Pastes & Roux</option>
+          <option value="Grains, Noodles & Pantry">Grains, Noodles & Pantry</option>
+          <option value="Oils">Oils</option>
+          <option value="Preserved & Specialty">Preserved & Specialty</option>
+          <option value="Fridge & Freezer">Fridge & Freezer</option>
+          <option value="Fresh Produce">Fresh Produce</option>
+          <option value="Protein">Protein</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label>Quantity / notes <span style="color:var(--text3);font-weight:400">(optional)</span></label>
+        <input type="text" id="pi-qty" placeholder="e.g. 500g, 1 bottle, 2 cans…">
+      </div>
+
+      <div class="form-row">
+        <label>Where stored <span style="color:var(--text3);font-weight:400">(optional)</span></label>
+        <select id="pi-location">
+          <option value="">— Select location —</option>
+          <option value="Pantry cupboard">Pantry cupboard</option>
+          <option value="Kitchen shelf">Kitchen shelf</option>
+          <option value="Fridge">Fridge</option>
+          <option value="Freezer">Freezer</option>
+          <option value="Spice rack">Spice rack</option>
+          <option value="Dry goods shelf">Dry goods shelf</option>
+        </select>
+      </div>
+
+      <button onclick="addPantryItem()" style="width:100%;padding:13px;background:var(--teal);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 3px 12px rgba(8,145,178,.25);transition:.15s">
+        + Add to My Pantry
+      </button>
+    </div>
+
+    <!-- Shopping integration note -->
+    <div style="padding:12px 14px;background:var(--success-soft);border:1px solid rgba(22,163,74,.2);border-radius:var(--radius-sm);font-size:11px;color:var(--text2);line-height:1.7">
+      💡 <strong style="color:var(--text)">How it works:</strong> Items you add here are treated as stocked. They get the <strong style="color:var(--success)">IN PANTRY</strong> badge in the Shopping tab — so you only buy what you're actually out of.
+    </div>
+  </div>
+
+</div>
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="nav-btn active" onclick="showPage('today',this)">
@@ -821,6 +992,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </button>
   <button class="nav-btn" onclick="showPage('shop',this)">
     <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>SHOP
+  </button>
+  <button class="nav-btn" onclick="showPage('pantry',this)">
+    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v13h16V8"/><path d="M10 12h4"/><path d="M10 16h4"/></svg>PANTRY
   </button>
   <button class="nav-btn" onclick="showPage('workout',this)">
     <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><line x1="4" y1="6.5" x2="4" y2="17.5"/><line x1="20" y1="6.5" x2="20" y2="17.5"/><line x1="2" y1="10" x2="2" y2="14"/><line x1="22" y1="10" x2="22" y2="14"/></svg>GYM
@@ -1374,6 +1548,7 @@ let chatHistory = [];
 let mealSwaps = {}; // mealSwaps[dateKey][slotIdx] = {name,him,her,himCal,herCal,time}
 let exLog = {};
 let pantryChecked = {};
+let pantryItems = []; // user-added custom items {id,name,category,note,addedBy,addedAt,qty}
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 function showPage(id, btn) {
@@ -1381,6 +1556,8 @@ function showPage(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('p-'+id).classList.add('active');
   btn.classList.add('active');
+  // Re-render pantry when opened
+  if (id === 'pantry') { renderPantryCatalogue(); }
   // Re-render the active meal tab whenever meals page is opened
   if (id === 'meals') {
     if (activeMealTab === 'today') renderDailyMeals();
@@ -2251,6 +2428,216 @@ const PANTRY_STAPLES = [
   ]},
 ];
 
+// ── PANTRY TAB ────────────────────────────────────────────────────────────────
+
+let pantrySubTab = 'catalogue';
+let pantrySearchQuery = '';
+let pantryScannedName = '';
+
+function switchPantryTab(tab) {
+  pantrySubTab = tab;
+  document.getElementById('pantry-catalogue-view').style.display = tab === 'catalogue' ? '' : 'none';
+  document.getElementById('pantry-add-view').style.display = tab === 'add' ? '' : 'none';
+  document.getElementById('ptab-catalogue').classList.toggle('active', tab === 'catalogue');
+  document.getElementById('ptab-add').classList.toggle('active', tab === 'add');
+  if (tab === 'catalogue') renderPantryCatalogue();
+}
+
+function filterPantryCatalogue(q) {
+  pantrySearchQuery = q.toLowerCase();
+  renderPantryCatalogue();
+}
+
+function renderPantryCatalogue() {
+  const cont = document.getElementById('pantry-catalogue-list');
+  if (!cont) return;
+  const q = pantrySearchQuery;
+
+  // --- Custom items section ---
+  const customSection = document.getElementById('pantry-custom-section');
+  const customList = document.getElementById('pantry-custom-list');
+  const filteredCustom = pantryItems.filter(item =>
+    !q || item.name.toLowerCase().includes(q) || (item.category||'').toLowerCase().includes(q)
+  );
+  if (filteredCustom.length > 0) {
+    customSection.style.display = '';
+    customList.innerHTML = '';
+    filteredCustom.forEach((item, idx) => {
+      const row = document.createElement('div');
+      row.className = 'pantry-user-item';
+      const locBadge = item.location ? `<span class="pantry-user-badge" style="background:rgba(8,145,178,.1);color:var(--teal)">${item.location}</span>` : '';
+      const catBadge = `<span class="pantry-user-badge" style="background:var(--bg3);color:var(--text3)">${item.category||'Other'}</span>`;
+      row.innerHTML = `
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">
+            ${item.name}${catBadge}${locBadge}
+          </div>
+          ${item.qty ? `<div style="font-size:11px;color:var(--text2)">${item.qty}</div>` : ''}
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Added ${new Date(item.addedAt).toLocaleDateString('en-NZ',{day:'numeric',month:'short'})}</div>
+        </div>
+        <button onclick="removePantryItem('${item.id}')" style="padding:5px 10px;font-size:11px;font-weight:700;color:var(--danger);background:var(--danger-soft);border:1px solid rgba(220,38,38,.15);border-radius:8px;cursor:pointer;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif">Remove</button>`;
+      customList.appendChild(row);
+    });
+  } else {
+    customSection.style.display = 'none';
+  }
+
+  // --- Standard PANTRY_STAPLES ---
+  cont.innerHTML = '';
+  let total = 0, stocked = 0;
+
+  PANTRY_STAPLES.forEach(cat => {
+    const filteredItems = cat.items.filter(item =>
+      !q || item.name.toLowerCase().includes(q) || item.note.toLowerCase().includes(q)
+    );
+    if (filteredItems.length === 0) return;
+
+    const catDiv = document.createElement('div');
+    catDiv.style.marginBottom = '14px';
+    catDiv.innerHTML = `<div class="pantry-cat-label">${cat.cat}</div>`;
+
+    filteredItems.forEach(item => {
+      total++;
+      const checked = !!pantryChecked[item.key];
+      if (checked) stocked++;
+
+      const row = document.createElement('div');
+      row.className = 'pantry-item-row';
+      row.style.opacity = checked ? '.55' : '1';
+      row.onclick = () => {
+        pantryChecked[item.key] = !pantryChecked[item.key];
+        renderPantryCatalogue();
+        renderShop();
+        if (typeof scheduleSave === 'function') scheduleSave(600);
+      };
+      const tickSvg = checked ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : '';
+      row.innerHTML = `
+        <div class="pantry-tick ${checked ? 'checked' : ''}">${tickSvg}</div>
+        <div style="flex:1;min-width:0">
+          <div class="pantry-item-name">${item.name}${checked ? '<span class="pantry-in-badge">✓ IN PANTRY</span>' : ''}</div>
+          <div class="pantry-item-note">${item.note}</div>
+        </div>`;
+      catDiv.appendChild(row);
+    });
+    cont.appendChild(catDiv);
+  });
+
+  // Update stats
+  const totalCustom = pantryItems.length;
+  const totalStocked = stocked + totalCustom;
+  const totalAll = total + totalCustom;
+  const needed = total - stocked;
+
+  const statStocked = document.getElementById('pantry-stat-stocked');
+  const statNeeded = document.getElementById('pantry-stat-needed');
+  const statCustom = document.getElementById('pantry-stat-custom');
+  const progBar = document.getElementById('pantry-prog-bar');
+  if (statStocked) statStocked.textContent = totalStocked;
+  if (statNeeded) statNeeded.textContent = needed;
+  if (statCustom) statCustom.textContent = totalCustom;
+  if (progBar) progBar.style.width = totalAll ? Math.round((totalStocked/totalAll)*100) + '%' : '0%';
+
+  // Also update old pantry-list if it exists (shop tab pantry view)
+  const legacyList = document.getElementById('pantry-list');
+  if (legacyList) renderPantry();
+}
+
+// ── Add custom pantry item ────────────────────────────────────────────────────
+function addPantryItem() {
+  const name = document.getElementById('pi-name').value.trim();
+  if (!name) {
+    document.getElementById('pi-name').focus();
+    document.getElementById('pi-name').style.borderColor = 'var(--danger)';
+    setTimeout(() => document.getElementById('pi-name').style.borderColor = '', 1500);
+    return;
+  }
+  const item = {
+    id: 'pi_' + Date.now(),
+    name,
+    category: document.getElementById('pi-cat').value,
+    qty: document.getElementById('pi-qty').value.trim(),
+    location: document.getElementById('pi-location').value,
+    addedAt: new Date().toISOString(),
+  };
+  pantryItems.push(item);
+  // Clear form
+  document.getElementById('pi-name').value = '';
+  document.getElementById('pi-qty').value = '';
+  document.getElementById('pi-location').value = '';
+  // Switch to catalogue to show new item
+  switchPantryTab('catalogue');
+  if (typeof scheduleSave === 'function') scheduleSave(600);
+}
+
+// ── Remove custom pantry item ─────────────────────────────────────────────────
+function removePantryItem(id) {
+  pantryItems = pantryItems.filter(i => i.id !== id);
+  renderPantryCatalogue();
+  if (typeof scheduleSave === 'function') scheduleSave(600);
+}
+
+// ── Scan item via AI ─────────────────────────────────────────────────────────
+async function handlePantryScan(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const dataUrl = e.target.result;
+    const base64 = dataUrl.split(',')[1];
+    document.getElementById('pantry-scan-img').src = dataUrl;
+    document.getElementById('pantry-scan-placeholder').style.display = 'none';
+    document.getElementById('pantry-scan-preview').style.display = '';
+    document.getElementById('pantry-scan-result').style.display = 'none';
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 200,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+              { type: 'text', text: 'Look at this product or food item. Return ONLY a JSON object, no markdown: {"name": "short product name", "category": "one of: Asian Sauces & Condiments | Dry Spices | Pastes & Roux | Grains, Noodles & Pantry | Oils | Preserved & Specialty | Fridge & Freezer | Fresh Produce | Protein | Dairy | Other", "qty": "estimated quantity if visible on label, else empty string"}' }
+            ]
+          }]
+        })
+      });
+      const data = await res.json();
+      const raw = data.content?.[0]?.text || '';
+      const clean = raw.replace(/```json|```/g,'').trim();
+      const parsed = JSON.parse(clean);
+      pantryScannedName = parsed.name || '';
+      document.getElementById('pantry-scan-detected').textContent = parsed.name + (parsed.qty ? ' — ' + parsed.qty : '');
+      document.getElementById('pantry-scan-result').style.display = '';
+      // Pre-fill form
+      document.getElementById('pi-name').value = parsed.name || '';
+      if (parsed.category) {
+        const sel = document.getElementById('pi-cat');
+        for (let opt of sel.options) { if (opt.value === parsed.category) { sel.value = parsed.category; break; } }
+      }
+      if (parsed.qty) document.getElementById('pi-qty').value = parsed.qty;
+    } catch(err) {
+      document.getElementById('pantry-scan-detected').textContent = 'Could not read label — please type the item name manually.';
+      document.getElementById('pantry-scan-result').style.display = '';
+    }
+    // Reset preview
+    document.getElementById('pantry-scan-preview').querySelector('div').textContent = 'Photo taken';
+    document.getElementById('pantry-scan-input').value = '';
+  };
+  reader.readAsDataURL(file);
+}
+
+function useScanResult() {
+  // Just scroll down to form which is already pre-filled
+  document.getElementById('pi-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('pi-name').focus();
+  document.getElementById('pantry-scan-result').style.display = 'none';
+}
+
+
 function renderPantry() {
   const cont = document.getElementById("pantry-list");
   if (!cont) return;
@@ -2350,13 +2737,6 @@ const WEEK_SPICES = {
     {pantryKey:"dried_chili",     item:"Dried chili flakes (top up if low)", qty:"check",  store:"Asian grocer"},
   ],
 };
-
-window.openSwapModal = openSwapModal;
-window.closeSwapModal = closeSwapModal;
-window.resetSwap = resetSwap;
-window.renderPantry = renderPantry;
-window.togglePantryView = togglePantryView;
-window.clearAllPantry = clearAllPantry;
 
 const SHOP_DATA = {
   1: {
@@ -3145,6 +3525,7 @@ async function persistState() {
     exLog,
     mealSwaps,
     pantryChecked,
+    pantryItems,
     lastUpdated: new Date().toISOString(),
     schemaVersion: 3,
   };
@@ -3206,6 +3587,7 @@ function applyState(state) {
   if (state.exLog)         exLog         = state.exLog;
   if (state.mealSwaps)     mealSwaps     = state.mealSwaps;
   if (state.pantryChecked) pantryChecked = state.pantryChecked;
+  if (state.pantryItems)   pantryItems   = state.pantryItems;
   if (typeof state.waterCount === 'number') waterCount = state.waterCount;
   if (state.woDone)        woDone        = state.woDone;
   if (state.checkins)      checkins      = state.checkins;
@@ -3222,6 +3604,7 @@ function applyState(state) {
   renderProgress();
   renderShop();
   renderProgTable();
+  renderPantryCatalogue();
 }
 
 // ── Real-time listener: updates from partner's phone ────────────────────────
@@ -3258,13 +3641,14 @@ window._signInWithGoogle = async function() {
     return;
   }
   const btn = document.getElementById('google-signin-btn');
-  btn.textContent = 'Signing in…';
+  const btnOriginalHTML = btn.innerHTML;
+  btn.innerHTML = '<span style="display:flex;align-items:center;gap:8px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke="#ccc" stroke-width="3" fill="none"/><path d="M12 2a10 10 0 0 1 10 10" stroke="#1a1a1a" stroke-width="3" fill="none" stroke-linecap="round"/></svg>Signing in…</span>';
   btn.disabled = true;
   try {
     const { error } = await window._sb.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://krivnaicker.github.io/VitalPath/',
+        redirectTo: window.location.origin + window.location.pathname,
         queryParams: { access_type: 'offline', prompt: 'consent' },
         skipBrowserRedirect: false,
       }
@@ -3273,7 +3657,7 @@ window._signInWithGoogle = async function() {
   } catch (e) {
     document.getElementById('auth-error').textContent = e.message;
     document.getElementById('auth-error').style.display = 'block';
-    btn.textContent = 'Continue with Google';
+    btn.innerHTML = btnOriginalHTML;
     btn.disabled = false;
   }
 };
@@ -3421,6 +3805,15 @@ window.clearSundayChecks   = clearSundayChecks;
 window.openSwapModal = openSwapModal;
 window.closeSwapModal = closeSwapModal;
 window.resetSwap = resetSwap;
+window.switchPantryTab   = switchPantryTab;
+window.filterPantryCatalogue = filterPantryCatalogue;
+window.addPantryItem     = addPantryItem;
+window.removePantryItem  = removePantryItem;
+window.handlePantryScan  = handlePantryScan;
+window.useScanResult     = useScanResult;
+window.clearAllPantry    = clearAllPantry;
+window.togglePantryView  = togglePantryView;
+window.renderPantry      = renderPantry;
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -3465,19 +3858,5 @@ addBubble("Hi! I'm VitalPath, your daily health coach. I have both your profiles
   </div>
 </div>
 
-
-<!-- SWAP MEAL MODAL -->
-<div id="swap-modal" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);padding:16px;overflow-y:auto" onclick="if(event.target===this)closeSwapModal()">
-  <div style="background:#fff;border-radius:20px;max-width:480px;margin:0 auto;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border2)">
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px">MEAL SWAP</div>
-        <div style="font-size:17px;font-weight:700;color:var(--text)">Choose a different meal</div>
-      </div>
-      <button onclick="closeSwapModal()" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg3);font-size:16px;cursor:pointer">&#x2715;</button>
-    </div>
-    <div style="padding:4px 18px 20px;max-height:70vh;overflow-y:auto" id="swap-meal-list"></div>
-  </div>
-</div>
 </body>
 </html>

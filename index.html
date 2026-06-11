@@ -842,6 +842,59 @@ const PROFILES = {
   her: { name:'Her', cal:1194, p:122, c:92,  f:37, weight:68, target:60, color:'#7B5EA7', weeks:11 },
 };
 
+const WEEK_SPICES = {
+  1: [
+    {pantryKey:"nam_prik_pao",    item:"Nam prik pao (Thai chili paste)",    qty:"1 jar",    store:"Asian grocer"},
+    {pantryKey:"fish_sauce",      item:"Fish sauce",                         qty:"1 bottle", store:"New World / Asian grocer"},
+    {pantryKey:"oyster_sauce",    item:"Oyster sauce",                       qty:"1 bottle", store:"Pak nSave"},
+    {pantryKey:"light_soy",       item:"Light soy sauce",                    qty:"1 bottle", store:"Pak nSave"},
+    {pantryKey:"sesame_oil",      item:"Sesame oil (toasted)",               qty:"1 bottle", store:"New World"},
+    {pantryKey:"star_anise",      item:"Star anise (whole)",                 qty:"1 pack",   store:"Asian grocer"},
+    {pantryKey:"cinnamon_sticks", item:"Cinnamon sticks",                    qty:"1 pack",   store:"New World"},
+    {pantryKey:"white_pepper",    item:"White pepper (ground)",             qty:"1 jar",    store:"New World"},
+    {pantryKey:"dried_chili",     item:"Dried chili flakes (prik bon)",     qty:"1 jar",    store:"Asian grocer"},
+    {pantryKey:"kaffir_lime",     item:"Kaffir lime leaves (frozen)",       qty:"1 pack",   store:"Asian grocer"},
+    {pantryKey:"lemongrass_frz",  item:"Lemongrass stalks",                 qty:"4-6 stalks", store:"Pak nSave / Asian grocer"},
+    {pantryKey:"galangal_frz",    item:"Galangal root",                    qty:"1 small piece", store:"Asian grocer"},
+  ],
+  2: [
+    {pantryKey:"gochugaru",       item:"Gochugaru (Korean chili flakes)",   qty:"1 pack",   store:"New World / H Mart"},
+    {pantryKey:"gochujang",       item:"Gochujang paste",                   qty:"1 tub",    store:"New World / Asian grocer"},
+    {pantryKey:"mirin",           item:"Mirin",                             qty:"1 bottle", store:"New World"},
+    {pantryKey:"shaoxing_wine",   item:"Shaoxing rice wine",                qty:"1 bottle", store:"Asian grocer"},
+    {pantryKey:"white_miso",      item:"White miso paste",                  qty:"1 tub",    store:"New World"},
+    {pantryKey:"hoisin_sauce",    item:"Hoisin sauce",                      qty:"1 bottle", store:"New World"},
+    {pantryKey:"sbcurry_roux",    item:"S&B Golden Curry roux (med-hot)",   qty:"1 box",    store:"New World / Asian grocer"},
+    {pantryKey:"brown_sugar",     item:"Brown sugar",                       qty:"1 pack",   store:"Pak nSave"},
+    {pantryKey:"fish_sauce",      item:"Fish sauce (top up if low)",        qty:"check",    store:"New World"},
+  ],
+  3: [
+    {pantryKey:"chili_oil",       item:"Chili oil (Lao Gan Ma)",            qty:"1 jar",    store:"Asian grocer"},
+    {pantryKey:"dark_soy",        item:"Dark soy sauce",                    qty:"1 bottle", store:"Asian grocer"},
+    {pantryKey:"cornflour",       item:"Cornflour (cornstarch)",            qty:"1 pack",   store:"Pak nSave"},
+    {pantryKey:"bamboo_shoots",   item:"Bamboo shoots (canned)",            qty:"1 can",    store:"Asian grocer"},
+    {pantryKey:"nori_sheets",     item:"Nori sheets",                      qty:"1 pack",   store:"New World"},
+    {pantryKey:"suan_cai",        item:"Suan cai (pickled mustard greens)", qty:"1 pack",  store:"Asian grocer"},
+    {pantryKey:"shaoxing_wine",   item:"Shaoxing wine (top up if low)",     qty:"check",   store:"Asian grocer"},
+    {pantryKey:"oyster_sauce",    item:"Oyster sauce (top up if low)",      qty:"check",   store:"Pak nSave"},
+  ],
+  4: [
+    {pantryKey:"durban_masala",   item:"Durban masala blend",               qty:"1 jar",    store:"New World / Indian grocer"},
+    {pantryKey:"cumin_seeds",     item:"Cumin seeds (whole)",               qty:"check",    store:"New World"},
+    {pantryKey:"cumin_ground",    item:"Ground cumin",                      qty:"check",    store:"New World"},
+    {pantryKey:"coriander_ground",item:"Ground coriander",                  qty:"check",    store:"New World"},
+    {pantryKey:"turmeric",        item:"Turmeric",                          qty:"check",    store:"New World"},
+    {pantryKey:"garam_masala",    item:"Garam masala",                      qty:"check",    store:"New World"},
+    {pantryKey:"smoked_paprika",  item:"Smoked paprika",                    qty:"check",    store:"New World"},
+    {pantryKey:"cayenne",         item:"Cayenne pepper",                    qty:"check",    store:"New World"},
+    {pantryKey:"harissa",         item:"Harissa paste",                     qty:"1 jar",    store:"New World"},
+    {pantryKey:"chipotle_adobo",  item:"Chipotle peppers in adobo sauce",   qty:"1 can",    store:"New World / Woolworths"},
+    {pantryKey:"dark_choc",       item:"Dark chocolate 85%",               qty:"1 block",  store:"Pak nSave"},
+    {pantryKey:"bay_leaves",      item:"Bay leaves",                        qty:"check",    store:"New World"},
+    {pantryKey:"dried_chili",     item:"Dried chili flakes (top up if low)", qty:"check",  store:"Asian grocer"},
+  ],
+};
+
 const MEALS = {
   him:[
     {time:'Gym window',name:'Pre-gym',detail:'300–400ml water. No solid food.',cal:0,p:0,c:0,f:0},
@@ -3380,58 +3433,7 @@ function clearAllPantry() {
   if (typeof scheduleSave === "function") scheduleSave(600);
 }
 
-const WEEK_SPICES = {
-  1: [
-    {pantryKey:"nam_prik_pao",    item:"Nam prik pao (Thai chili paste)",    qty:"1 jar",    store:"Asian grocer"},
-    {pantryKey:"fish_sauce",      item:"Fish sauce",                         qty:"1 bottle", store:"New World / Asian grocer"},
-    {pantryKey:"oyster_sauce",    item:"Oyster sauce",                       qty:"1 bottle", store:"Pak nSave"},
-    {pantryKey:"light_soy",       item:"Light soy sauce",                    qty:"1 bottle", store:"Pak nSave"},
-    {pantryKey:"sesame_oil",      item:"Sesame oil (toasted)",               qty:"1 bottle", store:"New World"},
-    {pantryKey:"star_anise",      item:"Star anise (whole)",                 qty:"1 pack",   store:"Asian grocer"},
-    {pantryKey:"cinnamon_sticks", item:"Cinnamon sticks",                    qty:"1 pack",   store:"New World"},
-    {pantryKey:"white_pepper",    item:"White pepper (ground)",             qty:"1 jar",    store:"New World"},
-    {pantryKey:"dried_chili",     item:"Dried chili flakes (prik bon)",     qty:"1 jar",    store:"Asian grocer"},
-    {pantryKey:"kaffir_lime",     item:"Kaffir lime leaves (frozen)",       qty:"1 pack",   store:"Asian grocer"},
-    {pantryKey:"lemongrass_frz",  item:"Lemongrass stalks",                 qty:"4-6 stalks", store:"Pak nSave / Asian grocer"},
-    {pantryKey:"galangal_frz",    item:"Galangal root",                    qty:"1 small piece", store:"Asian grocer"},
-  ],
-  2: [
-    {pantryKey:"gochugaru",       item:"Gochugaru (Korean chili flakes)",   qty:"1 pack",   store:"New World / H Mart"},
-    {pantryKey:"gochujang",       item:"Gochujang paste",                   qty:"1 tub",    store:"New World / Asian grocer"},
-    {pantryKey:"mirin",           item:"Mirin",                             qty:"1 bottle", store:"New World"},
-    {pantryKey:"shaoxing_wine",   item:"Shaoxing rice wine",                qty:"1 bottle", store:"Asian grocer"},
-    {pantryKey:"white_miso",      item:"White miso paste",                  qty:"1 tub",    store:"New World"},
-    {pantryKey:"hoisin_sauce",    item:"Hoisin sauce",                      qty:"1 bottle", store:"New World"},
-    {pantryKey:"sbcurry_roux",    item:"S&B Golden Curry roux (med-hot)",   qty:"1 box",    store:"New World / Asian grocer"},
-    {pantryKey:"brown_sugar",     item:"Brown sugar",                       qty:"1 pack",   store:"Pak nSave"},
-    {pantryKey:"fish_sauce",      item:"Fish sauce (top up if low)",        qty:"check",    store:"New World"},
-  ],
-  3: [
-    {pantryKey:"chili_oil",       item:"Chili oil (Lao Gan Ma)",            qty:"1 jar",    store:"Asian grocer"},
-    {pantryKey:"dark_soy",        item:"Dark soy sauce",                    qty:"1 bottle", store:"Asian grocer"},
-    {pantryKey:"cornflour",       item:"Cornflour (cornstarch)",            qty:"1 pack",   store:"Pak nSave"},
-    {pantryKey:"bamboo_shoots",   item:"Bamboo shoots (canned)",            qty:"1 can",    store:"Asian grocer"},
-    {pantryKey:"nori_sheets",     item:"Nori sheets",                      qty:"1 pack",   store:"New World"},
-    {pantryKey:"suan_cai",        item:"Suan cai (pickled mustard greens)", qty:"1 pack",  store:"Asian grocer"},
-    {pantryKey:"shaoxing_wine",   item:"Shaoxing wine (top up if low)",     qty:"check",   store:"Asian grocer"},
-    {pantryKey:"oyster_sauce",    item:"Oyster sauce (top up if low)",      qty:"check",   store:"Pak nSave"},
-  ],
-  4: [
-    {pantryKey:"durban_masala",   item:"Durban masala blend",               qty:"1 jar",    store:"New World / Indian grocer"},
-    {pantryKey:"cumin_seeds",     item:"Cumin seeds (whole)",               qty:"check",    store:"New World"},
-    {pantryKey:"cumin_ground",    item:"Ground cumin",                      qty:"check",    store:"New World"},
-    {pantryKey:"coriander_ground",item:"Ground coriander",                  qty:"check",    store:"New World"},
-    {pantryKey:"turmeric",        item:"Turmeric",                          qty:"check",    store:"New World"},
-    {pantryKey:"garam_masala",    item:"Garam masala",                      qty:"check",    store:"New World"},
-    {pantryKey:"smoked_paprika",  item:"Smoked paprika",                    qty:"check",    store:"New World"},
-    {pantryKey:"cayenne",         item:"Cayenne pepper",                    qty:"check",    store:"New World"},
-    {pantryKey:"harissa",         item:"Harissa paste",                     qty:"1 jar",    store:"New World"},
-    {pantryKey:"chipotle_adobo",  item:"Chipotle peppers in adobo sauce",   qty:"1 can",    store:"New World / Woolworths"},
-    {pantryKey:"dark_choc",       item:"Dark chocolate 85%",               qty:"1 block",  store:"Pak nSave"},
-    {pantryKey:"bay_leaves",      item:"Bay leaves",                        qty:"check",    store:"New World"},
-    {pantryKey:"dried_chili",     item:"Dried chili flakes (top up if low)", qty:"check",  store:"Asian grocer"},
-  ],
-};
+
 
 window.openSwapModal = openSwapModal;
 window.closeSwapModal = closeSwapModal;

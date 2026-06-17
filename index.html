@@ -14,6 +14,12 @@
 <script>
   const SUPABASE_URL  = 'https://fikeanetwflbybqbmbje.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpa2VhbmV0d2ZsYnlicWJtYmplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NjU5MjcsImV4cCI6MjA5NjQ0MTkyN30.ZfxAra9f1PbxuVL7b2fLPc01zUv9zhkftPqpySGbK98';
+  // HOUSEHOLD_KEY — single shared Supabase row used by BOTH Google accounts.
+  // Him and Her each sign in with their own Google account but read/write
+  // to this one row, so every change on one device is instantly visible on the other.
+  window.HOUSEHOLD_KEY = 'vitalpath-naicker-household';
+  window._lastSaveTime = 0;
+
   if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
     window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
       auth: { flowType:'pkce', storage:window.localStorage, persistSession:true, detectSessionInUrl:true }
@@ -1612,6 +1618,9 @@ function showPage(id, btn) {
 
 function setProfile(p) {
   profile = p;
+  // Save profile choice per-device in localStorage (not shared state)
+  // so Him's phone always opens as 'him' and Her's phone as 'her'
+  try { localStorage.setItem('vp_profile', p); } catch(e) {}
   document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
   document.querySelector('.ptab.'+p).classList.add('active');
   renderToday();
@@ -3576,6 +3585,16 @@ function clearSundayChecks() { sundayChecked={}; renderShop(); scheduleSave(600)
 function clearDailyChecks() { dailyChecked={}; renderShop(); scheduleSave(600); }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+// Restore per-device profile from localStorage
+try {
+  const savedProfile = localStorage.getItem('vp_profile');
+  if (savedProfile === 'him' || savedProfile === 'her') {
+    profile = savedProfile;
+    document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+    const tab = document.querySelector('.ptab.'+savedProfile);
+    if (tab) tab.classList.add('active');
+  }
+} catch(e) {}
 updateDateChip();
 renderToday();
 renderMeals();
@@ -3677,15 +3696,18 @@ async function persistState() {
   // Always write to IndexedDB first (offline resilience)
   await idbSet('state', state);
 
-  // Write to Supabase if authenticated
+  // Write to Supabase using the shared HOUSEHOLD_KEY — not the individual uid.
+  // This means both Google accounts read and write the same row,
+  // so Him's changes instantly appear on Her device and vice versa.
   if (currentUid && window._sb) {
     showSyncBar();
     try {
       const { error } = await window._sb
         .from('user_state')
-        .upsert({ uid: currentUid, state, updated_at: new Date().toISOString() },
+        .upsert({ uid: window.HOUSEHOLD_KEY, state, updated_at: new Date().toISOString() },
                  { onConflict: 'uid' });
       if (error) throw error;
+      window._lastSaveTime = Date.now(); // track when WE last wrote
     } catch (e) {
       console.warn('Supabase write failed, data safe in IndexedDB:', e.message);
     }
@@ -3704,13 +3726,14 @@ function scheduleSave(ms = 800) {
 async function loadState(uid) {
   let state = null;
 
-  // Try Supabase first
+  // Read from the shared HOUSEHOLD_KEY row — not the individual uid.
+  // Both accounts share this single row so they always see each other's data.
   if (uid && window._sb) {
     try {
       const { data, error } = await window._sb
         .from('user_state')
         .select('state')
-        .eq('uid', uid)
+        .eq('uid', window.HOUSEHOLD_KEY)
         .single();
       if (!error && data) state = data.state;
     } catch (e) {
@@ -3759,14 +3782,21 @@ function subscribeRealtime(uid) {
 
   if (!uid || !window._sb) return;
 
+  // Subscribe to the shared household row — so when Him saves on his phone,
+  // Her phone receives the update in real-time and re-renders automatically.
   const channel = window._sb
-    .channel('user_state_changes')
+    .channel('household_state_changes')
     .on('postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'user_state', filter: `uid=eq.${uid}` },
+      { event: 'UPDATE', schema: 'public', table: 'user_state', filter: `uid=eq.${window.HOUSEHOLD_KEY}` },
       (payload) => {
-        // Only apply if it was written by another session (different device)
         if (payload.new && payload.new.state) {
-          applyState(payload.new.state);
+          // Only apply if this update is newer than our last save.
+          // This prevents us re-applying our own just-saved data
+          // while still applying the partner's updates immediately.
+          const updateTime = new Date(payload.new.updated_at).getTime();
+          if (updateTime > window._lastSaveTime) {
+            applyState(payload.new.state);
+          }
         }
       }
     )

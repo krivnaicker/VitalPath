@@ -1589,14 +1589,14 @@ const PREP_STEPS = [
 // ── State ─────────────────────────────────────────────────────────────────────
 let profile = 'him';
 let loggedMeals = { him:{}, her:{} };
-let waterCount = 0;
+let waterCount = { him: 0, her: 0 }; // per-profile
 let selectedDay = 0;
-let woDone = {};
+let woDone = { him: {}, her: {} }; // per-profile
 let mealWeek = 1;
 let checkins = { him:[], her:[] };
 let chatHistory = [];
 let mealSwaps = {}; // mealSwaps[dateKey][slotIdx] = {name,him,her,himCal,herCal,time}
-let exLog = {};
+let exLog = { him: {}, her: {} }; // per-profile: exLog[profile][dateKey][exIdx]
 let pantryChecked = {};
 let pantryItems = []; // user-added custom items {id,name,category,note,addedBy,addedAt,qty}
 
@@ -1720,12 +1720,12 @@ function renderToday() {
   wg.innerHTML = '';
   for(let i=0;i<8;i++){
     const g = document.createElement('div');
-    g.className = 'glass'+(i<waterCount?' filled':'');
-    g.textContent = i<waterCount?'💧':'○';
-    g.onclick=()=>{waterCount=i<waterCount?i:i+1;renderToday();if(typeof scheduleSave==='function')scheduleSave();};
+    g.className = 'glass'+(i<waterCount[profile]?' filled':'');
+    g.textContent = i<waterCount[profile]?'💧':'○';
+    g.onclick=()=>{waterCount[profile]=i<waterCount[profile]?i:i+1;renderToday();if(typeof scheduleSave==='function')scheduleSave();};
     wg.appendChild(g);
   }
-  document.getElementById('water-tip').textContent = waterCount>=8?'✓ Daily water goal reached! Great work.':'Tap each glass as you drink it. Start with 300ml before gym.';
+  document.getElementById('water-tip').textContent = waterCount[profile]>=8?'✓ Daily water goal reached! Great work.':'Tap each glass as you drink it. Start with 300ml before gym.';
 
   renderTodayExercise();
 }
@@ -1739,7 +1739,7 @@ function renderTodayExercise() {
   const diffDays = Math.floor((now - anchor) / 86400000);
   const dayIdx = ((diffDays % 7) + 7) % 7;
   const key = typeof todayKey === 'function' ? todayKey() : now.toISOString().slice(0,10);
-  const todayExLog = exLog[key] || {};
+  const todayExLog = (exLog[profile] || {})[key] || {};
   const wo = WORKOUTS[dayIdx];
   if (!wo) { el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:6px 0">No workout data for today.</div>'; return; }
   if (wo.rest) {
@@ -1783,8 +1783,9 @@ function renderTodayExercise() {
 }
 
 function toggleExLog(dateKey, exIdx) {
-  if (!exLog[dateKey]) exLog[dateKey] = {};
-  exLog[dateKey][exIdx] = !exLog[dateKey][exIdx];
+  if (!exLog[profile]) exLog[profile] = {};
+  if (!exLog[profile][dateKey]) exLog[profile][dateKey] = {};
+  exLog[profile][dateKey][exIdx] = !exLog[profile][dateKey][exIdx];
   renderTodayExercise();
   if (typeof scheduleSave === 'function') scheduleSave(600);
 }
@@ -2067,7 +2068,7 @@ function renderWorkout() {
   scroll.innerHTML = '';
   WORKOUTS.forEach((w,i)=>{
     const chip = document.createElement('div');
-    const done = woDone[i];
+    const done = (woDone[profile] || {})[i];
     chip.className = `day-chip${i===selectedDay?' active':''}${done?' done':''}${w.rest?' rest-day':''}`;
     chip.innerHTML = `<span class="dc-label">${w.day}</span><div class="dc-dot"></div>`;
     chip.onclick = ()=>{selectedDay=i;renderWorkout();};
@@ -2107,13 +2108,14 @@ function renderWorkout() {
       <span class="tp-label">🚶 TREADMILL</span>
       <span class="tp-val">${wo.treadmill}</span>
     </div>
-    <button class="wo-done-btn${woDone[selectedDay]?' done-state':''}" onclick="markWoDone(${selectedDay})">
-      ${woDone[selectedDay]?'✓ Session complete':'Mark session complete'}
+    <button class="wo-done-btn${(woDone[profile]||{})[selectedDay]?' done-state':''}" onclick="markWoDone(${selectedDay})">
+      ${(woDone[profile]||{})[selectedDay]?'✓ Session complete':'Mark session complete'}
     </button>`;
 }
 
 function markWoDone(i) {
-  woDone[i] = !woDone[i];
+  if (!woDone[profile]) woDone[profile] = {};
+  woDone[profile][i] = !woDone[profile][i];
   renderWorkout();
   if (typeof scheduleSave === 'function') scheduleSave();
 }
@@ -3751,12 +3753,33 @@ async function loadState(uid) {
 function applyState(state) {
   // Schema migration: add new fields with defaults if missing
   if (state.loggedMeals)   loggedMeals   = state.loggedMeals;
-  if (state.exLog)         exLog         = state.exLog;
+  if (state.exLog) {
+    // migrate from old flat format to per-profile
+    if (state.exLog.him !== undefined || state.exLog.her !== undefined) {
+      exLog = state.exLog;
+    } else {
+      exLog = { him: state.exLog, her: {} };
+    }
+  }
   if (state.mealSwaps)     mealSwaps     = state.mealSwaps;
   if (state.pantryChecked) pantryChecked = state.pantryChecked;
   if (state.pantryItems)   pantryItems   = state.pantryItems;
-  if (typeof state.waterCount === 'number') waterCount = state.waterCount;
-  if (state.woDone)        woDone        = state.woDone;
+  if (state.waterCount !== undefined) {
+    if (typeof state.waterCount === 'number') {
+      // migrate from old flat format
+      waterCount = { him: state.waterCount, her: 0 };
+    } else {
+      waterCount = state.waterCount;
+    }
+  }
+  if (state.woDone) {
+    // migrate from old flat format {0:true} to per-profile {him:{0:true}, her:{}}
+    if (state.woDone.him !== undefined || state.woDone.her !== undefined) {
+      woDone = state.woDone;
+    } else {
+      woDone = { him: state.woDone, her: {} };
+    }
+  }
   if (state.checkins)      checkins      = state.checkins;
   if (state.shopWeek)      shopWeek      = state.shopWeek;
   if (state.sundayChecked) sundayChecked = state.sundayChecked;
